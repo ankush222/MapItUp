@@ -1,0 +1,77 @@
+body {
+    background-color: #DCD0C0;
+}
+
+#signIn {
+    width: 40%;
+    float: left;
+}
+
+#signUp {
+    width: 45%;
+    margin-left: 200px;
+    float: right;
+}
+
+#box1 {
+	padding-top: 50px;
+	width: 400px; 
+	margin: 0 auto;
+	text-align: center;
+    font-size: 20px;
+}
+
+#box2 {
+    padding-top: 30px;
+    width: 400px; 
+    margin: 0 auto;
+    text-align: center;
+    font-size: 20px;
+}
+
+#submit {
+    width: 400px; 
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 30px;
+}
+
+input[type=text] {
+    width: 50%;
+    padding: 10px 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 18px;
+    text-align: center;
+}
+
+input[type=password] {
+    width: 50%;
+    padding: 10px 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 18px;
+    text-align: center;
+}
+
+input[type=submit] {
+    width: 25%;
+    background-color: #373737; 
+    color: white;
+    padding: 10px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+input[type=submit]:hover {
+    background-color: #C0B283;
+}
