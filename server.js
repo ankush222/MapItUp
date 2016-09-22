@@ -5,10 +5,15 @@ var fs = require("fs");
 app.get('/listUsers', function (req, res) {
   
  fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-      console.log("dirname = ", __dirname);
-	console.log( data );
-      res.end( data );
+    	console.log("dirname = ", __dirname);
+		console.log( data );
+    	res.end( data );
    });
+})
+
+app.use(express.static('public'));
+app.get('/index', function (req, res) {
+   res.sendFile( __dirname + "/" + "index.html" );
 })
 
 var server = app.listen(8081, function () {
