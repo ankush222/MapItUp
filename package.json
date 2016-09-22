@@ -7,7 +7,8 @@
   "author": "Ankush Jain",
   "license": "UNLICENSED",
   "dependencies": {
-    "mysql": "latest"
+    "mysql": "latest",
+    "body-parser": "latest"
   },
   "devDependencies": {
   }

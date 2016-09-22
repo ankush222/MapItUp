@@ -12,6 +12,7 @@ app.get('/listUsers', function (req, res) {
 })
 
 var path = require('path');
+var bodyParser = require('body-parser');
 app.use(express.static(path.join(__dirname, 'public')));
 var mysql = require('mysql');
 var connection = mysql.createConnection({
@@ -31,6 +32,18 @@ connection.connect();
 app.use(express.static('public'));
 app.get('/index', function (req, res) {
    res.sendFile( __dirname + "/public/" + "index.html" );
+})
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.use(bodyParser.json());
+
+app.post('/test', function (req, res) {
+    console.log('hello');
+    //console.log("req = ", res);
+    console.log(req.body.email);
 })
 
 var server = app.listen(8081, function () {
