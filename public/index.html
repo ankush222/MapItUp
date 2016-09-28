@@ -1,35 +1,27 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 	</head>
 	<body>
-		<div id = 'logo'></div>
-			<div id = 'signIn'>
-				<form action="/test" method="post">
-					<div id="box1">
-				      	Email : <input type="text" name="email">
-				    </div>
-				    <div id="box2">
-				      	Password : <input type="password" name="password">
-				    </div>
-				    <div id="submit">
-				      	<input type="submit" value="Sign in">
-				    </div>
-			  	</form>
-		  	</div>
-		  	<div id = 'signUp'>
-				<form action="/test" method="post">
-					<div id="box1">
-				      	Email : <input type="text" name="email">
-				    </div>
-				    <div id="box2">
-				      	Password : <input type="password" name="password">
-				    </div>
-				    <div id="submit">
-				      	<input type="submit" value="Sign Up">
-				    </div>
-			  	</form>
-		  	</div>
+		<div id = 'navbar'>
+			<ul>
+			  <li><a class="active" href="#home">Home</a></li>
+			  <li><a href="#news">News</a></li>
+			  <li><a href="#contact">Contact</a></li>
+			  <li><a href="#about">About</a></li>
+			</ul>
 		</div>
+	  	<div id = 'signUp'>
+			<form action="/test" method="post">
+		      	<label>First Name : </label><input type="text" name="firstName">
+		      	<label>Last Name : </label><input type="text" name="lastName">
+		      	<label>Email : </label><input type="text" name="email">
+		      	<label>Password : </label><input type="password" name="password1">
+		      	<label>Confirm Password : </label><input type="password" name="password2">
+		      	<label><input type="submit" value="Sign Up"></label>
+		  	</form>
+			<div id = 'member'>Already a member ? Sign in</div>
+	  	</div>
 	</body>
 </html>

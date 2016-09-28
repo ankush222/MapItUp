@@ -17,8 +17,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 var mysql = require('mysql');
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: 'aadhar91',
+  user: 'sharoon',
+  password: 'password',
   database: 'mapitup'
 })
 
