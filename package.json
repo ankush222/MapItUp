@@ -9,7 +9,7 @@
   "dependencies": {
     "mysql": "latest",
     "body-parser": "latest",
-    "bcrypt": "latest"
+    "bcrypt": "0.8.5"
   },
   "devDependencies": {
   }
