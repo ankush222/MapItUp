@@ -2,14 +2,14 @@ var express = require('express');
 var app = express();
 var fs = require("fs");
 
-app.get('/listUsers', function (req, res) {
+// app.get('/listUsers', function (req, res) {
   
- fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-    	console.log("dirname = ", __dirname);
-		console.log( data );
-    	res.end( data );
-   });
-})
+//  fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
+//     	console.log("dirname = ", __dirname);
+// 		console.log( data );
+//     	res.end( data );
+//    });
+// })
 
 var path = require('path');
 var bodyParser = require('body-parser');
@@ -24,10 +24,10 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
-connection.query('INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', ['Ankush', 'Jain', 'jain97@purdue.edu', 'aadhar91'], function(err, rows, fields) {
-  if (err)
-   console.log("error in inserting!", err);
-});
+// connection.query('INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', ['Ankush', 'Jain', 'jain97@purdue.edu', 'aadhar91'], function(err, rows, fields) {
+//   if (err)
+//    console.log("error in inserting!", err);
+// });
 
 app.use(express.static('public'));
 app.get('/index', function (req, res) {
@@ -44,6 +44,16 @@ app.post('/test', function (req, res) {
     console.log('hello');
     //console.log("req = ", res);
     console.log(req.body.email);
+})
+
+app.post('/sign_up', function (req, res) {
+    email = req.body.email;
+    password1 = req.body.password1;
+    password2 = req.body.password2;
+    firstName = req.body.firstName;
+    lastName = req.body.lastName;
+    // check here password 1 == password 2
+    
 })
 
 var server = app.listen(3000, function () {

@@ -24,10 +24,12 @@ li a {
 }
 
 li a:hover:not(.active) {
-    background-color: #ddd;
+    /*background-color: #ddd;*/
+    background-color: yellow;
+    color: black;
 }
 
 li a.active {
     color: white;
-    background-color: grey;
+    background-color: yellow;
 }
