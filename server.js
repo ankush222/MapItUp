@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var fs = require("fs");
+var bcrypt = require("bcrypt");
 
 // app.get('/listUsers', function (req, res) {
   
@@ -46,13 +47,24 @@ app.post('/test', function (req, res) {
     console.log(req.body.email);
 })
 
-app.post('/sign_up', function (req, res) {
+app.post('/signUp', function (req, res) {
     email = req.body.email;
     password1 = req.body.password1;
     password2 = req.body.password2;
     firstName = req.body.firstName;
     lastName = req.body.lastName;
+
+    if(password1 != password2)
+    {
+        return { "success": 404 };
+    }
+    var hash = bcrypt.hashSync(password1, 10);
+    console.log("hash successful");
     // check here password 1 == password 2
+    connection.query('INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', [firstName, lastName, email, hash], function(err, rows, fields) {
+    if (err)
+        console.log("error in inserting!", err);
+    });
     
 })
 
