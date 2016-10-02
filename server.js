@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var fs = require("fs");
 var bcrypt = require("bcrypt");
-var async = require("async"); 2
+var async = require("async"); 
 var path = require('path');
 var bodyParser = require('body-parser');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -18,8 +18,12 @@ var connection = mysql.createConnection({
 connection.connect();
 
 app.use(express.static('public'));
+app.set('view engine', 'ejs')
+app.get('/', function (req, res) {
+   res.render('index.ejs');
+})
 app.get('/index', function (req, res) {
-    res.sendFile(__dirname + "/public/" + "index.html");
+   res.render('index.ejs');
 })
 
 app.use(bodyParser.urlencoded({
@@ -108,7 +112,8 @@ app.post('/signIn', function (req, res) {
         }
 
     });
-
+    // console.log("inserted into database");
+    //res.render('home.ejs', {name: firstName});
 })
 
 var server = app.listen(3000, function () {
