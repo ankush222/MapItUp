@@ -3,19 +3,11 @@ var app = express();
 var fs = require("fs");
 var bcrypt = require("bcrypt");
 var async = require("async"); 2
-// app.get('/listUsers', function (req, res) {
-
-//  fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-//     	console.log("dirname = ", __dirname);
-// 		console.log( data );
-//     	res.end( data );
-//    });
-// })
-
 var path = require('path');
 var bodyParser = require('body-parser');
 app.use(express.static(path.join(__dirname, 'public')));
 var mysql = require('mysql');
+
 var connection = mysql.createConnection({
     host: 'my-db-instance.clvztxhdj6v1.us-west-2.rds.amazonaws.com',
     user: 'db_user',
