@@ -113,7 +113,7 @@ app.post('/signIn', function (req, res) {
 
     });
     // console.log("inserted into database");
-    //res.render('home.ejs', {name: firstName});
+    res.render('home.ejs', {name: firstName});
 })
 
 var server = app.listen(3000, function () {
