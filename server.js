@@ -3,15 +3,6 @@ var app = express();
 var fs = require("fs");
 var bcrypt = require("bcrypt");
 
-// app.get('/listUsers', function (req, res) {
-  
-//  fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-//     	console.log("dirname = ", __dirname);
-// 		console.log( data );
-//     	res.end( data );
-//    });
-// })
-
 var path = require('path');
 var bodyParser = require('body-parser');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -25,14 +16,13 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
-// connection.query('INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', ['Ankush', 'Jain', 'jain97@purdue.edu', 'aadhar91'], function(err, rows, fields) {
-//   if (err)
-//    console.log("error in inserting!", err);
-// });
-
 app.use(express.static('public'));
+app.set('view engine', 'ejs')
+app.get('/', function (req, res) {
+   res.render('index.ejs');
+})
 app.get('/index', function (req, res) {
-   res.sendFile( __dirname + "/public/" + "index.html" );
+   res.render('index.ejs');
 })
 
 app.use(bodyParser.urlencoded({
@@ -40,12 +30,6 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
-
-app.post('/test', function (req, res) {
-    console.log('hello');
-    //console.log("req = ", res);
-    console.log(req.body.email);
-})
 
 app.post('/signUp', function (req, res) {
     email = req.body.email;
@@ -65,7 +49,8 @@ app.post('/signUp', function (req, res) {
     if (err)
         console.log("error in inserting!", err);
     });
-    
+    // console.log("inserted into database");
+    res.render('home.ejs', {name: firstName});
 })
 
 var server = app.listen(3000, function () {
