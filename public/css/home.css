@@ -30,6 +30,31 @@ body {
     margin-left: 40px;
 }
 
+#back {
+    position: absolute;
+    top: 520px;
+    left: 892px;
+    width: 133px;
+    height: 47px;
+    background-image: url("http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg");
+    background-size: contain;
+}
+
+/*for div ke upar div*/
+/*#msgErreur {
+    color:white;
+    position:absolute;
+    z-index:5;
+}
+#msgErreur > div {
+    background:#942911;
+    position: relative;
+    top:30px;
+    left: -10px;
+    width : 150px;
+    height : 30px;
+}*/
+
 h1 {
     color: white; font-family: arial; text-shadow: 2px 2px black;
 }

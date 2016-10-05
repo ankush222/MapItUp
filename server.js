@@ -34,7 +34,7 @@ app.get('/profile', function (req, res) {
 })
 
 app.get('/home', function (req, res) {
-   res.render('home.ejs', {name: 'whatsMyName'});
+   res.render('home.ejs', {name: 'whatsMyName', country: 'US'});
 })
 
 app.use(bodyParser.urlencoded({
