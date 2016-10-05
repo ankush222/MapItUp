@@ -5,7 +5,12 @@ var bcrypt = require("bcrypt");
 
 var path = require('path');
 var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
+
 var mysql = require('mysql');
 var connection = mysql.createConnection({
   host: 'my-db-instance.clvztxhdj6v1.us-west-2.rds.amazonaws.com',
@@ -16,8 +21,6 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
-app.use(express.static('public'));
-app.set('view engine', 'ejs')
 app.get('/', function (req, res) {
    res.render('index.ejs');
 })
@@ -25,11 +28,17 @@ app.get('/index', function (req, res) {
    res.render('index.ejs');
 })
 
+app.get('/profile', function (req, res) {
+   res.render('profile.ejs', {name: 'whatsMyName'});
+})
+
+app.get('/home', function (req, res) {
+   res.render('home.ejs', {name: 'whatsMyName'});
+})
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-app.use(bodyParser.json());
 
 app.post('/signUp', function (req, res) {
     email = req.body.email;

@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/profile.css">
+		<link rel="stylesheet" type="text/css" href="css/navbar.css">
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id = 'navbar'>
+			<img src="http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg" id="logo" />
+			<ul>
+			  <li><a href="/home"><b>Home</b></a></li>
+			  <li><a class="active" href="/profile"><b>Profile</b></a></li>
+			  <li><a href="#contact"><b>Followers</b></a></li>
+			  <li><a href="/search"><b>Search</b></a></li>
+			  <li><a href="/signOut"><b>Sign Out</b></a></li>
+			  <li><input id="search-bar" name="search" type="text" placeholder="Search..."></li>
+			  <!-- <li><input id="search-button" name="search_submit" type="submit" value="Search!"></li> -->
+			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
+			</ul>
+		</div>
+		<div class='layer'>
+			<div id = 'workingArea'>
+				<h1> Welcome, <%= name%></h1>
+				<form action="/profile" method="post">
+			      	<label>Location : </label><input type="text" name="location">
+			      	<label><input type="submit" value="Update"></label>
+		  		</form>
+		  		<a href="/deactivate" class="button">Deactivate Account</a>
+			</div>
+		</div>
+	</body>
+</html>

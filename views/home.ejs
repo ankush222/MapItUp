@@ -1,17 +1,23 @@
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<link rel="stylesheet" type="text/css" href="css/home.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 	</head>
 	<body>
 		<div id = 'navbar'>
+			<img src="http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg" id="logo" />
 			<ul>
-			  <li><a class="active" href="#home">Home</a></li>
-			  <li><a href="#news">News</a></li>
-			  <li><a href="#contact">Contact</a></li>
-			  <li><a href="#about">About</a></li>
+			  <li><a class="active" href="/home"><b>Home</b></a></li>
+			  <li><a href="/profile"><b>Profile</b></a></li>
+			  <li><a href="#contact"><b>Followers</b></a></li>
+			  <li><a href="/search"><b>Search</b></a></li>
+			  <li><a href="/signOut"><b>Sign Out</b></a></li>
 			</ul>
 		</div>
-		<h1> lmao kya yaar tu signed in hai ! <%= name%>
+		<div class='layer'>
+			<div id = 'workingArea'>
+				<h1> Welcome, <%= name%></h1>
+			</div>
+		</div>
 	</body>
 </html>
