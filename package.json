@@ -9,7 +9,8 @@
   "dependencies": {
     "mysql": "latest",
     "body-parser": "latest",
-    "bcrypt": "0.8.5",
+    "bcrypt": "latest",
+    "async": "latest",
     "ejs": "latest"
   },
   "devDependencies": {
