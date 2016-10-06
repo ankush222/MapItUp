@@ -42,7 +42,8 @@ app.get('/profile', function (req, res) {
         }
         else {
             name = rows[0].firstName;
-            res.render('profile.ejs', { name: name, userId: id });
+            location = rows[0].location;
+            res.render('profile.ejs', { name: name, userId: id, location: location});
         }
     });
 })
@@ -202,7 +203,7 @@ app.post('/updateLocation', function (req, res) {
 
     var userId = req.body.userId;
     var location = req.body.location;
-    connection.query('UPDATE users SET `location` = ? WHERE `id` = ?', [location, userId], function (err, rows, fields) {
+    connection.query('UPDATE users SET `location` = ? WHERE `userId` = ?', [location, userId], function (err, rows, fields) {
         if (err) {
             res.sendStatus(404);
         }
@@ -214,7 +215,7 @@ app.post('/updateLocation', function (req, res) {
 app.post('/getLocation', function (req, res) {
 
     var userId = req.body.userId;
-    connection.query('SELECT location SET `location` = ? WHERE `id` = ?', [location, userId], function (err, rows, fields) {
+    connection.query('SELECT location SET `location` = ? WHERE `userId` = ?', [location, userId], function (err, rows, fields) {
         if (err) {
             res.sendStatus(404);
         }
