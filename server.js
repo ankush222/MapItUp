@@ -111,6 +111,7 @@ app.get('/signIn', function (req, res) {
 app.post('/deactivate', function (req, res) {
     //deactivate here 
     var userId = req.body.userId;
+    console.log("userId = ", userId);
     async.series([
         function (callback) {
             // do some stuff ...
@@ -147,15 +148,42 @@ app.post('/deactivate', function (req, res) {
 app.post('/addVisited', function (req, res) {
     var country = req.body.country;
     var userId = req.body.userId;
-    console.log(userId);
 
-    connection.query('INSERT INTO countries (id, country) VALUES (?, ?)', [userId, country], function (err, rows, fields) {
-        if (err) {
-            res.sendStatus(404);
+    async.series([
+        function (callback) {
+            // do some stuff ...
+            connection.query('SELECT * from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else if (rows.length > 0) {
+                    callback(true);
+                }
+                else
+                    callback(null);
+            });
+        },
+        function (callback) {
+            // do some more stuff ...
+            connection.query('INSERT INTO countries (id, country) VALUES (?, ?)', [userId, country], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else
+                    callback(null);
+            });
         }
-        else
-            res.redirect('/home?' + "userId=" + userId);
-    });
+    ],
+        // optional callback
+        function (err, results) {
+            // results is now equal to ['one', 'two']
+            if (err) {
+                res.status(404).send("Error in adding visited country");
+            }
+            else
+                res.redirect('/home?' + "userId=" + userId);
+        });
+
 })
 
 app.get('/getVisited', function (req, res) {
@@ -172,6 +200,27 @@ app.get('/getVisited', function (req, res) {
 
 app.post('/updateLocation', function (req, res) {
 
+    var userId = req.body.userId;
+    var location = req.body.location;
+    connection.query('UPDATE users SET `location` = ? WHERE `id` = ?', [location, userId], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else
+            res.redirect('/profile?' + "userId=" + userId);
+    });
+})
+
+app.post('/getLocation', function (req, res) {
+
+    var userId = req.body.userId;
+    connection.query('SELECT location SET `location` = ? WHERE `id` = ?', [location, userId], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else
+            res.redirect('/profile?' + "userId=" + userId);
+    });
 })
 
 app.post('/addFavorite', function (req, res) {
