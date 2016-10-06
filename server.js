@@ -37,11 +37,13 @@ app.get('/profile', function (req, res) {
     connection.query('SELECT * from users WHERE `userId` = ?', [userId], function (err, rows, fields) {
         if (err) {
             console.log("error in query", err);
-            callback(err);
+            res.sendStatus(404);
+
         }
         else {
             name = rows[0].firstName;
-            res.render('profile.ejs', { name: name, userId: id });        }
+            res.render('profile.ejs', { name: name, userId: id });
+        }
     });
 })
 
