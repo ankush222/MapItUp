@@ -48,6 +48,10 @@ app.get('/search', function (req, res) {
    res.render('results.ejs', {fruits: fruits});
 })
 
+app.get('/signIn', function (req, res) {
+    res.render('signIn.ejs');
+})
+
 app.post('/deactivate', function (req, res) {
     //deactivate here 
     res.render('index.ejs');
