@@ -25,9 +25,8 @@
 			      	<label>Location : </label><input type="text" name="location">
 			      	<label><input type="submit" value="Update"></label>
 		  		</form>
-		  		<!-- <a href="/deactivate" method="post" class="button">Deactivate Account</a> -->
 		  		<form action="/deactivate" method="post">
-		  			<button class="button" value=<%- userId%>>Deactivate Account</button>
+		  			<button class="button" name="userId" value=<%- userId%>>Deactivate Account</button>
 		  		</form>
 			</div>
 		</div>
