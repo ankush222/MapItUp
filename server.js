@@ -37,7 +37,46 @@ app.get('/profile', function (req, res) {
 })
 
 app.get('/home', function (req, res) {
-    res.render('home.ejs', { name: 'whatsMyName', country: 'US' });
+    var userId = req.query.userId;
+    var name;
+    var countries;
+
+    async.series([
+        function (callback) {
+            // do some stuff ...
+            connection.query('SELECT * from users WHERE `userId` = ?', [userId], function (err, rows, fields) {
+                if (err) {
+                    console.log("error in query", err);
+                    callback(err);
+                }
+                else {
+                    name = rows[0].firstName;
+                    callback(null);
+                }
+            });
+        },
+        function (callback) {
+            // do some more stuff ...
+            connection.query('SELECT country from countries where `id` = ?', [userId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    countries = rows;
+                    callback(null);
+                }
+            });
+        },
+    ],
+        // optional callback
+        function (err, results) {
+            if (err) {
+                res.sendStatus(404);
+            }
+            else
+                res.render('home.ejs', { name: name, userId: userId, countries: countries });
+        });
+
 })
 
 app.get('/search', function (req, res) {
@@ -54,7 +93,88 @@ app.get('/signIn', function (req, res) {
 
 app.post('/deactivate', function (req, res) {
     //deactivate here 
-    res.render('index.ejs');
+    var userId = req.body.userId;
+    async.series([
+        function (callback) {
+            // do some stuff ...
+            connection.query('DELETE from countries WHERE `id` = ?', [userId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else
+                    callback(null);
+            });
+        },
+        function (callback) {
+            // do some more stuff ...
+            connection.query('DELETE from users WHERE `userId` = ?', [userId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else
+                    callback(null);
+            });
+        }
+    ],
+        // optional callback
+        function (err, results) {
+            // results is now equal to ['one', 'two']
+            if (err) {
+                res.status(404).send("Error in deactivating account");
+            }
+            else
+                res.redirect('/index');
+        });
+})
+
+app.post('/addVisited', function (req, res) {
+    var country = req.body.country;
+    var userId = req.body.userId;
+
+    connection.query('INSERT INTO countries (id, country) VALUES (?, ?)', [userId, country], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else
+            res.send('OK');
+    });
+})
+
+app.get('/getVisited', function (req, res) {
+
+    var userId = req.query.userId;
+    connection.query('SELECT country from countries where `id` = ?', [userId], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else
+            res.send({ countries: rows });
+    });
+})
+
+app.post('/addFavorite', function (req, res) {
+
+    var userId = req.body.userId;
+    var country = req.body.country;
+    connection.query('UPDATE countries SET `favorite` = ? WHERE `id` = ? AND `country` = ?', [true, userId, country], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else
+            res.send('OK');
+    });
+})
+
+app.get('/getFavorite', function (req, res) {
+    var userId = req.query.userId;
+    var country = req.query.country
+    connection.query('SELECT country from countries where `id` = ? AND `favorite` = ?', [userId, true], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else
+            res.send({ countries: rows });
+    });
 })
 
 app.post('/signOut', function (req, res) {
@@ -63,11 +183,14 @@ app.post('/signOut', function (req, res) {
 })
 
 app.post('/signUp', function (req, res) {
-    email = req.body.email;
-    password1 = req.body.password1;
-    password2 = req.body.password2;
-    firstName = req.body.firstName;
-    lastName = req.body.lastName;
+    var email = req.body.email;
+    var password1 = req.body.password1;
+    var password2 = req.body.password2;
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var userId;
+
+    console.log("password = ", password1);
 
     if (password1 != password2) {
         res.status(404).send('passwords do not match');
@@ -82,7 +205,7 @@ app.post('/signUp', function (req, res) {
             connection.query('SELECT * from users WHERE `email` = ?', [email], function (err, rows, fields) {
                 if (err) {
                     console.log("error in query", err);
-                    callback(true);
+                    callback(err);
                 }
                 else if (rows.length > 0) {
                     console.log("user already exists");
@@ -99,10 +222,28 @@ app.post('/signUp', function (req, res) {
                     console.log("error in inserting!", err);
                     callback(true);
                 }
-                else
+                else {
+                    //console.log("res = ", fields);
                     callback(null);
+                }
+
             });
-        }
+        },
+        function (callback) {
+            // do some stuff ...
+            connection.query('SELECT * from users WHERE `email` = ?', [email], function (err, rows, fields) {
+                if (err) {
+                    console.log("error in query", err);
+                    callback(err);
+                }
+                else {
+                    userId = rows[0].userId;
+                    console.log("rows = ", userId);
+                    callback(null);
+
+                }
+            });
+        },
     ],
         // optional callback
         function (err, results) {
@@ -111,8 +252,7 @@ app.post('/signUp', function (req, res) {
                 res.sendStatus(404);
             }
             else
-                // res.send('OK');
-                res.redirect('/home');
+                res.redirect('/home?' + "userId=" + userId);
         });
 
 })
