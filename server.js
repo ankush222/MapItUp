@@ -161,6 +161,10 @@ app.get('/getVisited', function (req, res) {
     });
 })
 
+app.post('/updateLocation', function(req, res) {
+
+})
+
 app.post('/addFavorite', function (req, res) {
 
     var userId = req.body.userId;
@@ -176,7 +180,7 @@ app.post('/addFavorite', function (req, res) {
 
 app.get('/getFavorite', function (req, res) {
     var userId = req.query.userId;
-    var country = req.query.country
+
     connection.query('SELECT country from countries where `id` = ? AND `favorite` = ?', [userId, true], function (err, rows, fields) {
         if (err) {
             res.sendStatus(404);
@@ -278,7 +282,7 @@ app.post('/signIn', function (req, res) {
 
         var match = bcrypt.compareSync(password, results[0].password)
         if (match === true) {
-            res.redirect('/home');
+            res.redirect('/home?'+ "userId=" + userId);
         }
         else {
             res.status(401).send('username and password do not match');
