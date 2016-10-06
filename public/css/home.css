@@ -28,11 +28,12 @@ body {
     position: absolute;
     width: 80%;
     margin-left: 40px;
+    margin-top: 70px;
 }
 
 #back {
     position: absolute;
-    top: 520px;
+    top: 590px;
     left: 892px;
     width: 133px;
     height: 47px;

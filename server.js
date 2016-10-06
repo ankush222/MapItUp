@@ -37,7 +37,8 @@ app.get('/profile', function (req, res) {
 })
 
 app.get('/home', function (req, res) {
-   res.render('home.ejs', {name: 'whatsMyName', country: 'US'});
+   var countries = ["CA", "US", "RU"];
+   res.render('home.ejs', {name: 'whatsMyName', countries: countries});
 })
 
 app.get('/search', function (req, res) {
@@ -48,13 +49,30 @@ app.get('/search', function (req, res) {
    res.render('results.ejs', {fruits: fruits});
 })
 
+app.post('/addVisited', function (req, res) {
+   var country = req.body.country;
+   //add here to database
+
+   res.redirect('/home');
+})
+
+app.get('/addVisited', function (req, res) {
+    console.log('doone');
+   //add here
+   //return page results.ejs ?
+   // var fruits = ["Banana", "Orange", "Apple", "Mango"];
+   // res.render('results.ejs', {fruits: fruits});
+   res.redirect('/home');
+})
+
 app.get('/signIn', function (req, res) {
     res.render('signIn.ejs');
 })
 
 app.post('/deactivate', function (req, res) {
     //deactivate here 
-    res.render('index.ejs');
+    // res.render('index.ejs');
+    // res.redirect('/index');
 })
 
 app.post('/signOut', function (req, res) {
@@ -115,7 +133,8 @@ app.post('/signUp', function (req, res) {
             }
             else
                 // res.send('OK');
-                res.render('home.ejs', {name: firstName});
+                // res.render('home.ejs', {name: firstName});
+                res.redirect('/home');
         });
 
 })
