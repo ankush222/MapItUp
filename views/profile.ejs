@@ -22,8 +22,7 @@
 			<div id = 'workingArea'>
 				<h1> Welcome, <%= name%></h1>
 				<form action="/updateLocation" method="post">
-					<if 
-			      	<label>Location : </label><input type="text" name="location"><input type="hidden" name="userId" value=<%- userId%>>
+			      	<label>Location : </label><input type="text" name="location" placeholder=<%- location%>><input type="hidden" name="userId" value=<%- userId%>>
 			      	<label><input type="submit" value="Update"></label>
 		  		</form>
 		  		<form action="/deactivate" method="post">

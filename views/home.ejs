@@ -5,6 +5,7 @@
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	    <script type="text/javascript">
+	      var fav = "";
 	      var countries = <%-JSON.stringify(countries)%>;
 	      var userId = <%-JSON.stringify(userId)%>;
 	      // alert(userId);
@@ -307,14 +308,14 @@
 			    
 			    countryName = dataTable2.getValue(selectionIdx, 0);
 			    c = countryName.replace(/['"]+/g, '');
-			    
+			    fav = c;
 			    dataTable1.addRows([[c, -2]]);
 
 			    document.getElementById("regions_div2").style.zIndex = -10;
 			    document.getElementById("regions_div1").style.zIndex = 0;
+			    document.getElementById("fav").style.zIndex = 10;
 				var options2 = {
 		          region: c, //count, // Africa
-		          // colorAxis: {colors: ['#00853f', 'black', '#e31b23']},
 		          backgroundColor: '#17263c',
 		          legend: 'none',
 		          colorAxis: {colors: ['#db4025', 'green', 'grey']},
@@ -331,7 +332,14 @@
 	        document.getElementById("back").addEventListener("click", function(){
 				document.getElementById("regions_div1").style.zIndex = -10;
 				document.getElementById("regions_div2").style.zIndex = 0;
+				document.getElementById("fav").style.zIndex = 0;
 			});
+	      }
+
+	      function sendFav() {
+	      	favForm.country.value = fav;
+	      	favForm.submit();
+	      	fav = "";
 	      }
 
 	    </script>
@@ -344,7 +352,6 @@
 			  <li><a class="active" href="/home"><b>Home</b></a></li>
 			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
 			  <li><a href="#contact"><b>Followers</b></a></li>
-			  <!-- <li><a href="/search"><b>Search</b></a></li> -->
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
 			  <li><form action="/search" method="get"><input id="search-bar" name="search" type="text" placeholder="Search..."></form></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
@@ -352,7 +359,9 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> Welcome, <%= name%></h1><span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
+				<h1> Welcome, <%= name%></h1>
+				<form method="post" action="/addFavorite" name="favForm"><i onclick="sendFav()" id="fav" class="fa fa-star" style="font-size:60px;color:red;padding-left:950px;padding-top:90px; position:absolute;"></i><input type="hidden" name="country"><input type="hidden" name="userId" value=<%- userId%>></form>
+				<span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
 				<form name="theForm" method="post" action="/addVisited" id="addVisited"><input id="search-bar" name="country" type="text" placeholder="Which countries have you visited ?" style="width:150%;height:35px;margin-left: 50px;"><input type="hidden" name="userId" value=<%- userId%>></form>
 				<div id = 'map'>
 					<div id="regions_div1" style="position: absolute; width: 1000px; height: 500px; display: inline; z-index: -10"></div>
