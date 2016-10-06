@@ -43,7 +43,7 @@ app.get('/profile', function (req, res) {
         else {
             name = rows[0].firstName;
             location = rows[0].location;
-            res.render('profile.ejs', { name: name, userId: id, location: location});
+            res.render('profile.ejs', { name: name, userId: id, location: location });
         }
     });
 })
@@ -69,7 +69,7 @@ app.get('/home', function (req, res) {
         },
         function (callback) {
             // do some more stuff ...
-            connection.query('SELECT country from countries where `id` = ?', [userId], function (err, rows, fields) {
+            connection.query('SELECT * from countries where `id` = ?', [userId], function (err, rows, fields) {
                 if (err) {
                     callback(err);
                 }
@@ -87,11 +87,18 @@ app.get('/home', function (req, res) {
             }
             else {
                 var country = [];
+                var favorites = [];
+                var temp = 0;
                 for (var i = 0; i < countries.length; i++) {
                     country[i] = JSON.stringify(countries[i].country);
+                    if(countries[i].favorite)
+                    {
+                        favorites[temp] = JSON.stringify(countries[i].country);
+                        temp++;
+                    }
                 }
                 // console.log("country = ", country);
-                res.render('home.ejs', { name: name, userId: userId, countries: country });
+                res.render('home.ejs', { name: name, userId: userId, countries: country, favorites: favorites });
             }
         });
 
@@ -215,7 +222,7 @@ app.post('/updateLocation', function (req, res) {
 app.post('/getLocation', function (req, res) {
 
     var userId = req.body.userId;
-    connection.query('SELECT location SET `location` = ? WHERE `userId` = ?', [location, userId], function (err, rows, fields) {
+    connection.query('SELECT location from users WHERE `userId` = ?', [location, userId], function (err, rows, fields) {
         if (err) {
             res.sendStatus(404);
         }
@@ -233,7 +240,7 @@ app.post('/addFavorite', function (req, res) {
             res.sendStatus(404);
         }
         else
-            res.send('OK');
+            res.redirect('/home?' + "userId=" + userId);
     });
 })
 
