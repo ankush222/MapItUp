@@ -34,7 +34,7 @@ app.get('/index', function (req, res) {
 
 app.get('/profile', function (req, res) {
     var id = req.query.userId;
-    connection.query('SELECT * from users WHERE `userId` = ?', [userId], function (err, rows, fields) {
+    connection.query('SELECT * from users WHERE `userId` = ?', [id], function (err, rows, fields) {
         if (err) {
             console.log("error in query", err);
             res.sendStatus(404);
@@ -289,6 +289,7 @@ app.post('/signIn', function (req, res) {
         if (results.length === 0)
             res.status(404).send('user not found');
 
+        var userId = results[0].userId;
         var match = bcrypt.compareSync(password, results[0].password)
         if (match === true) {
             res.redirect('/home?' + "userId=" + userId);
