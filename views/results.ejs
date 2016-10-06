@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="css/profile.css">
+		<link rel="stylesheet" type="text/css" href="css/results.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	</head>
@@ -10,7 +10,7 @@
 			<div id = "name">MapItUp</div>
 			<ul>
 			  <li><a href="/home"><b>Home</b></a></li>
-			  <li><a class="active" href="/profile"><b>Profile</b></a></li>
+			  <li><a href="/profile"><b>Profile</b></a></li>
 			  <li><a href="#contact"><b>Followers</b></a></li>
 			  <!-- <li><a href="/search"><b>Search</b></a></li> -->
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
@@ -20,12 +20,16 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> Welcome, <%= name%></h1>
-				<form action="/profile" method="post">
-			      	<label>Location : </label><input type="text" name="location">
-			      	<label><input type="submit" value="Update"></label>
-		  		</form>
-		  		<a href="/deactivate" class="button">Deactivate Account</a>
+				<h1> Search results</h1>
+				<span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
+				<form action="/search" method="get"><input id="search-bar" name="search" type="text" placeholder="Search..." style="width:50%;height:35px;margin-left: 50px;"></form>
+		  		<table>
+					<% for(var i=0; i < fruits.length; i++) { %>
+					   <tr>
+					     <td><%= fruits[i] %></td>
+					   </tr>
+					<% } %>
+				</table>
 			</div>
 		</div>
 	</body>

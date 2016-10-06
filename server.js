@@ -10,6 +10,9 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 var mysql = require('mysql');
 
@@ -37,9 +40,23 @@ app.get('/home', function (req, res) {
    res.render('home.ejs', {name: 'whatsMyName', country: 'US'});
 })
 
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.get('/search', function (req, res) {
+    console.log(req.query.search);
+   //search here
+   //return page results.ejs ?
+   var fruits = ["Banana", "Orange", "Apple", "Mango"];
+   res.render('results.ejs', {fruits: fruits});
+})
+
+app.post('/deactivate', function (req, res) {
+    //deactivate here 
+    res.render('index.ejs');
+})
+
+app.post('/signOut', function (req, res) {
+    //sign out here 
+    res.render('index.ejs');
+})
 
 app.post('/signUp', function (req, res) {
     email = req.body.email;

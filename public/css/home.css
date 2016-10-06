@@ -40,20 +40,20 @@ body {
     background-size: contain;
 }
 
-/*for div ke upar div*/
-/*#msgErreur {
-    color:white;
-    position:absolute;
-    z-index:5;
+input[type=text] {
+    /*margin-top: 50px;*/
+    /*width: 20%;*/
+    margin-left: 10px;
+    /*padding: 10px 10px;*/
+    /*margin: 8px 0;*/
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 18px;
+    text-align: left;
+    float: left;
 }
-#msgErreur > div {
-    background:#942911;
-    position: relative;
-    top:30px;
-    left: -10px;
-    width : 150px;
-    height : 30px;
-}*/
 
 h1 {
     color: white; font-family: arial; text-shadow: 2px 2px black;
