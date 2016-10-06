@@ -6,11 +6,12 @@
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	    <script type="text/javascript">
 	      var countries = <%-JSON.stringify(countries)%>;
+	      var userId = <%-JSON.stringify(userId)%>;
+	      // alert(userId);
 	      google.charts.load('upcoming', {'packages':['geochart']});
 	      google.charts.setOnLoadCallback(drawRegionsMap);
 
 	      function drawRegionsMap() {
-
 	        var dataTable2 = new google.visualization.DataTable();
 		        dataTable2.addColumn('string', 'Country');
 		        dataTable2.addColumn('number', 'Color');
@@ -275,20 +276,9 @@
 		    	]);
 
 				for (i = 0; i < countries.length; i++) { 
-				    dataTable2.addRows([[countries[i],-1 ]]);
+					// alert(countries[i]);
+				    dataTable2.addRows([[countries[i], -1 ]]);
 				}
-
-
-
-		        // dataTable2.addRows([['IN', 1, 'India']]);
-
-		     // if (country != 'hello')
-		     // {
-		     // 	chart2.clearChart();
-		     // 	alert(country);
-		     // 	// dataTable2.addRows([['IN', 5, 'India']]);
-		     // 	// chart2.draw(dataTable2);
-		     // }
 
 		    var dataTable1 = new google.visualization.DataTable();
 		        dataTable1.addColumn('string', 'Country');
@@ -338,12 +328,6 @@
 			});
 	      }
 
-	  //     function addVisited(obj)
-			// {
-			// 	drawRegionsMap(obj['country'].value);
-			// 	document.theForm.submit();
-			// 	// return false;
-			// }
 	    </script>
 	</head>
 	<body>
@@ -362,8 +346,8 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> Welcome</h1><span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
-				<form name="theForm" method="post" action="/addVisited" id="addVisited"><input id="search-bar" name="country" type="text" placeholder="Which countries have you visited ?" style="width:150%;height:35px;margin-left: 50px;"></form>
+				<h1> Welcome, <%= name%></h1><span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
+				<form name="theForm" method="post" action="/addVisited" id="addVisited"><input id="search-bar" name="country" type="text" placeholder="Which countries have you visited ?" style="width:150%;height:35px;margin-left: 50px;"><input type="hidden" name="userId" value=<%- userId%>></form>
 				<div id = 'map'>
 					<div id="regions_div1" style="position: absolute; width: 1000px; height: 500px; display: inline; z-index: -10"></div>
 					<div id="regions_div2" style="position: absolute; width: 1000px; height: 500px;"></div>
