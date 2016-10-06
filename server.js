@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var fs = require("fs");
 var bcrypt = require("bcrypt");
-var async = require("async"); 
+var async = require("async");
 var path = require('path');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -26,26 +26,26 @@ var connection = mysql.createConnection({
 connection.connect();
 
 app.get('/', function (req, res) {
-   res.render('index.ejs');
+    res.render('index.ejs');
 })
 app.get('/index', function (req, res) {
-   res.render('index.ejs');
+    res.render('index.ejs');
 })
 
 app.get('/profile', function (req, res) {
-   res.render('profile.ejs', {name: 'whatsMyName'});
+    res.render('profile.ejs', { name: 'whatsMyName' });
 })
 
 app.get('/home', function (req, res) {
-   res.render('home.ejs', {name: 'whatsMyName', country: 'US'});
+    res.render('home.ejs', { name: 'whatsMyName', country: 'US' });
 })
 
 app.get('/search', function (req, res) {
     console.log(req.query.search);
-   //search here
-   //return page results.ejs ?
-   var fruits = ["Banana", "Orange", "Apple", "Mango"];
-   res.render('results.ejs', {fruits: fruits});
+    //search here
+    //return page results.ejs ?
+    var fruits = ["Banana", "Orange", "Apple", "Mango"];
+    res.render('results.ejs', { fruits: fruits });
 })
 
 app.get('/signIn', function (req, res) {
@@ -84,8 +84,7 @@ app.post('/signUp', function (req, res) {
                     console.log("error in query", err);
                     callback(true);
                 }
-                else if(rows.length > 0)
-                {
+                else if (rows.length > 0) {
                     console.log("user already exists");
                     callback(true);
                 }
@@ -108,14 +107,12 @@ app.post('/signUp', function (req, res) {
         // optional callback
         function (err, results) {
             // results is now equal to ['one', 'two']
-            if(err)
-            {
+            if (err) {
                 res.sendStatus(404);
-                console.log("reached here");
             }
             else
                 // res.send('OK');
-                res.render('home.ejs', {name: firstName});
+                res.redirect('/home');
         });
 
 })
@@ -124,6 +121,7 @@ app.post('/signIn', function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
+    console.log("email = ", email);
     connection.query('SELECT * FROM `users` WHERE `email` = ?', [email], function (error, results, fields) {
 
         if (results.length === 0)
@@ -131,15 +129,13 @@ app.post('/signIn', function (req, res) {
 
         var match = bcrypt.compareSync(password, results[0].password)
         if (match === true) {
-            res.send('OK');
+            res.redirect('/home');
         }
         else {
-            res.status(401).send('password is wrong!');
+            res.status(401).send('username and password do not match');
         }
 
     });
-    // console.log("inserted into database");
-    res.render('home.ejs', {name: firstName});
 })
 
 var server = app.listen(3000, function () {

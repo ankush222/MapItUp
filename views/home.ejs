@@ -5,7 +5,6 @@
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	    <script type="text/javascript">
-	      var hey = <%-JSON.stringify(country)%>;
 	      var x = 200;
 	      google.charts.load('upcoming', {'packages':['geochart']});
 	      google.charts.setOnLoadCallback(drawRegionsMap);
@@ -15,7 +14,6 @@
 	        var data2 = google.visualization.arrayToDataTable([
 	          ['Country', 'Popularity'],
 	          ['Germany', x],
-	          [hey, x],
 	          ['Brazil', x],
 	          ['Canada', x],
 	          ['France', x],
@@ -86,7 +84,6 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> Welcome, <%= name%> <%= country%></h1>
 				<div id = 'map'>
 					<div id="regions_div1" style="position: absolute; width: 1000px; height: 500px; display: inline; z-index: -10"></div>
 					<div id="regions_div2" style="position: absolute; width: 1000px; height: 500px;"></div>
