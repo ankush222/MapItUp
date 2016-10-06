@@ -33,7 +33,16 @@ app.get('/index', function (req, res) {
 })
 
 app.get('/profile', function (req, res) {
-    res.render('profile.ejs', { name: 'whatsMyName' });
+    var id = req.query.userId;
+    connection.query('SELECT * from users WHERE `userId` = ?', [userId], function (err, rows, fields) {
+        if (err) {
+            console.log("error in query", err);
+            callback(err);
+        }
+        else {
+            name = rows[0].firstName;
+            res.render('profile.ejs', { name: name, userId: id });        }
+    });
 })
 
 app.get('/home', function (req, res) {
@@ -73,11 +82,9 @@ app.get('/home', function (req, res) {
             if (err) {
                 res.sendStatus(404);
             }
-            else
-            {
+            else {
                 var country = [];
-                for(var i = 0;i < countries.length;i++)
-                {
+                for (var i = 0; i < countries.length; i++) {
                     country[i] = JSON.stringify(countries[i].country);
                 }
                 // console.log("country = ", country);
@@ -161,7 +168,7 @@ app.get('/getVisited', function (req, res) {
     });
 })
 
-app.post('/updateLocation', function(req, res) {
+app.post('/updateLocation', function (req, res) {
 
 })
 
@@ -282,7 +289,7 @@ app.post('/signIn', function (req, res) {
 
         var match = bcrypt.compareSync(password, results[0].password)
         if (match === true) {
-            res.redirect('/home?'+ "userId=" + userId);
+            res.redirect('/home?' + "userId=" + userId);
         }
         else {
             res.status(401).send('username and password do not match');
