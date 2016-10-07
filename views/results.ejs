@@ -14,7 +14,7 @@
 			  <li><a href="#contact"><b>Followers</b></a></li>
 			  <!-- <li><a href="/search"><b>Search</b></a></li> -->
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
-			  <li><form action="/search" method="get"><input id="search-bar" name="search" type="text" placeholder="Search..."></form></li>
+			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
 		</div>
@@ -22,11 +22,11 @@
 			<div id = 'workingArea'>
 				<h1> Search results</h1>
 				<span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
-				<form action="/search" method="get"><input id="search-bar" name="search" type="text" placeholder="Search..." style="width:50%;height:35px;margin-left: 50px;"></form>
+				<form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..." style="width:50%;height:35px;margin-left: 50px;"><input type="hidden" name="userId" value=<%- userId%>></form>
 		  		<table>
-					<% for(var i=0; i < fruits.length; i++) { %>
+					<% for(var i=0; i < countries.length; i++) { %>
 					   <tr>
-					     <td><%= fruits[i] %></td>
+					     <td><%= countries[i] %></td>
 					   </tr>
 					<% } %>
 				</table>

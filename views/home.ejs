@@ -7,6 +7,7 @@
 	    <script type="text/javascript">
 	      var fav = "";
 	      var countries = <%-JSON.stringify(countries)%>;
+	      var favorites = <%-JSON.stringify(favorites)%>;
 	      var userId = <%-JSON.stringify(userId)%>;
 	      var favorites = <%-JSON.stringify(favorites)%>;
 	      // alert(userId);
@@ -357,11 +358,11 @@
 			<img src="http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg" id="logo" />
 			<div id = "name">MapItUp</div>
 			<ul>
-			  <li><a class="active" href="/home"><b>Home</b></a></li>
+			  <li><a class="active" href="/home?userId=<%- userId%>"><b>Home</b></a></li>
 			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
 			  <li><a href="#contact"><b>Followers</b></a></li>
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
-			  <li><form action="/search" method="get"><input id="search-bar" name="search" type="text" placeholder="Search..."></form></li>
+			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
 		</div>
