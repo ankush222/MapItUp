@@ -115,8 +115,11 @@ app.post('/search', function (req, res) {
         }
         else if (rows.length > 0) {
             country = [];
+            // console.log(rows);
             for (var i = 0; i < rows.length; i++) {
-                country[i] = JSON.stringify(rows[i]);
+                console.log(rows[i].country);
+                country[i] = JSON.stringify(rows[i].country);
+                
             }
             res.render('results.ejs', { countries: country, userId: userId });
         }
