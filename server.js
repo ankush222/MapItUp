@@ -91,8 +91,7 @@ app.get('/home', function (req, res) {
                 var temp = 0;
                 for (var i = 0; i < countries.length; i++) {
                     country[i] = JSON.stringify(countries[i].country);
-                    if(countries[i].favorite)
-                    {
+                    if (countries[i].favorite) {
                         favorites[temp] = JSON.stringify(countries[i].country);
                         temp++;
                     }
@@ -105,11 +104,21 @@ app.get('/home', function (req, res) {
 })
 
 app.post('/search', function (req, res) {
-    console.log(req.query.search);
+    var userId = req.body.userId;
+    var country = req.body.search;
     //search here
-    //return page results.ejs ?
-    var fruits = ["Banana", "Orange", "Apple", "Mango"];
-    res.render('results.ejs', { fruits: fruits });
+    //return page results.ejs ?    
+        // do some stuff ...
+        connection.query('SELECT country from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
+            if (err) {
+                res.sendStatus(404);
+            }
+            else if (rows.length > 0) {
+                res.render('results.ejs', { countries: rows, userId: userId});
+            }
+            else
+                res.sendStatus(404);
+        });
 })
 
 app.get('/signIn', function (req, res) {
@@ -165,7 +174,7 @@ app.post('/addVisited', function (req, res) {
                     callback(err);
                 }
                 else if (rows.length > 0) {
-                    callback(true);
+                    res.redirect('/home?' + "userId=" + userId);
                 }
                 else
                     callback(null);
