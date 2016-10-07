@@ -8,6 +8,7 @@
 	      var fav = "";
 	      var countries = <%-JSON.stringify(countries)%>;
 	      var userId = <%-JSON.stringify(userId)%>;
+	      var favorites = <%-JSON.stringify(favorites)%>;
 	      // alert(userId);
 	      google.charts.load('upcoming', {'packages':['geochart']});
 	      google.charts.setOnLoadCallback(drawRegionsMap);
@@ -283,6 +284,13 @@
 			    dataTable2.addRows([[countries[i], -1 ]]);
 			}
 
+			for (i = 0; i < favorites.length; i++) { 
+				// alert("oye "+countries[i]);
+				c = favorites[i].replace(/['"]+/g, '');
+				// alert("haha "+c);
+			    dataTable2.addRows([[favorites[i], -0.5 ]]);
+			}
+
 		    var dataTable1 = new google.visualization.DataTable();
 	        dataTable1.addColumn('string', 'Country');
 	        dataTable1.addColumn('number', 'Color');
@@ -297,7 +305,7 @@
 	        var options1 = {
 	        	backgroundColor: '#17263c',
 	        	legend: 'none',
-	        	colorAxis: {colors: ['green', 'grey']},
+	        	colorAxis: {colors: ['green', 'yellow', 'grey']},
 	        };
 
 	        var chart1 = new google.visualization.GeoChart(document.getElementById('regions_div1'));
