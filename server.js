@@ -108,17 +108,21 @@ app.post('/search', function (req, res) {
     var country = req.body.search;
     //search here
     //return page results.ejs ?    
-        // do some stuff ...
-        connection.query('SELECT country from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
-            if (err) {
-                res.sendStatus(404);
+    // do some stuff ...
+    connection.query('SELECT country from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else if (rows.length > 0) {
+            country = [];
+            for (var i = 0; i < rows.length; i++) {
+                country[i] = JSON.stringify(rows[i]);
             }
-            else if (rows.length > 0) {
-                res.render('results.ejs', { countries: rows, userId: userId});
-            }
-            else
-                res.sendStatus(404);
-        });
+            res.render('results.ejs', { countries: country, userId: userId });
+        }
+        else
+            res.sendStatus(404);
+    });
 })
 
 app.get('/signIn', function (req, res) {
