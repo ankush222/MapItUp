@@ -104,7 +104,7 @@ app.get('/home', function (req, res) {
 
 })
 
-app.get('/search', function (req, res) {
+app.post('/search', function (req, res) {
     console.log(req.query.search);
     //search here
     //return page results.ejs ?
