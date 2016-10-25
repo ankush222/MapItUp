@@ -115,6 +115,7 @@ app.post('/search', function (req, res) {
         }
         else if (rows.length > 0) {
             country = [];
+            // console.log(rows);
             for (var i = 0; i < rows.length; i++) {
                 country[i] = JSON.stringify(rows[i].country);
             }
@@ -373,7 +374,6 @@ app.post('/signIn', function (req, res) {
     });
 })
 
-app.post('/upload', function(req, res))
 
 var server = app.listen(3000, function () {
 
