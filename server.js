@@ -117,9 +117,7 @@ app.post('/search', function (req, res) {
             country = [];
             // console.log(rows);
             for (var i = 0; i < rows.length; i++) {
-                console.log(rows[i].country);
                 country[i] = JSON.stringify(rows[i].country);
-                
             }
             res.render('results.ejs', { countries: country, userId: userId });
         }
@@ -226,6 +224,8 @@ app.post('/updateLocation', function (req, res) {
 
     var userId = req.body.userId;
     var location = req.body.location;
+    var file = req.files.path;
+    console.log("file = ", file);
     connection.query('UPDATE users SET `location` = ? WHERE `userId` = ?', [location, userId], function (err, rows, fields) {
         if (err) {
             res.sendStatus(404);
@@ -373,6 +373,7 @@ app.post('/signIn', function (req, res) {
 
     });
 })
+
 
 var server = app.listen(3000, function () {
 
