@@ -21,7 +21,7 @@
 		<div class='layer'>
 			<div id = 'workingArea'>
 				<h1> Welcome, <%= name%></h1>
-				<form action="/updateLocation" method="post">
+				<form action="/updateLocation" method="post" enctype="multipart/form-data">
 			      	<label>Location : </label><input type="text" name="location" placeholder=<%- location%>><input type="hidden" name="userId" value=<%- userId%>>
 			      	<label><input type="file" name="pic" accept="image/*" style="margin-top: 10px;"></label>
 			      	<label><input type="submit" value="Update"></label>

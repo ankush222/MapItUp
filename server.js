@@ -5,14 +5,23 @@ var bcrypt = require("bcrypt");
 var async = require("async");
 var path = require('path');
 var bodyParser = require('body-parser');
-app.use(bodyParser.json());
+var multer = require('multer');
+//var upload = multer({ dest: 'uploads/' });
+var AWS = require('aws-sdk');
+
+// app.use(busboy());
+// app.use(busboy({ immediate: true }));
+
+// app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+// app.use(bodyParser.urlencoded({
+//     extended: true
+// }));
+
+// app.use(multer({dest:'./uploads/'}).single('photo'));
 
 var mysql = require('mysql');
 
@@ -220,19 +229,31 @@ app.get('/getVisited', function (req, res) {
     });
 })
 
-app.post('/updateLocation', function (req, res) {
+app.post('/updateInfo', upload.single('pic'), function (req, res) {
 
     var userId = req.body.userId;
     var location = req.body.location;
-    var file = req.files.path;
+    var file = req.file;
     console.log("file = ", file);
-    connection.query('UPDATE users SET `location` = ? WHERE `userId` = ?', [location, userId], function (err, rows, fields) {
+    
+    var s3 = new AWS.S3();
+    var params = { Bucket: 'mapitup', Body: fs.createReadStream(file.path) , Key: file.filename.toString(),  ACL: 'public-read', ContentType: 'application/octet-stream'};
+    s3.upload(params, function (err, data) {
         if (err) {
+            console.log("Error uploading data: ", err);
             res.sendStatus(404);
-        }
-        else
+        } else {
+            console.log("Successfully uploaded data to myBucket/myKey");
             res.redirect('/profile?' + "userId=" + userId);
+        }
     });
+    // connection.query('UPDATE users SET `location` = ? WHERE `userId` = ?', [location, userId], function (err, rows, fields) {
+    //     if (err) {
+    //         res.sendStatus(404);
+    //     }
+    //     else
+    //         res.redirect('/profile?' + "userId=" + userId);
+    // });
 })
 
 app.post('/getLocation', function (req, res) {
