@@ -374,6 +374,12 @@ app.post('/signIn', function (req, res) {
     });
 })
 
+app.get('/countries', function (req, res) {
+    var userId = req.query.userId;
+    var country = req.query.country;
+
+    res.render('countries.ejs', { userId: userId , country : country });
+})
 
 var server = app.listen(3000, function () {
 
