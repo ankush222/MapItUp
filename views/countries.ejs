@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="css/profile.css">
+		<link rel="stylesheet" type="text/css" href="css/countries.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	</head>
@@ -20,16 +20,9 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> Welcome, <%= name%></h1>
-				<form action="/updateInfo" method="post" enctype="multipart/form-data">
-			      	<label>Location : </label><input type="text" name="location" placeholder=<%- location%>><input type="hidden" name="userId" value=<%- userId%>>
-			      	<label><input type="file" name="pic" accept="image/*" style="margin-top: 10px;"></label>
-			      	<label><img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_284x96dp.png"></label>
-			      	<label><input type="submit" value="Update"></label>
-		  		</form>
-		  		<form action="/deactivate" method="post">
-		  			<button class="button" name="userId" value=<%- userId%>>Deactivate Account</button>
-		  		</form>
+				<h1> <%=JSON.stringify(country)%></h1>
+				<span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
+				<form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..." style="width:50%;height:35px;margin-left: 50px;"><input type="hidden" name="userId" value=<%- userId%>></form>
 			</div>
 		</div>
 	</body>
