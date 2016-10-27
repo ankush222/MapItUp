@@ -6,7 +6,7 @@ var async = require("async");
 var path = require('path');
 var bodyParser = require('body-parser');
 var multer = require('multer');
-var upload = multer({ dest: 'uploads/' });
+//var upload = multer({ dest: 'uploads/' });
 var AWS = require('aws-sdk');
 
 // app.use(busboy());
@@ -400,12 +400,6 @@ app.get('/countries', function (req, res) {
     var country = req.query.country;
 
     res.render('countries.ejs', { userId: userId, country: country });
-})
-
-app.get('/profilePicture', function (req, res) {
-    // res.sendFile("https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_284x96dp.png");
-    // res.sendFile("11-sea-beach-sand-wallpaper.jpg");
-    res.sendFile(path.join(__dirname, '../MapItUp/public/css', '11-sea-beach-sand-wallpaper.jpg'));
 })
 
 var server = app.listen(3000, function () {
