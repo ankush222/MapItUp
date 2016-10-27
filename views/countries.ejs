@@ -3,6 +3,9 @@
 		<link rel="stylesheet" type="text/css" href="css/countries.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+		<script type="text/javascript">
+	      var country = <%-JSON.stringify(country)%>;
+	    </script>
 	</head>
 	<body>
 		<div id = 'navbar'>
@@ -20,7 +23,7 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> <%=JSON.stringify(country)%></h1>
+				<h1> <%= country%></h1>
 				<span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
 				<form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..." style="width:50%;height:35px;margin-left: 50px;"><input type="hidden" name="userId" value=<%- userId%>></form>
 			</div>
