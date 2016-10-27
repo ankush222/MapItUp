@@ -12,16 +12,15 @@ var AWS = require('aws-sdk');
 // app.use(busboy());
 // app.use(busboy({ immediate: true }));
 
-// app.use(bodyParser.json());
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-// app.use(bodyParser.urlencoded({
-//     extended: true
-// }));
 
-// app.use(multer({dest:'./uploads/'}).single('photo'));
+app.use(multer({ dest: 'uploads/' }).single('pic'));
 
 var mysql = require('mysql');
 
@@ -229,15 +228,15 @@ app.get('/getVisited', function (req, res) {
     });
 })
 
-app.post('/updateInfo', upload.single('pic'), function (req, res) {
+app.post('/updateInfo', function (req, res) {
 
     var userId = req.body.userId;
     var location = req.body.location;
     var file = req.file;
     console.log("file = ", file);
-    
+
     var s3 = new AWS.S3();
-    var params = { Bucket: 'mapitup', Body: fs.createReadStream(file.path) , Key: file.filename.toString(),  ACL: 'public-read', ContentType: 'application/octet-stream'};
+    var params = { Bucket: 'mapitup', Body: fs.createReadStream(file.path), Key: file.filename.toString(), ACL: 'public-read', ContentType: 'application/octet-stream' };
     s3.upload(params, function (err, data) {
         if (err) {
             console.log("Error uploading data: ", err);
@@ -299,6 +298,7 @@ app.post('/signOut', function (req, res) {
 })
 
 app.post('/signUp', function (req, res) {
+    console.log("request = ", req);
     var email = req.body.email;
     var password1 = req.body.password1;
     var password2 = req.body.password2;
@@ -399,7 +399,7 @@ app.get('/countries', function (req, res) {
     var userId = req.query.userId;
     var country = req.query.country;
 
-    res.render('countries.ejs', { userId: userId , country : country });
+    res.render('countries.ejs', { userId: userId, country: country });
 })
 
 app.get('/profilePicture', function (req, res) {
