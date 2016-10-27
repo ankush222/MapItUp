@@ -13,7 +13,7 @@
 	      // alert(userId);
 	      google.charts.load('upcoming', {'packages':['geochart']});
 	      google.charts.setOnLoadCallback(drawRegionsMap);
-
+	      var size = countries.length;
 	      function drawRegionsMap() {
 	        var dataTable2 = new google.visualization.DataTable();
 	        dataTable2.addColumn('string', 'Country');
@@ -335,6 +335,11 @@
 			    chart1.draw(dataTable1, options2);
 			    chart2.setSelection(null);
 			    dataTable1.addRows([[c, 0]]);
+
+			    google.visualization.events.addListener(chart1, 'select', function() {
+			    	alert("NEW PAGE");
+			    	window.open("http://www.apple.com", "_self");
+			    });
 			});
 
 	        chart2.draw(dataTable2, options1);
@@ -370,9 +375,12 @@
 		<div class='layer'>
 			<div id = 'workingArea'>
 				<h1> Welcome, <%= name%></h1>
-				<form method="post" action="/addFavorite" name="favForm"><i onclick="sendFav()" id="fav" class="fa fa-star" style="font-size:60px;color:red;left:950px;top:150px; position:absolute;"></i><input type="hidden" name="country"><input type="hidden" name="userId" value=<%- userId%>></form>
+				<div id='percentage'>
+					<h4>You have travelled <%=countries.length/200%> % of the world so far!</h4>
+				</div>
+				<form method="post" action="/addFavorite" name="favForm"><i onclick="sendFav()" id="fav" class="fa fa-star" style="font-size:60px;color:red;left:950px;top:150px; position:absolute; float:left; "></i><input type="hidden" name="country"><input type="hidden" name="userId" value=<%- userId%>></form>
 				<span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
-				<form name="theForm" method="post" action="/addVisited" id="addVisited"><input id="search-bar" name="country" type="text" placeholder="Which countries have you visited ?" style="width:150%;height:35px;margin-left: 50px;"><input type="hidden" name="userId" value=<%- userId%>></form>
+				<form name="theForm" method="post" action="/addVisited" id="addVisited"><input id="search-bar" name="country" type="text" placeholder="Which countries have you visited ?" style="width:150%;height:35px; margin-left: 50px; float:left;"><input type="hidden" name="userId" value=<%- userId%>></form>
 				<div id = 'map'>
 					<div id="regions_div1" style="position: absolute; width: 1000px; height: 500px; display: inline; z-index: -10"></div>
 					<div id="regions_div2" style="position: absolute; width: 1000px; height: 500px;"></div>
