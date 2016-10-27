@@ -9,10 +9,13 @@
   "dependencies": {
     "mysql": "latest",
     "body-parser": "latest",
-    "bcrypt": "latest",
+    "bcrypt": "0.8.5",
     "async": "latest",
-    "ejs": "latest"
+    "ejs": "latest",
+    "connect-busboy": "latest",
+    "multer": "latest"
   },
   "devDependencies": {
+    "aws-sdk":"latest"
   }
 }
