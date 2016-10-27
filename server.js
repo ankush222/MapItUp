@@ -63,17 +63,21 @@ app.get('/profile', function (req, res) {
             })
         },
         function (callback) {
-            var params = { Bucket: 'mapitup', Key: picId };
-            s3.getSignedUrl('getObject', params, function (err, url) {
-                if (err) {
-                    callback(err);
-                }
-                else {
-                    console.log('The URL is', url);
-                    signedUrl = url;
-                    callback(null);
-                }
-            });
+            if (picId === null)
+                callback(null);
+            else {
+                var params = { Bucket: 'mapitup', Key: picId };
+                s3.getSignedUrl('getObject', params, function (err, url) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        console.log('The URL is', url);
+                        signedUrl = url;
+                        callback(null);
+                    }
+                });
+            }
         },
         function (callback) {
             connection.query('SELECT * from users WHERE `userId` = ?', [id], function (err, rows, fields) {
@@ -467,10 +471,10 @@ app.get('/countries', function (req, res) {
     var reviews = [];
 
     reviews = [
-            {"text":"hello wow man this is such a nice review", "user":"Doe", "pics":["link1", "link2"]},
-            {"text":"another one", "user":"Smith", "pics":[]},
-            {"text":"wooo", "user":"Jones", "pics":[]}
-        ]
+        { "text": "hello wow man this is such a nice review", "user": "Doe", "pics": ["link1", "link2"] },
+        { "text": "another one", "user": "Smith", "pics": [] },
+        { "text": "wooo", "user": "Jones", "pics": [] }
+    ]
 
     res.render('countries.ejs', { userId: userId, country: country, reviews: reviews });
 })
