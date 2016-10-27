@@ -464,7 +464,15 @@ app.get('/countries', function (req, res) {
     var userId = req.query.userId;
     var country = req.query.country;
 
-    res.render('countries.ejs', { userId: userId, country: country });
+    var reviews = [];
+
+    reviews = [
+            {"text":"hello wow man this is such a nice review", "user":"Doe", "pics":["link1", "link2"]},
+            {"text":"another one", "user":"Smith", "pics":[]},
+            {"text":"wooo", "user":"Jones", "pics":[]}
+        ]
+
+    res.render('countries.ejs', { userId: userId, country: country, reviews: reviews });
 })
 
 var server = app.listen(3000, function () {

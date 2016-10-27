@@ -377,7 +377,7 @@
 				<div id='percentage'>
 					<h4>You have travelled <%=countries.length/200%> % of the world so far!</h4>
 				</div>
-				<form method="post" action="/addFavorite" name="favForm"><i onclick="sendFav()" id="fav" class="fa fa-star" style="font-size:60px;color:red;left:950px;top:150px; position:absolute; float:left; "></i><input type="hidden" name="country"><input type="hidden" name="userId" value=<%- userId%>></form>
+				<form method="post" action="/addFavorite" name="favForm"><i onclick="sendFav()" id="fav" class="fa fa-star" style="font-size:60px;color:red;left:950px;top:200px; position:absolute; float:left; "></i><input type="hidden" name="country"><input type="hidden" name="userId" value=<%- userId%>></form>
 				<span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
 				<form name="theForm" method="post" action="/addVisited" id="addVisited"><input id="search-bar" name="country" type="text" placeholder="Which countries have you visited ?" style="width:150%;height:35px; margin-left: 50px; float:left;"><input type="hidden" name="userId" value=<%- userId%>></form>
 				<div id = 'map'>

@@ -2,11 +2,11 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/countries.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
-		<!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> -->
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	</head>
 	<body>
 		<div id = 'navbar'>
-			<!-- <img src="http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg" id="logo" /> -->
+			<img src="http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg" id="logo" />
 			<div id = "name">MapItUp</div>
 			<ul>
 			  <li><a href="/home?userId=<%- userId%>"><b>Home</b></a></li>
@@ -19,12 +19,20 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> <%=JSON.stringify(country)%></h1>
+				<h1> Reviews for <%=JSON.stringify(country)%></h1>
 				<form action="/addReview" method="post" id="addReview">
 					<textarea form="addReview" rows="4" cols="50" name="comment" placeholder="Add a review..." style="font-size: 16px; width: 350px; height: 100px;""></textarea>
 					<input type="hidden" name="userId" value=<%- userId%>>
 					<input type="submit" value="Submit">
 				</form>
+				<hr style="width:1100px;">
+				<% for(var i=0; i < reviews.length; i++) { %>
+					<div id = "reviewUser">Review by <%= reviews[i].user %></div>
+					<div id = "reviewText"><%= reviews[i].text %></div>
+					<% for(var j=0; j < reviews[i].pics.length; j++) { %>
+						<div id = "reviewPic"><%= reviews[i].pics[j] %></div>
+					<% } %>
+				<% } %>
 			</div>
 		</div>
 	</body>
