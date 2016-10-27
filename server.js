@@ -42,18 +42,63 @@ app.get('/index', function (req, res) {
 
 app.get('/profile', function (req, res) {
     var id = req.query.userId;
-    connection.query('SELECT * from users WHERE `userId` = ?', [id], function (err, rows, fields) {
-        if (err) {
-            console.log("error in query", err);
-            res.sendStatus(404);
 
+    var picId;
+    var s3 = new AWS.S3();
+    var signedUrl;
+    var name;
+    var location;
+
+    async.series([
+
+        function (callback) {
+            connection.query('SELECT profilePic from users where `userId` = ?', [id], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    picId = rows[0].profilePic;
+                    callback(null);
+                }
+            })
+        },
+        function (callback) {
+            var params = { Bucket: 'mapitup', Key: picId };
+            s3.getSignedUrl('getObject', params, function (err, url) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    console.log('The URL is', url);
+                    signedUrl = url;
+                    callback(null);
+                }
+            });
+        },
+        function (callback) {
+            connection.query('SELECT * from users WHERE `userId` = ?', [id], function (err, rows, fields) {
+                if (err) {
+                    console.log("error in query", err);
+                    callback(err);
+                }
+                else {
+                    name = rows[0].firstName;
+                    location = rows[0].location;
+                    callback(null);
+                }
+            });
         }
-        else {
-            name = rows[0].firstName;
-            location = rows[0].location;
-            res.render('profile.ejs', { name: name, userId: id, location: location });
+    ],
+
+        function (err, results) {
+            if (err) {
+                res.status(404).send("Error in adding visited country");
+            }
+            else
+                res.render('profile.ejs', { name: name, userId: id, location: location, profilePic: signedUrl });
         }
-    });
+
+    );
 })
 
 app.get('/home', function (req, res) {
@@ -206,7 +251,6 @@ app.post('/addVisited', function (req, res) {
     ],
         // optional callback
         function (err, results) {
-            // results is now equal to ['one', 'two']
             if (err) {
                 res.status(404).send("Error in adding visited country");
             }
@@ -237,15 +281,36 @@ app.post('/updateInfo', function (req, res) {
 
     var s3 = new AWS.S3();
     var params = { Bucket: 'mapitup', Body: fs.createReadStream(file.path), Key: file.filename.toString(), ACL: 'public-read', ContentType: 'application/octet-stream' };
-    s3.upload(params, function (err, data) {
-        if (err) {
-            console.log("Error uploading data: ", err);
-            res.sendStatus(404);
-        } else {
-            console.log("Successfully uploaded data to myBucket/myKey");
-            res.redirect('/profile?' + "userId=" + userId);
+
+    async.series([
+        function (callback) {
+            s3.upload(params, function (err, data) {
+                if (err) {
+                    console.log("Error uploading data: ", err);
+                    callback(err);
+                } else {
+                    callback(null);
+                }
+            });
+        },
+        function (callback) {
+            connection.query('UPDATE users SET `profilePic` = ? WHERE `userId` = ?', [file.filename.toString(), userId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    callback(null);
+                }
+            });
         }
-    });
+    ],
+        function (err, results) {
+            if (err) {
+                res.status(404).send("Error in adding visited country");
+            }
+            else
+                res.redirect('/profile?' + "userId=" + userId);
+        });
     // connection.query('UPDATE users SET `location` = ? WHERE `userId` = ?', [location, userId], function (err, rows, fields) {
     //     if (err) {
     //         res.sendStatus(404);
