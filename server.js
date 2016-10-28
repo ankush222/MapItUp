@@ -482,13 +482,24 @@ app.get('/countries', function (req, res) {
 
     var reviews = [];
 
-    reviews = [
-        { "text": "hello wow man this is such a nice review", "user": "Doe", "pics": ["link1", "link2"] },
-        { "text": "another one", "user": "Smith", "pics": [] },
-        { "text": "wooo", "user": "Jones", "pics": [] }
-    ]
+    // reviews = [
+    //     { "text": "hello wow man this is such a nice review", "user": "Doe", "pics": ["link1", "link2"] },
+    //     { "text": "another one", "user": "Smith", "pics": [] },
+    //     { "text": "wooo", "user": "Jones", "pics": [] }
+    // ]
 
-    res.render('countries.ejs', { userId: userId, country: country, reviews: reviews });
+    connection.query('SELECT * FROM reviews where `country` = ?', [country], function(error, results, fields) {
+
+        if(error)
+        {
+            res.status(404).send('error in getting reviews');
+        }
+        else
+             res.render('countries.ejs', { userId: userId, country: country, reviews: results });
+
+    });
+
+   
 })
 
 app.post('/addReview', function (req, res) {
@@ -498,6 +509,10 @@ app.post('/addReview', function (req, res) {
     var rating = req.body.rating;
 
     var files = req.files;
+    console.log("text = ", text);
+    console.log("id = ", userId);
+    console.log("country = ", country);
+    console.log("rating = ", rating);
 
     async.series([
         function (callback) {
