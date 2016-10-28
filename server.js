@@ -480,6 +480,7 @@ app.get('/countries', function (req, res) {
     var userId = req.query.userId;
     var country = req.query.country;
 
+    
     var reviews = [];
 
     // reviews = [
