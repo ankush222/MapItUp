@@ -66,7 +66,7 @@
 				</form>
 				<hr style="width:1100px;">
 				<% for(var i=0; i < reviews.length; i++) { %>
-					<div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %></div>
+					<div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> | <%= JSON.stringify(reviews[i].rating) %> stars</div>
 					<div id = "reviewText"><%= JSON.stringify(reviews[i].text) %></div>
 				<% } %>
 				<a class="fancybox" rel="group" href="http://fancyapps.com/fancybox/demo/4_b.jpg"><img src="http://fancyapps.com/fancybox/demo/4_s.jpg" alt="" width="50" height = "50"/></a>

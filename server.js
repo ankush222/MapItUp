@@ -496,15 +496,14 @@ app.get('/countries', function (req, res) {
                 obj = new Object();
                 obj.text = results[i].review;
                 obj.user = results[i].userId;
+                obj.rating = results[i].rating;
                 obj.pics = ["link1", "link2"];
                 reviews.push(obj);
             }
-             res.render('countries.ejs', { userId: userId, country: country, reviews: results });
+            console.log(results[0]);
+            res.render('countries.ejs', { userId: userId, country: country, reviews: reviews });
         }
-
-    });
-
-   
+    });  
 })
 
 app.post('/addReview', function (req, res) {
