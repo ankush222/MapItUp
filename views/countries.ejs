@@ -3,6 +3,37 @@
 		<link rel="stylesheet" type="text/css" href="css/countries.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+		<link rel="stylesheet" href="css/jquery.fancybox.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="css/jquery.fancybox.js"></script>
+
+		<link rel="stylesheet" href="/fancybox/source/helpers/jquery.fancybox-thumbs.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="/fancybox/source/helpers/jquery.fancybox-thumbs.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function(){
+			//  Check Radio-box
+			    $(".rating input:radio").attr("checked", false);
+			    $('.rating input').click(function () {
+			        $(".rating span").removeClass('checked');
+			        $(this).parent().addClass('checked');
+			    });
+
+			    $('input:radio').change(
+			    function(){
+			        var userRating = this.value;
+			        addReview.rating.value = userRating;
+			        // alert(userRating);
+			    }); 
+			});
+		</script>
+
+		<script type="text/javascript">
+		    $(document).ready(function() {
+				$(".fancybox").fancybox();
+			});
+		</script>
 	</head>
 	<body>
 		<div id = 'navbar'>
@@ -20,9 +51,18 @@
 		<div class='layer'>
 			<div id = 'workingArea'>
 				<h1> Reviews for <%=JSON.stringify(country)%></h1>
-				<form action="/addReview" method="post" id="addReview">
-					<textarea form="addReview" rows="4" cols="50" name="comment" placeholder="Add a review..." style="font-size: 16px; width: 350px; height: 100px;""></textarea>
+				<form name="addReview" action="/addReview" method="post" id="addReview">
+					<textarea form="addReview" rows="4" cols="50" name="text" placeholder="Add a review..." style="font-size: 16px; width: 350px; height: 100px;""></textarea>
 					<input type="hidden" name="userId" value=<%- userId%>>
+					<input type="hidden" name="rating" value=0>
+					<input type="hidden" name="country" value=<%- country%>>
+					<div class="rating">
+					    <span><input type="radio" name="rating" id="str5" value="5"><label for="str5"></label></span>
+					    <span><input type="radio" name="rating" id="str4" value="4"><label for="str4"></label></span>
+					    <span><input type="radio" name="rating" id="str3" value="3"><label for="str3"></label></span>
+					    <span><input type="radio" name="rating" id="str2" value="2"><label for="str2"></label></span>
+					    <span><input type="radio" name="rating" id="str1" value="1"><label for="str1"></label></span>
+					</div>
 					<input type="submit" value="Submit">
 				</form>
 				<hr style="width:1100px;">
@@ -33,6 +73,9 @@
 						<div id = "reviewPic"><%= reviews[i].pics[j] %></div>
 					<% } %>
 				<% } %>
+				<a class="fancybox" rel="group" href="http://fancyapps.com/fancybox/demo/4_b.jpg"><img src="http://fancyapps.com/fancybox/demo/4_s.jpg" alt="" width="50" height = "50"/></a>
+				<a class="fancybox" rel="group" href="http://whc.unesco.org/uploads/thumbs/site_0252_0008-750-0-20151104113424.jpg"><img src="http://whc.unesco.org/uploads/thumbs/site_0252_0008-750-0-20151104113424.jpg" alt="" width="50" height = "50"/></a>
+
 			</div>
 		</div>
 	</body>
