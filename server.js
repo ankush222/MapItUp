@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
-app.use(multer({ dest: 'uploads/' }).single('pic'));
+app.use(multer({ dest: 'uploads/' }).array('pic', 50));
 
 var mysql = require('mysql');
 
@@ -48,6 +48,7 @@ app.get('/profile', function (req, res) {
     var signedUrl;
     var name;
     var location;
+    var email;
 
     async.series([
 
@@ -63,17 +64,21 @@ app.get('/profile', function (req, res) {
             })
         },
         function (callback) {
-            var params = { Bucket: 'mapitup', Key: picId };
-            s3.getSignedUrl('getObject', params, function (err, url) {
-                if (err) {
-                    callback(err);
-                }
-                else {
-                    console.log('The URL is', url);
-                    signedUrl = url;
-                    callback(null);
-                }
-            });
+            if (picId === null)
+                callback(null);
+            else {
+                var params = { Bucket: 'mapitup', Key: picId };
+                s3.getSignedUrl('getObject', params, function (err, url) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        console.log('The URL is', url);
+                        signedUrl = url;
+                        callback(null);
+                    }
+                });
+            }
         },
         function (callback) {
             connection.query('SELECT * from users WHERE `userId` = ?', [id], function (err, rows, fields) {
@@ -84,6 +89,7 @@ app.get('/profile', function (req, res) {
                 else {
                     name = rows[0].firstName;
                     location = rows[0].location;
+                    email = rows[0].email;
                     callback(null);
                 }
             });
@@ -95,7 +101,7 @@ app.get('/profile', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { name: name, userId: id, location: location, profilePic: signedUrl });
+                res.render('profile.ejs', { name: name, userId: id, location: location, profilePic: signedUrl, email: email });
         }
 
     );
@@ -276,32 +282,41 @@ app.post('/updateInfo', function (req, res) {
 
     var userId = req.body.userId;
     var location = req.body.location;
-    var file = req.file;
+    var file = req.files;
     console.log("file = ", file);
 
     var s3 = new AWS.S3();
-    var params = { Bucket: 'mapitup', Body: fs.createReadStream(file.path), Key: file.filename.toString(), ACL: 'public-read', ContentType: 'application/octet-stream' };
+    if (file.length > 0)
+        var params = { Bucket: 'mapitup', Body: fs.createReadStream(file[0].path), Key: file[0].filename.toString(), ACL: 'public-read', ContentType: 'application/octet-stream' };
 
     async.series([
         function (callback) {
-            s3.upload(params, function (err, data) {
-                if (err) {
-                    console.log("Error uploading data: ", err);
-                    callback(err);
-                } else {
-                    callback(null);
-                }
-            });
+            if (file.length <= 0)
+                callback(null);
+            else {
+                s3.upload(params, function (err, data) {
+                    if (err) {
+                        console.log("Error uploading data: ", err);
+                        callback(err);
+                    } else {
+                        callback(null);
+                    }
+                });
+            }
         },
         function (callback) {
-            connection.query('UPDATE users SET `profilePic` = ? WHERE `userId` = ?', [file.filename.toString(), userId], function (err, rows, fields) {
-                if (err) {
-                    callback(err);
-                }
-                else {
-                    callback(null);
-                }
-            });
+            if (file.length <= 0)
+                callback(null);
+            else {
+                connection.query('UPDATE users SET `profilePic` = ? WHERE `userId` = ?', [file[0].filename.toString(), userId], function (err, rows, fields) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback(null);
+                    }
+                });
+            }
         }
     ],
         function (err, results) {
@@ -442,6 +457,7 @@ app.post('/signIn', function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
+    var results;
     console.log("email = ", email);
     connection.query('SELECT * FROM `users` WHERE `email` = ?', [email], function (error, results, fields) {
 
@@ -467,12 +483,73 @@ app.get('/countries', function (req, res) {
     var reviews = [];
 
     reviews = [
-            {"text":"hello wow man this is such a nice review", "user":"Doe", "pics":["link1", "link2"]},
-            {"text":"another one", "user":"Smith", "pics":[]},
-            {"text":"wooo", "user":"Jones", "pics":[]}
-        ]
+        { "text": "hello wow man this is such a nice review", "user": "Doe", "pics": ["link1", "link2"] },
+        { "text": "another one", "user": "Smith", "pics": [] },
+        { "text": "wooo", "user": "Jones", "pics": [] }
+    ]
 
     res.render('countries.ejs', { userId: userId, country: country, reviews: reviews });
+})
+
+app.post('/addReview', function (req, res) {
+    var text = req.body.text;
+    var userId = req.body.userId;
+    var country = req.body.country;
+    var rating = req.body.rating;
+
+    var files = req.files;
+
+    async.series([
+        function (callback) {
+            // do some stuff ...
+            connection.query('INSERT into reviews (country, userId, text, rating) values (?, ?, ?, ?)', [country, userId, text, rating], function (err, rows, fields) {
+                if (err) {
+                    console.log("error in inserting", err);
+                    callback(err);
+                }
+                else
+                    callback(null);
+            });
+        }
+        // function (callback) {
+        //     // do some more stuff ...
+        //     connection.query('INSERT INTO reviewPics (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', [firstName, lastName, email, hash], function (err, rows, fields) {
+        //         if (err) {
+        //             console.log("error in inserting!", err);
+        //             callback(true);
+        //         }
+        //         else {
+        //             //console.log("res = ", fields);
+        //             callback(null);
+        //         }
+
+        //     });
+        // },
+        // function (callback) {
+        //     // do some stuff ...
+        //     connection.query('SELECT * from users WHERE `email` = ?', [email], function (err, rows, fields) {
+        //         if (err) {
+        //             console.log("error in query", err);
+        //             callback(err);
+        //         }
+        //         else {
+        //             userId = rows[0].userId;
+        //             console.log("rows = ", userId);
+        //             callback(null);
+
+        //         }
+        //     });
+        // },
+    ],
+        // optional callback
+        function (err, results) {
+            // results is now equal to ['one', 'two']
+            if (err) {
+                res.sendStatus(404);
+            }
+            else
+                res.redirect('/countries?' + "userId=" + userId + "country=" + country);
+        });
 })
 
 var server = app.listen(3000, function () {
