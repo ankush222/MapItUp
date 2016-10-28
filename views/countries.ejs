@@ -66,11 +66,8 @@
 				</form>
 				<hr style="width:1100px;">
 				<% for(var i=0; i < reviews.length; i++) { %>
-					<div id = "reviewUser">Review by <%= reviews[i].user %></div>
-					<div id = "reviewText"><%= reviews[i].text %></div>
-					<% for(var j=0; j < reviews[i].pics.length; j++) { %>
-						<div id = "reviewPic"><%= reviews[i].pics[j] %></div>
-					<% } %>
+					<div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %></div>
+					<div id = "reviewText"><%= JSON.stringify(reviews[i].text) %></div>
 				<% } %>
 				<a class="fancybox" rel="group" href="http://fancyapps.com/fancybox/demo/4_b.jpg"><img src="http://fancyapps.com/fancybox/demo/4_s.jpg" alt="" width="50" height = "50"/></a>
 				<a class="fancybox" rel="group" href="http://whc.unesco.org/uploads/thumbs/site_0252_0008-750-0-20151104113424.jpg"><img src="http://whc.unesco.org/uploads/thumbs/site_0252_0008-750-0-20151104113424.jpg" alt="" width="50" height = "50"/></a>
