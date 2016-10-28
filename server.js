@@ -495,7 +495,10 @@ app.get('/countries', function (req, res) {
             res.status(404).send('error in getting reviews');
         }
         else
+        {
+            console.log("results = ", results);
              res.render('countries.ejs', { userId: userId, country: country, reviews: results });
+        }
 
     });
 
@@ -517,7 +520,7 @@ app.post('/addReview', function (req, res) {
     async.series([
         function (callback) {
             // do some stuff ...
-            connection.query('INSERT into reviews (country, userId, text, rating) values (?, ?, ?, ?)', [country, userId, text, rating], function (err, rows, fields) {
+            connection.query('INSERT into reviews (country, userId, review, rating) values (?, ?, ?, ?)', [country, userId, text, rating], function (err, rows, fields) {
                 if (err) {
                     console.log("error in inserting", err);
                     callback(err);
