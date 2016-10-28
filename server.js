@@ -483,16 +483,13 @@ app.get('/countries', function (req, res) {
     console.log("country = ", country);
     var reviews = new Array();
 
-    connection.query('SELECT * FROM reviews where `country` = ?', [country], function(error, results, fields) {
+    connection.query('SELECT * FROM reviews where `country` = ?', [country], function (error, results, fields) {
 
-        if(error)
-        {
+        if (error) {
             res.status(404).send('error in getting reviews');
         }
-        else
-        {
-            for(var i = 0;i < results.length;i++)
-            {
+        else {
+            for (var i = 0; i < results.length; i++) {
                 obj = new Object();
                 obj.text = results[i].review;
                 obj.user = results[i].userId;
@@ -503,7 +500,7 @@ app.get('/countries', function (req, res) {
             console.log(results[0]);
             res.render('countries.ejs', { userId: userId, country: country, reviews: reviews });
         }
-    });  
+    });
 })
 
 app.post('/addReview', function (req, res) {
@@ -511,6 +508,7 @@ app.post('/addReview', function (req, res) {
     var userId = req.body.userId;
     var country = req.body.country;
     var rating = req.body.rating;
+    var reviewId;
 
     var files = req.files;
     console.log("text = ", text);
@@ -527,23 +525,28 @@ app.post('/addReview', function (req, res) {
                     callback(err);
                 }
                 else
+                {
+                    console.log("rows = ", rows);
+                    console.log("fields = ", fields);
                     callback(null);
+                }
             });
-        }
-        // function (callback) {
-        //     // do some more stuff ...
-        //     connection.query('INSERT INTO reviewPics (firstName, lastName, email, password) VALUES (?, ?, ?, ?)', [firstName, lastName, email, hash], function (err, rows, fields) {
-        //         if (err) {
-        //             console.log("error in inserting!", err);
-        //             callback(true);
-        //         }
-        //         else {
-        //             //console.log("res = ", fields);
-        //             callback(null);
-        //         }
+        },
+        function (callback) {
+            // do some more stuff ...
+            connection.query('SELECT reviewId FROM reviews ORDER BY reviewId DESC LIMIT 1', function (err, rows, fields) {
+                if (err) {
+                    console.log("error in getting reviewId!", err);
+                    callback(true);
+                }
+                else {
+                    //console.log("res = ", fields);
+                    reviewId = rows[0].reviewId;
+                    callback(null);
+                }
 
-        //     });
-        // },
+            });
+        },
         // function (callback) {
         //     // do some stuff ...
         //     connection.query('SELECT * from users WHERE `email` = ?', [email], function (err, rows, fields) {
@@ -559,6 +562,27 @@ app.post('/addReview', function (req, res) {
         //         }
         //     });
         // },
+        function (callback) {
+            var inserted = 0;
+
+            if (files.length <= 0)
+                callback(null);
+            else {
+                for (var i = 0; i < files.length; i++) {
+                    var params = { Bucket: 'mapitup', Body: fs.createReadStream(files[i].path), Key: files[i].filename.toString(), ACL: 'public-read', ContentType: 'application/octet-stream' };
+                    s3.upload(params, function (err, data) {
+                        if (err) {
+                            console.log("Error uploading data: ", err);
+                            callback(err);
+                        } else {
+                            if (++inserted == files.length) {
+                                callback(null);
+                            }
+                        }
+                    });
+                }
+            }
+        }
     ],
         // optional callback
         function (err, results) {
@@ -566,8 +590,7 @@ app.post('/addReview', function (req, res) {
             if (err) {
                 res.sendStatus(404);
             }
-            else
-            {
+            else {
                 res.redirect('/countries?' + "userId=" + userId + "&country=" + country);
             }
         });
