@@ -17,19 +17,19 @@
 			    //Check File API support
 			    if(window.File && window.FileList && window.FileReader)
 			    {
-			        var filesInput = document.getElementById("pic");
+			        var filesInput = document.getElementById("files");
 			        
 			        filesInput.addEventListener("change", function(event){
 			            
-			            var pic = event.target.pic; //FileList object
+			            var files = event.target.files; //FileList object
 			            var output = document.getElementById("result");
 			            
-			            for(var i = 0; i< pic.length; i++)
+			            for(var i = 0; i< files.length; i++)
 			            {
-			                var p = pic[i];
+			                var file = files[i];
 			                
 			                //Only pics
-			                if(!p.type.match('image'))
+			                if(!file.type.match('image'))
 			                  continue;
 			                
 			                var picReader = new FileReader();
@@ -48,7 +48,7 @@
 			                });
 			                
 			                 //Read the image
-			                picReader.readAsDataURL(p);
+			                picReader.readAsDataURL(file);
 			            }                               
 			           
 			        });
@@ -112,8 +112,8 @@
 					    <span><input type="radio" name="rating" id="str1" value="1"><label for="str1"></label></span>
 					</div>
 					<article>
-				        <label for="pic">Select files: </label>
-				        <input id="pic" type="file" accept="image/*" multiple/>
+				        <label for="files">Select files: </label>
+				        <input id="files" type="file" name="pic" accept="image/*" multiple>
 				        <output id="result" />
 				    </article>
 					<input type="submit" value="Submit">
