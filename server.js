@@ -480,14 +480,8 @@ app.get('/countries', function (req, res) {
     var userId = req.query.userId;
     var country = req.query.country;
 
-    
-    var reviews = [];
-
-    // reviews = [
-    //     { "text": "hello wow man this is such a nice review", "user": "Doe", "pics": ["link1", "link2"] },
-    //     { "text": "another one", "user": "Smith", "pics": [] },
-    //     { "text": "wooo", "user": "Jones", "pics": [] }
-    // ]
+    console.log("country = ", country);
+    var reviews = new Array();
 
     connection.query('SELECT * FROM reviews where `country` = ?', [country], function(error, results, fields) {
 
@@ -497,7 +491,14 @@ app.get('/countries', function (req, res) {
         }
         else
         {
-            console.log("results = ", results);
+            for(var i = 0;i < results.length;i++)
+            {
+                obj = new Object();
+                obj.text = results[i].review;
+                obj.user = results[i].userId;
+                obj.pics = ["link1", "link2"];
+                reviews.push(obj);
+            }
              res.render('countries.ejs', { userId: userId, country: country, reviews: results });
         }
 
@@ -567,7 +568,9 @@ app.post('/addReview', function (req, res) {
                 res.sendStatus(404);
             }
             else
-                res.redirect('/countries?' + "userId=" + userId + "country=" + country);
+            {
+                res.redirect('/countries?' + "userId=" + userId + "&country=" + country);
+            }
         });
 })
 
