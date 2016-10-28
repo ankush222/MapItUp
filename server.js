@@ -509,7 +509,7 @@ app.post('/addReview', function (req, res) {
     var country = req.body.country;
     var rating = req.body.rating;
     var reviewId;
-
+    var s3 = new AWS.S3();
     var files = req.files;
     console.log("text = ", text);
     console.log("id = ", userId);
@@ -566,15 +566,20 @@ app.post('/addReview', function (req, res) {
             var inserted = 0;
 
             if (files.length <= 0)
+            {
+                console.log("files is empty");
                 callback(null);
+            }
             else {
                 for (var i = 0; i < files.length; i++) {
+                    console.log("Here");
                     var params = { Bucket: 'mapitup', Body: fs.createReadStream(files[i].path), Key: files[i].filename.toString(), ACL: 'public-read', ContentType: 'application/octet-stream' };
                     s3.upload(params, function (err, data) {
                         if (err) {
                             console.log("Error uploading data: ", err);
                             callback(err);
                         } else {
+                            console.log("pidId = ", files[i].filename.toString());
                             if (++inserted == files.length) {
                                 callback(null);
                             }
