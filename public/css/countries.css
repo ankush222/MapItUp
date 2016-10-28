@@ -34,7 +34,7 @@ body {
 #reviewUser {
     font-size: 16px;
     color: white;
-    margin-top: 40px;
+    margin-top: 25px;
     width: 80%;
 }
 
@@ -144,4 +144,19 @@ input[type=submit]:hover {
 .rating span.checked ~ span label {
     background:#F90;
     color:#FFF;
+}
+
+article
+{
+    width: 80%;
+    margin:auto;
+    margin-top:10px;
+}
+
+
+.thumbnail{
+
+    height: 50px;
+    width: 50px;
+    margin: 10px;    
 }

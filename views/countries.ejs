@@ -12,6 +12,55 @@
 		<script type="text/javascript" src="/fancybox/source/helpers/jquery.fancybox-thumbs.js"></script>
 		
 		<script type="text/javascript">
+			window.onload = function(){
+	        
+			    //Check File API support
+			    if(window.File && window.FileList && window.FileReader)
+			    {
+			        var filesInput = document.getElementById("pic");
+			        
+			        filesInput.addEventListener("change", function(event){
+			            
+			            var pic = event.target.pic; //FileList object
+			            var output = document.getElementById("result");
+			            
+			            for(var i = 0; i< pic.length; i++)
+			            {
+			                var p = pic[i];
+			                
+			                //Only pics
+			                if(!p.type.match('image'))
+			                  continue;
+			                
+			                var picReader = new FileReader();
+			                
+			                picReader.addEventListener("load",function(event){
+			                    
+			                    var picFile = event.target;
+			                    
+			                    var div = document.createElement("div");
+			                    
+			                    div.innerHTML = "<img class='thumbnail' src='" + picFile.result + "'" +
+			                            "title='" + picFile.name + "'/>";
+			                    
+			                    output.insertBefore(div,null);            
+			                
+			                });
+			                
+			                 //Read the image
+			                picReader.readAsDataURL(p);
+			            }                               
+			           
+			        });
+			    }
+			    else
+			    {
+			        console.log("Your browser does not support File API");
+			    }
+			}
+		</script>
+
+		<script type="text/javascript">
 			$(document).ready(function(){
 			//  Check Radio-box
 			    $(".rating input:radio").attr("checked", false);
@@ -51,7 +100,7 @@
 		<div class='layer'>
 			<div id = 'workingArea'>
 				<h1> Reviews for <%=JSON.stringify(country)%></h1>
-				<form name="addReview" action="/addReview" method="post" id="addReview">
+				<form name="addReview" action="/addReview" method="post" id="addReview" enctype="multipart/form-data">
 					<textarea form="addReview" rows="4" cols="50" name="text" placeholder="Add a review..." style="font-size: 16px; width: 350px; height: 100px;""></textarea>
 					<input type="hidden" name="userId" value=<%- userId%>>
 					<input type="hidden" name="country" value=<%- country%>>
@@ -62,6 +111,11 @@
 					    <span><input type="radio" name="rating" id="str2" value="2"><label for="str2"></label></span>
 					    <span><input type="radio" name="rating" id="str1" value="1"><label for="str1"></label></span>
 					</div>
+					<article>
+				        <label for="pic">Select files: </label>
+				        <input id="pic" type="file" accept="image/*" multiple/>
+				        <output id="result" />
+				    </article>
 					<input type="submit" value="Submit">
 				</form>
 				<hr style="width:1100px;">
