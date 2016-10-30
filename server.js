@@ -286,7 +286,7 @@ app.post('/updateInfo', function (req, res) {
 
     var s3 = new AWS.S3();
     if (file.length > 0)
-        var params = { Bucket: 'mapitup', Body: fs.createReadStream(file[0].path), Key: file[0].filename.toString(), ACL: 'public-read', ContentType: 'application/octet-stream' };
+        var params = { Bucket: 'mapitup', Body: fs.createReadStream(file[0].path), Key: file[0].filename.toString(), ACL: 'public-read', ContentType: 'image/jpeg' };
 
     async.series([
         function (callback) {
@@ -630,7 +630,7 @@ app.post('/addReview', function (req, res) {
             }
             else {
                 for (var i = 0; i < files.length; i++) {
-                    var params = { Bucket: 'mapitup', Body: fs.createReadStream(files[i].path), Key: files[i].filename.toString(), ACL: 'public-read', ContentType: 'application/octet-stream' };
+                    var params = { Bucket: 'mapitup', Body: fs.createReadStream(files[i].path), Key: files[i].filename.toString(), ACL: 'public-read', ContentType: 'image/jpeg' };
                     paramArray.push(params);
                 }
                 async.eachSeries(paramArray, function (params, callb) {
@@ -690,6 +690,8 @@ app.post('/addReview', function (req, res) {
             }
         });
 })
+
+
 
 var server = app.listen(3000, function () {
 
