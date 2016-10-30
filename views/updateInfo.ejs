@@ -1,0 +1,65 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/update.css">
+		<link rel="stylesheet" type="text/css" href="css/navbar.css">
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id = 'navbar'>
+			<img src="http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg" id="logo" />
+			<div id = "name">MapItUp</div>
+			<ul>
+			  <li><a href="/home?userId=<%- userId%>"><b>Home</b></a></li>
+			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
+			  <li><a href="#contact"><b>Followers</b></a></li>
+			  <!-- <li><a href="/search"><b>Search</b></a></li> -->
+			  <li><a href="/signOut"><b>Sign Out</b></a></li>
+			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
+			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
+			</ul>
+		</div>
+		<!-- 
+		<div class='layer'>
+			<div id='workingArea'>
+				<h1> Welcome</h1>
+				<div class='profilepic'>
+		      		<label><img src=<%-JSON.stringify(profilePic)%> width="100" height="100"></label>
+		      	</div>
+		      	<div class = 'info'>
+					<h3>
+						<br>Name : <%= name%>
+						<br>Location : <%= location%>
+					</h3>
+				</div>
+			</div>
+			<form action="/updateInfo" method="post">
+		  			<button class="button" name="userId" value=<%- userId%>>Update</button>
+		  	</form>
+		</div> -->
+		<!-- <label>First Name : </label><input type="text" name="firstName"> -->
+
+		<div class='layer'>
+			<div id = 'workingArea'>
+				<h1> Welcome, <%= name%></h1>
+				<div id = "info">
+					<form action="/updateInfo" method="post" enctype="multipart/form-data">
+				      	<div id='update'>
+				      		<label>Location : </label><input type="text" name="location" placeholder=<%- location%>><input type="hidden" name="userId" value=<%- userId%>>
+			      			<label>Name    : </label><input type="text" name="name" placeholder=<%- name%>><input type="hidden" name="userId" value=<%- userId%>>
+			      			<label>Email    : </label><input type="text" name="email" placeholder=<%- email%>><input type="hidden" name="userId" value=<%- userId%>>
+			      			<label>Password    : </label><input type="password" name="password" placeholder="******"<input type="hidden" name="userId">
+			      		</div>
+				      	<div class='profilepic'>
+			      			<label><img src=<%-JSON.stringify(profilePic)%> width="200" height="250"></label>
+			      		</div>
+				      	<label><input type="file" name="pic" accept="image/*" style="margin-top: 10px;"></label>
+				      	
+						  <label><input type="submit" value="Update"></label>
+			  		</form>
+			  		<form action="/deactivate" method="post">
+			  			<button class="button" name="userId" value=<%- userId%>>Deactivate Account</button>
+			  		</form>
+			</div>
+		</div>
+	</body>
+</html>

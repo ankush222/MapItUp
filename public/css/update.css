@@ -15,14 +15,6 @@ body {
     margin-top: 30px;
 }
 
-#info {
-    position: absolute;
-}
-
-.profilepic {
-    float:left;
-}
-
 .layer {
     background-color: rgba(100, 100, 100, 0.3);
     position: absolute;
@@ -34,11 +26,6 @@ body {
 
 h1 {
     color: white; font-family: arial; text-shadow: 2px 2px black;
-}
-
-h3 {
-    color: black; font-family: times;
-    float: left;
 }
 
 a {
@@ -56,6 +43,21 @@ label {
 }
 
 input[type=text] {
+    /*margin-top: 50px;*/
+    /*width: 20%;*/
+    margin-left: 10px;
+    /*padding: 10px 10px;*/
+    /*margin: 8px 0;*/
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 18px;
+    text-align: left;
+    float: left;
+}
+
+input[type=password] {
     /*margin-top: 50px;*/
     /*width: 20%;*/
     margin-left: 10px;
@@ -95,8 +97,8 @@ input[type=submit]:hover {
     padding: 7px 15px;
     /*margin: 10px 230px;*/
     position: absolute;
-    top: 335px;
-    left: 50px;
+    top: 478px;
+    left: 77px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
