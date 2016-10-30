@@ -73,7 +73,6 @@ app.get('/profile', function (req, res) {
                         callback(err);
                     }
                     else {
-                        console.log('The URL is', url);
                         signedUrl = url;
                         callback(null);
                     }
@@ -479,28 +478,91 @@ app.post('/signIn', function (req, res) {
 app.get('/countries', function (req, res) {
     var userId = req.query.userId;
     var country = req.query.country;
-
-    console.log("country = ", country);
     var reviews = new Array();
+    var reviewsWithPics = new Array();
+    var reviewId;
 
-    connection.query('SELECT * FROM reviews where `country` = ?', [country], function (error, results, fields) {
+    async.series([
+        function (callback) {
+            connection.query('SELECT * FROM reviews where `country` = ?', [country], function (error, results, fields) {
+                if (error) {
+                    callback(error);
+                }
+                else {
+                    for (var i = 0; i < results.length; i++) {
+                        obj = new Object();
+                        obj.text = results[i].review;
+                        obj.user = results[i].userId;
+                        obj.rating = results[i].rating;
+                        obj.reviewId = results[i].reviewId;
+                        reviews.push(obj);
+                    }
+                    callback(null);
+                }
+            });
+        },
 
-        if (error) {
-            res.status(404).send('error in getting reviews');
+        function (callback) {
+            async.eachSeries(reviews, function (review, callb) {
+                connection.query('SELECT picId from reviewPics WHERE `reviewId` = ?', review.reviewId, function (err, rows, fields) {
+                    if (err) {
+                        console.log("error in inserting", err);
+                        callb(err);
+                    }
+                    else {
+                        if (rows.length <= 0) {
+                            callb(null);
+                        }
+                        else {
+                            var obj = new Object();
+                            obj.text = review.text;
+                            obj.user = review.user;
+                            obj.rating = review.rating;
+                            obj.pics = [];
+                            var s3 = new AWS.S3();
+                            var paramArray = new Array();
+                            for (var i = 0; i < rows.length; i++) {
+                                var params = { Bucket: 'mapitup', Key: rows[i].picId };
+                                paramArray.push(params);
+                            }
+                            var pos = 0;
+                            async.eachSeries(paramArray, function (params, callbak) {
+                                s3.getSignedUrl('getObject', params, function (err, url) {
+                                    if (err) {
+                                        callbak(err);
+                                    }
+                                    else {
+                                        obj.pics[pos++] = url;
+                                        callbak(null);
+                                    }
+                                });
+                            });
+                            reviewsWithPics.push(obj);
+                            callb(null);
+                        }
+                    }
+                })
+            },
+                function (err, data) {
+                    if (err)
+                        callback(err);
+                    else
+                        callback(null);
+                }
+            );
         }
-        else {
-            for (var i = 0; i < results.length; i++) {
-                obj = new Object();
-                obj.text = results[i].review;
-                obj.user = results[i].userId;
-                obj.rating = results[i].rating;
-                obj.pics = ["link1", "link2"];
-                reviews.push(obj);
+    ],
+        // optional callback
+        function (err, results) {
+            // results is now equal to ['one', 'two']
+            if (err) {
+                res.sendStatus(404);
             }
-            console.log(results[0]);
-            res.render('countries.ejs', { userId: userId, country: country, reviews: reviews });
-        }
-    });
+            else {
+                console.log("reviewsWithPics = ", reviewsWithPics);
+                res.render('countries.ejs', { userId: userId, country: country, reviews: reviewsWithPics });
+            }
+        });
 })
 
 app.post('/addReview', function (req, res) {
@@ -524,10 +586,7 @@ app.post('/addReview', function (req, res) {
                     console.log("error in inserting", err);
                     callback(err);
                 }
-                else
-                {
-                    console.log("rows = ", rows);
-                    console.log("fields = ", fields);
+                else {
                     callback(null);
                 }
             });
@@ -564,35 +623,66 @@ app.post('/addReview', function (req, res) {
         // },
         function (callback) {
             var inserted = 0;
-
-            if (files.length <= 0)
-            {
+            var paramArray = new Array();
+            if (files.length <= 0) {
                 console.log("files is empty");
                 callback(null);
             }
             else {
                 for (var i = 0; i < files.length; i++) {
-                    console.log("Here");
                     var params = { Bucket: 'mapitup', Body: fs.createReadStream(files[i].path), Key: files[i].filename.toString(), ACL: 'public-read', ContentType: 'application/octet-stream' };
+                    paramArray.push(params);
+                }
+                async.eachSeries(paramArray, function (params, callb) {
                     s3.upload(params, function (err, data) {
                         if (err) {
                             console.log("Error uploading data: ", err);
-                            callback(err);
+                            callb(err);
                         } else {
-                            console.log("pidId = ", files[i].filename.toString());
-                            if (++inserted == files.length) {
-                                callback(null);
-                            }
+                            callb(null);
                         }
-                    });
-                }
+                    })
+                },
+                    function (err, data) {
+                        if (err)
+                            callback(err);
+                        else
+                            callback(null);
+                    }
+                );
             }
+        },
+        function (callback) {
+            // do some stuff ...
+            var picIds = new Array();
+            for (var i = 0; i < files.length; i++) {
+                picIds.push(files[i].filename.toString());
+            }
+            async.eachSeries(picIds, function (picId, callb) {
+                connection.query('INSERT into reviewPics (reviewId, picId, country) values (?, ?, ?)', [reviewId, picId, country], function (err, rows, fields) {
+                    if (err) {
+                        console.log("error in inserting", err);
+                        callb(err);
+                    }
+                    else {
+                        callb(null);
+                    }
+                })
+            },
+                function (err, data) {
+                    if (err)
+                        callback(err);
+                    else
+                        callback(null);
+                }
+            );
         }
     ],
         // optional callback
         function (err, results) {
             // results is now equal to ['one', 'two']
             if (err) {
+                console.log("error = ", err);
                 res.sendStatus(404);
             }
             else {
