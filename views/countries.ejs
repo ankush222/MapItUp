@@ -106,13 +106,16 @@
 				document.getElementById("addReview").style.display="none";
 				document.getElementById("addPics").style.display="block";
 			}
-
+		</script>
+		<script>
 			function checkPic()
 			{
 				if(document.getElementById("privatePic").checked == true)
 					addPics.private.value = true;
 				else
 					addPics.private.value = false;
+				// alert("HEY");
+				alert(addPics.private.value);
 			}
 
 			function checkReview()
@@ -121,7 +124,15 @@
 					addReview.private.value = true;
 				else
 					addReview.private.value = false;
+				alert(addReview.private.value);
 			}
+
+			$('#addPics').submit(function(ev) {
+			    ev.preventDefault(); // to stop the form from submitting
+			    addPics.private.value = true;
+			    /* Validations go here */
+			    this.submit(); // If all the validations succeeded
+			});
 		</script>
 	</head>
 	<body>
@@ -160,7 +171,7 @@
 					</div>
 				    <input id="files" type="file" name="pic" accept="image/*" multiple>
 				    <button class="add_more">Add More Photos</button>
-				    <input type="checkbox" id="private">Private
+				    <input type="checkbox" id="privateReview">Private
 					<input type="submit" value="Submit">
 				</form>
 				<form name="addPics" onsubmit="checkPic()" action="/addPics" method="post" id="addPics" enctype="multipart/form-data" style="display: none;">
@@ -168,7 +179,8 @@
 					<input type="hidden" name="country" value=<%- country%>>
 				    <input id="files" type="file" name="pic" accept="image/*" multiple>
 				    <button class="add_more">Add More Photos</button>
-				    <input type="checkbox" id="private">Private
+				    <input type="checkbox" id="privatePic">Private
+				    <input type="hidden" id="private" name="private" value=false>
 					<input type="submit" value="Submit">
 				</form>
 				<hr style="width:1100px;">

@@ -724,6 +724,7 @@ app.post('/addPics', function (req, res) {
     var files = req.files;
     var country = req.body.country;
     var private = req.body.private;
+    console.log("private ? = ", private);
     var userId = req.body.userId;
 
     async.series([
