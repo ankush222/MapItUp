@@ -26,14 +26,22 @@
 		      	</div>
 		      	<div class = 'info'>
 					<h3>
-						<br>Name : <%= name%>
+						<br>First Name : <%= name%>
 						<br>Location : <%= location%>
 					</h3>
 				</div>
 			</div>
-			<form action="/updateInfo" method="post">
-		  			<button class="button"><input type="hidden" name="location"><input type="hidden" name=""><input type="hidden" name="userId" value=<%- userId%>>Update</button>
-		  	</form>
+
+			<a href="/updateInfo?userId=<%- userId%>" class="button">Update</a>
+
+			<!-- <form action="/updateInfo%- userId%" method="get">
+		  		<button class="button" type="submit"><input type="hidden" name="userId" value=<%- userId%>>Update</button>
+			</form> -->
+			<!-- <form action="/updateInfo" method="post"> -->
+				<!-- <label><input type="submit" value="Update"></label> -->
+				<!-- <button class="button"><input type="hidden" name="location" value=<%- location%>><input type="hidden" name=""><input type="hidden" name="userId" value=<%- userId%>>Update</button> -->
+
+		  	<!-- </form> -->
 		</div>
 
 		<!-- <form method="post" action="/addFavorite" name="favForm"><i onclick="sendFav()" id="fav" class="fa fa-star" style="font-size:60px;color:red;left:950px;top:150px; position:absolute; float:left; "></i><input type="hidden" name="country"><input type="hidden" name="userId" value=<%- userId%>></form> -->
