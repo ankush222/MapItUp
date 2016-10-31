@@ -514,6 +514,7 @@ app.get('/countries', function (req, res) {
                             var s3 = new AWS.S3();
                             var paramArray = new Array();
                             for (var i = 0; i < rows.length; i++) {
+                                userId = Number(userId);
                                 if (!rows[i].private || (rows[i].private && rows[i].userId === userId)) {
                                     var params = { Bucket: 'mapitup', Key: rows[i].picId };
                                     paramArray.push(params);
@@ -571,6 +572,7 @@ app.get('/countries', function (req, res) {
                         var s3 = new AWS.S3();
                         var paramArray = new Array();
                         for (var i = 0; i < rows.length; i++) {
+                            userId = Number(userId);
                             if (!rows[i].private || (rows[i].private && rows[i].userId === userId)) {
                                 var params = { Bucket: 'mapitup', Key: rows[i].picId };
                                 paramArray.push(params);
