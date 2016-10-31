@@ -782,7 +782,71 @@ app.post('/addPics', function (req, res) {
         });
 })
 
+app.get('/updateInfo', function (req, res) {
+    var id = req.query.userId;
 
+    var picId;
+    var s3 = new AWS.S3();
+    var signedUrl;
+    var name;
+    var location;
+    var email;
+
+    async.series([
+
+        function (callback) {
+            connection.query('SELECT profilePic from users where `userId` = ?', [id], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    picId = rows[0].profilePic;
+                    callback(null);
+                }
+            })
+        },
+        function (callback) {
+            if (picId === null)
+                callback(null);
+            else {
+                var params = { Bucket: 'mapitup', Key: picId };
+                s3.getSignedUrl('getObject', params, function (err, url) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        signedUrl = url;
+                        callback(null);
+                    }
+                });
+            }
+        },
+        function (callback) {
+            connection.query('SELECT * from users WHERE `userId` = ?', [id], function (err, rows, fields) {
+                if (err) {
+                    console.log("error in query", err);
+                    callback(err);
+                }
+                else {
+                    name = rows[0].firstName;
+                    location = rows[0].location;
+                    email = rows[0].email;
+                    callback(null);
+                }
+            });
+        }
+    ],
+
+        function (err, results) {
+            if (err) {
+                res.status(404).send("Error in adding visited country");
+            }
+            else
+                res.render('updateInfo.ejs', { name: name, userId: id, location: location, profilePic: signedUrl, email: email });
+        }
+
+    );
+})
 
 var server = app.listen(3000, function () {
 
