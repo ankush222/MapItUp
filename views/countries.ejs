@@ -122,6 +122,25 @@
 			</ul>
 		</div>
 		<div class='layer'>
+			<div id="container">
+			    
+			    <!-- Each image is 350px by 233px -->
+			    <div class="photobanner">
+			    	<img class="first" src=<%-countryPics[0]%> alt="" />
+			    	<% for(var k=0; k < countryPics.length; k++) { %>
+			    		<img src=<%-countryPics[k]%> alt="" />
+			    	<% } %>
+			    	<!-- <img src="image-2.jpg" alt="" />
+			    	<img src="image-3.jpg" alt="" />
+			    	<img src="image-4.jpg" alt="" />
+			    	<img src="image-5.jpg" alt="" />
+			    	<img src="image-6.jpg" alt="" />
+			    	<img src="image-1.jpg" alt="" />
+			    	<img src="image-2.jpg" alt="" />
+			    	<img src="image-3.jpg" alt="" />
+			    	<img src="image-4.jpg" alt="" /> -->
+			    </div>
+			</div>
 			<div id = 'workingArea'>
 				<h1><%=JSON.stringify(country)%></h1>
 				<button class="add" onClick="showAddPics()">Add photos</button>
