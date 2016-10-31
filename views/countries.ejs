@@ -107,6 +107,33 @@
 				document.getElementById("addPics").style.display="block";
 			}
 		</script>
+		<script>
+			function checkPic()
+			{
+				if(document.getElementById("privatePic").checked == true)
+					addPics.private.value = true;
+				else
+					addPics.private.value = false;
+				// alert("HEY");
+				alert(addPics.private.value);
+			}
+
+			function checkReview()
+			{
+				if(document.getElementById("privateReview").checked == true)
+					addReview.private.value = true;
+				else
+					addReview.private.value = false;
+				alert(addReview.private.value);
+			}
+
+			$('#addPics').submit(function(ev) {
+			    ev.preventDefault(); // to stop the form from submitting
+			    addPics.private.value = true;
+			    /* Validations go here */
+			    this.submit(); // If all the validations succeeded
+			});
+		</script>
 	</head>
 	<body>
 		<div id = 'navbar'>
@@ -121,31 +148,17 @@
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
 		</div>
+		<marquee width="1400" height="150">
+			<% for(var k=0; k < countryPics.length; k++) { %>
+		    		<img src=<%-countryPics[k]%> alt="" width="250" height="150"/>
+		    <% } %>
+		</marquee> 
 		<div class='layer'>
-			<div id="container">
-			    
-			    <!-- Each image is 350px by 233px -->
-			    <div class="photobanner">
-			    	<img class="first" src=<%-countryPics[0]%> alt="" />
-			    	<% for(var k=0; k < countryPics.length; k++) { %>
-			    		<img src=<%-countryPics[k]%> alt="" />
-			    	<% } %>
-			    	<!-- <img src="image-2.jpg" alt="" />
-			    	<img src="image-3.jpg" alt="" />
-			    	<img src="image-4.jpg" alt="" />
-			    	<img src="image-5.jpg" alt="" />
-			    	<img src="image-6.jpg" alt="" />
-			    	<img src="image-1.jpg" alt="" />
-			    	<img src="image-2.jpg" alt="" />
-			    	<img src="image-3.jpg" alt="" />
-			    	<img src="image-4.jpg" alt="" /> -->
-			    </div>
-			</div>
 			<div id = 'workingArea'>
 				<h1><%=JSON.stringify(country)%></h1>
 				<button class="add" onClick="showAddPics()">Add photos</button>
 				<button class="add" onClick="showAddReview()" style="left: 100px;">Add a review</button>
-				<form name="addReview" action="/addReview" method="post" id="addReview" enctype="multipart/form-data" style="display: none;">
+				<form name="addReview" onsubmit="checkReview()" action="/addReview" method="post" id="addReview" enctype="multipart/form-data" style="display: none;">
 					<textarea form="addReview" rows="4" cols="50" name="text" placeholder="Add a review..." style="font-size: 16px; width: 350px; height: 100px;""></textarea>
 					<input type="hidden" name="userId" value=<%- userId%>>
 					<input type="hidden" name="country" value=<%- country%>>
@@ -158,15 +171,16 @@
 					</div>
 				    <input id="files" type="file" name="pic" accept="image/*" multiple>
 				    <button class="add_more">Add More Photos</button>
-
+				    <input type="checkbox" id="privateReview">Private
 					<input type="submit" value="Submit">
 				</form>
-				<form name="addPics" action="/addPics" method="post" id="addPics" enctype="multipart/form-data" style="display: none;">
+				<form name="addPics" onsubmit="checkPic()" action="/addPics" method="post" id="addPics" enctype="multipart/form-data" style="display: none;">
 					<input type="hidden" name="userId" value=<%- userId%>>
 					<input type="hidden" name="country" value=<%- country%>>
 				    <input id="files" type="file" name="pic" accept="image/*" multiple>
 				    <button class="add_more">Add More Photos</button>
-
+				    <input type="checkbox" id="privatePic">Private
+				    <input type="hidden" id="private" name="private" value=false>
 					<input type="submit" value="Submit">
 				</form>
 				<hr style="width:1100px;">
@@ -181,9 +195,6 @@
 						<% } %>
 					</div>
 				<% } %>
-				<a class="fancybox" rel="group" href="http://fancyapps.com/fancybox/demo/4_b.jpg"><img src="http://fancyapps.com/fancybox/demo/4_s.jpg" alt="" width="50" height = "50"/></a>
-				<a class="fancybox" rel="group" href="http://whc.unesco.org/uploads/thumbs/site_0252_0008-750-0-20151104113424.jpg"><img src="http://whc.unesco.org/uploads/thumbs/site_0252_0008-750-0-20151104113424.jpg" alt="" width="50" height = "50"/></a>
-
 			</div>
 		</div>
 	</body>

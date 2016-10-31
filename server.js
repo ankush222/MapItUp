@@ -498,7 +498,7 @@ app.get('/countries', function (req, res) {
 
         function (callback) {
             async.eachSeries(reviews, function (review, callb) {
-                connection.query('SELECT picId from reviewPics WHERE `reviewId` = ?', review.reviewId, function (err, rows, fields) {
+                connection.query('SELECT * from reviewPics WHERE `reviewId` = ?', review.reviewId, function (err, rows, fields) {
                     if (err) {
                         console.log("error in inserting", err);
                         callb(err);
@@ -516,23 +516,30 @@ app.get('/countries', function (req, res) {
                             var s3 = new AWS.S3();
                             var paramArray = new Array();
                             for (var i = 0; i < rows.length; i++) {
-                                var params = { Bucket: 'mapitup', Key: rows[i].picId };
-                                paramArray.push(params);
+                                if (!rows[i].private || rows[i].private && rows[i].userId === userId) {
+                                    var params = { Bucket: 'mapitup', Key: rows[i].picId };
+                                    paramArray.push(params);
+                                }
                             }
-                            var pos = 0;
-                            async.eachSeries(paramArray, function (params, callbak) {
-                                s3.getSignedUrl('getObject', params, function (err, url) {
-                                    if (err) {
-                                        callbak(err);
-                                    }
-                                    else {
-                                        obj.pics[pos++] = url;
-                                        callbak(null);
-                                    }
+                            if (paramArray.length <= 0) {
+                                callb(null);
+                            }
+                            else {
+                                var pos = 0;
+                                async.eachSeries(paramArray, function (params, callbak) {
+                                    s3.getSignedUrl('getObject', params, function (err, url) {
+                                        if (err) {
+                                            callbak(err);
+                                        }
+                                        else {
+                                            obj.pics[pos++] = url;
+                                            callbak(null);
+                                        }
+                                    });
                                 });
-                            });
-                            reviewsWithPics.push(obj);
-                            callb(null);
+                                reviewsWithPics.push(obj);
+                                callb(null);
+                            }
                         }
                     }
                 })
@@ -546,7 +553,7 @@ app.get('/countries', function (req, res) {
             );
         },
         function (callback) {
-            connection.query('SELECT picId from countryPics WHERE `country` = ?', country, function (err, rows, fields) {
+            connection.query('SELECT * from countryPics WHERE `country` = ?', country, function (err, rows, fields) {
                 if (err) {
                     console.log("error in inserting", err);
                     callback(err);
@@ -559,21 +566,27 @@ app.get('/countries', function (req, res) {
                         var s3 = new AWS.S3();
                         var paramArray = new Array();
                         for (var i = 0; i < rows.length; i++) {
-                            var params = { Bucket: 'mapitup', Key: rows[i].picId };
-                            paramArray.push(params);
+                            if (!rows[i].private || (rows[i].private && rows[i].userId === userId)) {
+                                var params = { Bucket: 'mapitup', Key: rows[i].picId };
+                                paramArray.push(params);
+                            }
                         }
-                        async.eachSeries(paramArray, function (params, callbak) {
-                            s3.getSignedUrl('getObject', params, function (err, url) {
-                                if (err) {
-                                    callbak(err);
-                                }
-                                else {
-                                    countryPics.push(url);
-                                    callbak(null);
-                                }
+                        if (paramArray.length <= 0)
+                            callback(null);
+                        else {
+                            async.eachSeries(paramArray, function (params, callbak) {
+                                s3.getSignedUrl('getObject', params, function (err, url) {
+                                    if (err) {
+                                        callbak(err);
+                                    }
+                                    else {
+                                        countryPics.push(url);
+                                        callbak(null);
+                                    }
+                                });
                             });
-                        });
-                        callback(null);
+                            callback(null);
+                        }
                     }
                 }
             })
@@ -598,6 +611,7 @@ app.post('/addReview', function (req, res) {
     var userId = req.body.userId;
     var country = req.body.country;
     var rating = req.body.rating;
+    var private = req.body.private;
     var reviewId;
     var s3 = new AWS.S3();
     var files = req.files;
@@ -609,7 +623,7 @@ app.post('/addReview', function (req, res) {
     async.series([
         function (callback) {
             // do some stuff ...
-            connection.query('INSERT into reviews (country, userId, review, rating) values (?, ?, ?, ?)', [country, userId, text, rating], function (err, rows, fields) {
+            connection.query('INSERT into reviews (country, userId, review, rating, private) values (?, ?, ?, ?, ?)', [country, userId, text, rating, private], function (err, rows, fields) {
                 if (err) {
                     console.log("error in inserting", err);
                     callback(err);
@@ -710,6 +724,8 @@ app.post('/addPics', function (req, res) {
     var files = req.files;
     var country = req.body.country;
     var private = req.body.private;
+    console.log("private ? = ", private);
+    var userId = req.body.userId;
 
     async.series([
         function (callback) {
@@ -750,7 +766,7 @@ app.post('/addPics', function (req, res) {
                 picIds.push(files[i].filename.toString());
             }
             async.eachSeries(picIds, function (picId, callb) {
-                connection.query('INSERT into countryPics (country, picId, private) values (?, ?, ?)', [country, picId, private], function (err, rows, fields) {
+                connection.query('INSERT into countryPics (country, picId, private, userId) values (?, ?, ?, ?)', [country, picId, private, userId], function (err, rows, fields) {
                     if (err) {
                         console.log("error in inserting", err);
                         callb(err);
