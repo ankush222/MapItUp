@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="/fancybox/source/helpers/jquery.fancybox-thumbs.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="/fancybox/source/helpers/jquery.fancybox-thumbs.js"></script>
 		
-<!-- 		<script type="text/javascript">
+		<!-- <script type="text/javascript">
 			window.onload = function(){
 	        
 			    //Check File API support
@@ -88,8 +88,24 @@
 
 		<script type="text/javascript">
 		    $(document).ready(function() {
-				$(".fancybox").fancybox();
+				$(".fancybox").fancybox({
+    				type: 'image'
+  				});
 			});
+		</script>
+
+		<script type="text/javascript">
+			function showAddReview()
+			{
+				document.getElementById("addPics").style.display="none";
+				document.getElementById("addReview").style.display="block";
+			}
+
+			function showAddPics()
+			{
+				document.getElementById("addReview").style.display="none";
+				document.getElementById("addPics").style.display="block";
+			}
 		</script>
 	</head>
 	<body>
@@ -107,8 +123,10 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> Reviews for <%=JSON.stringify(country)%></h1>
-				<form name="addReview" action="/addReview" method="post" id="addReview" enctype="multipart/form-data">
+				<h1><%=JSON.stringify(country)%></h1>
+				<button class="add" onClick="showAddPics()">Add photos</button>
+				<button class="add" onClick="showAddReview()" style="left: 100px;">Add a review</button>
+				<form name="addReview" action="/addReview" method="post" id="addReview" enctype="multipart/form-data" style="display: none;">
 					<textarea form="addReview" rows="4" cols="50" name="text" placeholder="Add a review..." style="font-size: 16px; width: 350px; height: 100px;""></textarea>
 					<input type="hidden" name="userId" value=<%- userId%>>
 					<input type="hidden" name="country" value=<%- country%>>
@@ -120,7 +138,15 @@
 					    <span><input type="radio" name="rating" id="str1" value="1"><label for="str1"></label></span>
 					</div>
 				    <input id="files" type="file" name="pic" accept="image/*" multiple>
-				    <button class="add_more">Add More Files</button>
+				    <button class="add_more">Add More Photos</button>
+
+					<input type="submit" value="Submit">
+				</form>
+				<form name="addPics" action="/addPics" method="post" id="addPics" enctype="multipart/form-data" style="display: none;">
+					<input type="hidden" name="userId" value=<%- userId%>>
+					<input type="hidden" name="country" value=<%- country%>>
+				    <input id="files" type="file" name="pic" accept="image/*" multiple>
+				    <button class="add_more">Add More Photos</button>
 
 					<input type="submit" value="Submit">
 				</form>
@@ -131,7 +157,7 @@
 					<div>
 						<% for(var j=0; j < reviews[i].pics.length ; j++) { %>
 							<div id = "reviewPic">
-								<a class="fancybox" rel="group" href = <%-JSON.stringify(reviews[i].pics[j])%>><img src=<%-JSON.stringify(reviews[i].pics[j])%> alt="" width="50" height = "50"/></a>
+								<a class="fancybox" rel="group" href=<%-reviews[i].pics[j]%>><img src=<%-JSON.stringify(reviews[i].pics[j])%> alt="" width="50" height = "50"/></a>
 							</div>
 						<% } %>
 					</div>
