@@ -44,18 +44,22 @@
 				<div id = "info">
 					<form action="/updateInfo" method="post" enctype="multipart/form-data">
 				      	<div id='update'>
-				      		<label>Location : </label><input type="text" name="location" placeholder=<%- location%>><input type="hidden" name="userId" value=<%- userId%>>
-			      			<label>Name    : </label><input type="text" name="name" placeholder=<%- name%>><input type="hidden" name="userId" value=<%- userId%>>
-			      			<label>Email    : </label><input type="text" name="email" placeholder=<%- email%>><input type="hidden" name="userId" value=<%- userId%>>
-			      			<label>Password    : </label><input type="password" name="password" placeholder="******"<input type="hidden" name="userId">
+				      		<label>Location : </label><input type="text" name="location" placeholder=<%- location%>>
+			      			<label>Name    : </label><input type="text" name="name" placeholder=<%- name%>>
+			      			<label>Email    : </label><input type="text" name="email" placeholder=<%- email%>>
+			      			<label>Password    : </label><input type="password" name="password" placeholder="******">
 			      		</div>
 				      	<div class='profilepic'>
-			      			<label><img src=<%-JSON.stringify(profilePic)%> width="200" height="250"></label>
+			      			<label><img src=<%-JSON.stringify(profilePic)%> width="240" height="240"></label>
 			      		</div>
 				      	<label><input type="file" name="pic" accept="image/*" style="margin-top: 10px;"></label>
-				      	
-						  <label><input type="submit" value="Update"></label>
+				      	<label><input type="hidden" name="userId" value=<%- userId%>></label>
+						<label><input type="submit" value="Update"></label>
+
 			  		</form>
+			  		<!-- <form action="/updateInfo" method="post">
+		  				<button class="button1" name="userId" value=<%- userId%>>Update</button>
+		  			</form> -->
 			  		<form action="/deactivate" method="post">
 			  			<button class="button" name="userId" value=<%- userId%>>Deactivate Account</button>
 			  		</form>
