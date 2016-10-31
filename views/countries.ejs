@@ -126,13 +126,6 @@
 					addReview.private.value = false;
 				alert(addReview.private.value);
 			}
-
-			$('#addPics').submit(function(ev) {
-			    ev.preventDefault(); // to stop the form from submitting
-			    addPics.private.value = true;
-			    /* Validations go here */
-			    this.submit(); // If all the validations succeeded
-			});
 		</script>
 	</head>
 	<body>
@@ -172,6 +165,7 @@
 				    <input id="files" type="file" name="pic" accept="image/*" multiple>
 				    <button class="add_more">Add More Photos</button>
 				    <input type="checkbox" id="privateReview">Private
+				    <input type="hidden" id="private" name="private" value=false>
 					<input type="submit" value="Submit">
 				</form>
 				<form name="addPics" onsubmit="checkPic()" action="/addPics" method="post" id="addPics" enctype="multipart/form-data" style="display: none;">

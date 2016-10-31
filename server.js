@@ -612,6 +612,11 @@ app.post('/addReview', function (req, res) {
     var country = req.body.country;
     var rating = req.body.rating;
     var private = req.body.private;
+    private = private.toString();
+    if (private === "true")
+        private = true;
+    else
+        private = false;
     var reviewId;
     var s3 = new AWS.S3();
     var files = req.files;
@@ -724,7 +729,11 @@ app.post('/addPics', function (req, res) {
     var files = req.files;
     var country = req.body.country;
     var private = req.body.private;
-    console.log("private ? = ", private);
+    private = private.toString();
+    if (private === "true")
+        private = true;
+    else
+        private = false;
     var userId = req.body.userId;
 
     async.series([
