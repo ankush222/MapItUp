@@ -46,7 +46,8 @@ app.get('/profile', function (req, res) {
     var picId;
     var s3 = new AWS.S3();
     var signedUrl;
-    var name;
+    var firstName;
+    var lastName;
     var location;
     var email;
 
@@ -86,7 +87,8 @@ app.get('/profile', function (req, res) {
                     callback(err);
                 }
                 else {
-                    name = rows[0].firstName;
+                    firstName = rows[0].firstName;
+                    lastName = rows[0].lastName;
                     location = rows[0].location;
                     email = rows[0].email;
                     callback(null);
@@ -100,7 +102,7 @@ app.get('/profile', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { name: name, userId: id, location: location, profilePic: signedUrl, email: email });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email });
         }
 
     );
@@ -284,6 +286,8 @@ app.post('/updateInfo', function (req, res) {
     var file = req.files;
     var password = req.body.password;
     var email = req.body.email;
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
 
     console.log("file = ", file);
 
@@ -489,6 +493,7 @@ app.get('/countries', function (req, res) {
                         obj.user = results[i].userId;
                         obj.rating = results[i].rating;
                         obj.reviewId = results[i].reviewId;
+                        obj.cost = results[i].cost;
                         obj.pics = [];
                         reviewsWithPics.push(obj);
                     }
@@ -617,6 +622,7 @@ app.post('/addReview', function (req, res) {
     var country = req.body.country;
     var rating = req.body.rating;
     var private = req.body.private;
+    var cost = req.body.cost;
     private = private.toString();
     if (private === "true")
         private = true;
@@ -633,7 +639,7 @@ app.post('/addReview', function (req, res) {
     async.series([
         function (callback) {
             // do some stuff ...
-            connection.query('INSERT into reviews (country, userId, review, rating, private) values (?, ?, ?, ?, ?)', [country, userId, text, rating, private], function (err, rows, fields) {
+            connection.query('INSERT into reviews (country, userId, review, rating, private, cost) values (?, ?, ?, ?, ?, ?)', [country, userId, text, rating, private, cost], function (err, rows, fields) {
                 if (err) {
                     console.log("error in inserting", err);
                     callback(err);
@@ -818,7 +824,8 @@ app.get('/updateInfo', function (req, res) {
     var picId;
     var s3 = new AWS.S3();
     var signedUrl;
-    var name;
+    var firstName;
+    var lastName;
     var location;
     var email;
 
@@ -858,7 +865,8 @@ app.get('/updateInfo', function (req, res) {
                     callback(err);
                 }
                 else {
-                    name = rows[0].firstName;
+                    firstName = rows[0].firstName;
+                    lastName = rows[0].lastName;
                     location = rows[0].location;
                     email = rows[0].email;
                     callback(null);
@@ -872,7 +880,7 @@ app.get('/updateInfo', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('updateInfo.ejs', { name: name, userId: id, location: location, profilePic: signedUrl, email: email });
+                res.render('updateInfo.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email });
         }
 
     );
