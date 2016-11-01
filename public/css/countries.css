@@ -174,3 +174,12 @@ article
     width: 50px;
     margin: 10px;    
 }
+
+.currencyinput {
+    color: white;
+    border: 1px inset #ccc;
+}
+.currencyinput input {
+    margin-left: 5px;
+    border: 0;
+}
