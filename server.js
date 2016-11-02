@@ -21,7 +21,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 app.use(multer({ dest: 'uploads/' }).array('pic', 50));
-app.use(session({secret: 'ssshhhhh'}));
+// app.use(session({secret: 'ssshhhhh'}));
 
 
 var mysql = require('mysql');
