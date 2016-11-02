@@ -21,6 +21,8 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 app.use(multer({ dest: 'uploads/' }).array('pic', 50));
+app.use(session({secret: 'ssshhhhh'}));
+
 
 var mysql = require('mysql');
 
@@ -50,6 +52,9 @@ app.get('/profile', function (req, res) {
     var lastName;
     var location;
     var email;
+    var sess = req.session;
+    console.log("session = ", session);
+
 
     async.series([
 
@@ -288,8 +293,17 @@ app.post('/updateInfo', function (req, res) {
     var email = req.body.email;
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
+    if (location === "")
+        location = null;
+
+    if (password === "")
+        password = null;
+    else
+        var hash = bcrypt.hashSync(password, 10);
+
 
     console.log("file = ", file);
+
 
     var s3 = new AWS.S3();
     if (file.length > 0)
@@ -323,7 +337,35 @@ app.post('/updateInfo', function (req, res) {
                     }
                 });
             }
-        }
+        },
+        function (callback) {
+            if (password === null)
+                callback(null);
+            else {
+                connection.query('UPDATE users SET `firstName` = ?, `lastName` = ?, `email` = ?, `password` = ?, `location` = ?', [firstName, lastName, email, hash, location], function (err, rows, fields) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback(null);
+                    }
+                });
+            }
+        },
+        function (callback) {
+            if (!(password === null))
+                callback(null);
+            else {
+                connection.query('UPDATE users SET `firstName` = ?, `lastName` = ?, `email` = ?, `location` = ?', [firstName, lastName, email, location], function (err, rows, fields) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback(null);
+                    }
+                });
+            }
+        },
     ],
         function (err, results) {
             if (err) {
@@ -541,10 +583,8 @@ app.get('/countries', function (req, res) {
                                         }
                                     });
                                 });
-                                for(var i = 0;i < reviewsWithPics.length;i++)
-                                {
-                                    if(reviewsWithPics[i].reviewId === review.reviewId)
-                                    {
+                                for (var i = 0; i < reviewsWithPics.length; i++) {
+                                    if (reviewsWithPics[i].reviewId === review.reviewId) {
                                         reviewsWithPics[i].pics = obj.pics;
                                         break;
                                     }
@@ -611,6 +651,7 @@ app.get('/countries', function (req, res) {
                 res.sendStatus(404);
             }
             else {
+                reviewsWithPics = reviewsWithPics.reverse();
                 res.render('countries.ejs', { userId: userId, country: country, reviews: reviewsWithPics, countryPics: countryPics });
             }
         });
