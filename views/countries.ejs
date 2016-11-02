@@ -155,7 +155,9 @@
 					<textarea form="addReview" rows="4" cols="50" name="text" placeholder="Add a review..." style="font-size: 16px; width: 350px; height: 100px;""></textarea>
 					<input type="hidden" name="userId" value=<%- userId%>>
 					<input type="hidden" name="country" value=<%- country%>>
-					<div class="rating">
+					<br>
+					<span class="currencyinput">$<input type="number" name="cost" placeholder="Average cost"></span>
+					<div class="rating" style="margin-top: 10px;">
 					    <span><input type="radio" name="rating" id="str5" value="5"><label for="str5"></label></span>
 					    <span><input type="radio" name="rating" id="str4" value="4"><label for="str4"></label></span>
 					    <span><input type="radio" name="rating" id="str3" value="3"><label for="str3"></label></span>
@@ -179,7 +181,11 @@
 				</form>
 				<hr style="width:1100px;">
 				<% for(var i=0; i < reviews.length; i++) { %>
-					<div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> | <%= JSON.stringify(reviews[i].rating) %> stars</div>
+				<% if(reviews[i].cost == '') { %>
+				   <div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> -- <%= JSON.stringify(reviews[i].rating) %> stars</div>
+				 <% } else{ %>  
+				   <div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> -- <%= JSON.stringify(reviews[i].rating) %> stars -- Average cost : <%= JSON.stringify(reviews[i].cost)%></div>
+				<% } %>
 					<div id = "reviewText"><%= JSON.stringify(reviews[i].text) %></div>
 					<div>
 						<% for(var j=0; j < reviews[i].pics.length ; j++) { %>

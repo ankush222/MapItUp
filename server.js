@@ -21,6 +21,8 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 app.use(multer({ dest: 'uploads/' }).array('pic', 50));
+// app.use(session({secret: 'ssshhhhh'}));
+
 
 var mysql = require('mysql');
 
@@ -46,9 +48,13 @@ app.get('/profile', function (req, res) {
     var picId;
     var s3 = new AWS.S3();
     var signedUrl;
-    var name;
+    var firstName;
+    var lastName;
     var location;
     var email;
+    var sess = req.session;
+    console.log("session = ", session);
+
 
     async.series([
 
@@ -86,7 +92,8 @@ app.get('/profile', function (req, res) {
                     callback(err);
                 }
                 else {
-                    name = rows[0].firstName;
+                    firstName = rows[0].firstName;
+                    lastName = rows[0].lastName;
                     location = rows[0].location;
                     email = rows[0].email;
                     callback(null);
@@ -100,7 +107,7 @@ app.get('/profile', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { name: name, userId: id, location: location, profilePic: signedUrl, email: email });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email });
         }
 
     );
@@ -282,7 +289,21 @@ app.post('/updateInfo', function (req, res) {
     var userId = req.body.userId;
     var location = req.body.location;
     var file = req.files;
+    var password = req.body.password;
+    var email = req.body.email;
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    if (location === "")
+        location = null;
+
+    if (password === "")
+        password = null;
+    else
+        var hash = bcrypt.hashSync(password, 10);
+
+
     console.log("file = ", file);
+
 
     var s3 = new AWS.S3();
     if (file.length > 0)
@@ -316,7 +337,35 @@ app.post('/updateInfo', function (req, res) {
                     }
                 });
             }
-        }
+        },
+        function (callback) {
+            if (password === null)
+                callback(null);
+            else {
+                connection.query('UPDATE users SET `firstName` = ?, `lastName` = ?, `email` = ?, `password` = ?, `location` = ?', [firstName, lastName, email, hash, location], function (err, rows, fields) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback(null);
+                    }
+                });
+            }
+        },
+        function (callback) {
+            if (!(password === null))
+                callback(null);
+            else {
+                connection.query('UPDATE users SET `firstName` = ?, `lastName` = ?, `email` = ?, `location` = ?', [firstName, lastName, email, location], function (err, rows, fields) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback(null);
+                    }
+                });
+            }
+        },
     ],
         function (err, results) {
             if (err) {
@@ -377,8 +426,6 @@ app.post('/signUp', function (req, res) {
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
     var userId;
-
-    console.log("password = ", password1);
 
     if (password1 != password2) {
         res.status(404).send('passwords do not match');
@@ -450,7 +497,6 @@ app.post('/signIn', function (req, res) {
     var password = req.body.password;
 
     var results;
-    console.log("email = ", email);
     connection.query('SELECT * FROM `users` WHERE `email` = ?', [email], function (error, results, fields) {
 
         if (results.length === 0)
@@ -489,7 +535,9 @@ app.get('/countries', function (req, res) {
                         obj.user = results[i].userId;
                         obj.rating = results[i].rating;
                         obj.reviewId = results[i].reviewId;
-                        reviews.push(obj);
+                        obj.cost = results[i].cost;
+                        obj.pics = [];
+                        reviewsWithPics.push(obj);
                     }
                     callback(null);
                 }
@@ -497,7 +545,7 @@ app.get('/countries', function (req, res) {
         },
 
         function (callback) {
-            async.eachSeries(reviews, function (review, callb) {
+            async.eachSeries(reviewsWithPics, function (review, callb) {
                 connection.query('SELECT * from reviewPics WHERE `reviewId` = ?', review.reviewId, function (err, rows, fields) {
                     if (err) {
                         console.log("error in inserting", err);
@@ -509,14 +557,12 @@ app.get('/countries', function (req, res) {
                         }
                         else {
                             var obj = new Object();
-                            obj.text = review.text;
-                            obj.user = review.user;
-                            obj.rating = review.rating;
                             obj.pics = [];
                             var s3 = new AWS.S3();
                             var paramArray = new Array();
                             for (var i = 0; i < rows.length; i++) {
-                                if (!rows[i].private || rows[i].private && rows[i].userId === userId) {
+                                userId = Number(userId);
+                                if (!rows[i].private || (rows[i].private && rows[i].userId === userId)) {
                                     var params = { Bucket: 'mapitup', Key: rows[i].picId };
                                     paramArray.push(params);
                                 }
@@ -537,7 +583,12 @@ app.get('/countries', function (req, res) {
                                         }
                                     });
                                 });
-                                reviewsWithPics.push(obj);
+                                for (var i = 0; i < reviewsWithPics.length; i++) {
+                                    if (reviewsWithPics[i].reviewId === review.reviewId) {
+                                        reviewsWithPics[i].pics = obj.pics;
+                                        break;
+                                    }
+                                }
                                 callb(null);
                             }
                         }
@@ -566,6 +617,7 @@ app.get('/countries', function (req, res) {
                         var s3 = new AWS.S3();
                         var paramArray = new Array();
                         for (var i = 0; i < rows.length; i++) {
+                            userId = Number(userId);
                             if (!rows[i].private || (rows[i].private && rows[i].userId === userId)) {
                                 var params = { Bucket: 'mapitup', Key: rows[i].picId };
                                 paramArray.push(params);
@@ -599,8 +651,7 @@ app.get('/countries', function (req, res) {
                 res.sendStatus(404);
             }
             else {
-                console.log("reviewsWithPics = ", reviewsWithPics);
-                console.log("countryPics = ", countryPics);
+                reviewsWithPics = reviewsWithPics.reverse();
                 res.render('countries.ejs', { userId: userId, country: country, reviews: reviewsWithPics, countryPics: countryPics });
             }
         });
@@ -612,7 +663,9 @@ app.post('/addReview', function (req, res) {
     var country = req.body.country;
     var rating = req.body.rating;
     var private = req.body.private;
-    private = private.toString();
+    var cost = req.body.cost;
+    if(cost == "")
+        cost = null;
     if (private === "true")
         private = true;
     else
@@ -628,7 +681,7 @@ app.post('/addReview', function (req, res) {
     async.series([
         function (callback) {
             // do some stuff ...
-            connection.query('INSERT into reviews (country, userId, review, rating, private) values (?, ?, ?, ?, ?)', [country, userId, text, rating, private], function (err, rows, fields) {
+            connection.query('INSERT into reviews (country, userId, review, rating, private, cost) values (?, ?, ?, ?, ?, ?)', [country, userId, text, rating, private, cost], function (err, rows, fields) {
                 if (err) {
                     console.log("error in inserting", err);
                     callback(err);
@@ -813,7 +866,8 @@ app.get('/updateInfo', function (req, res) {
     var picId;
     var s3 = new AWS.S3();
     var signedUrl;
-    var name;
+    var firstName;
+    var lastName;
     var location;
     var email;
 
@@ -853,7 +907,8 @@ app.get('/updateInfo', function (req, res) {
                     callback(err);
                 }
                 else {
-                    name = rows[0].firstName;
+                    firstName = rows[0].firstName;
+                    lastName = rows[0].lastName;
                     location = rows[0].location;
                     email = rows[0].email;
                     callback(null);
@@ -867,7 +922,7 @@ app.get('/updateInfo', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('updateInfo.ejs', { name: name, userId: id, location: location, profilePic: signedUrl, email: email });
+                res.render('updateInfo.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email });
         }
 
     );
