@@ -27,7 +27,7 @@
 		      	</div>
 		      	<div class = 'info'>
 					<h3>
-						<br>Name : <%= name%>
+						<br>Name : <%= firstName%>
 						<br>Location : <%= location%>
 					</h3>
 				</div>
@@ -57,13 +57,13 @@
 
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> Welcome, <%= name%></h1>
+				<h1> Welcome, <%= firstName%></h1>
 				<div id = "info">
 					<form name="updateForm" action="/updateInfo" method="post" enctype="multipart/form-data" onsubmit="update()">
 				      	<div id='update'>
 				      		<label>Location : </label><input type="text" name="location" placeholder="Enter Location" value=<%- location%>>
-			      			<label>First Name : </label><input type="text" name="name" value=<%- name%>>
-			      			
+			      			<label>First Name : </label><input type="text" name="name" value=<%- firstName%>>
+			      			<label>Last Name : </label><input type="text" name="name" value=<%- lastName%>>
 			      			<label>Email    : </label><input type="text" name="email" value=<%- email%>>
 			      			<label>Password    : </label><input type="password" name="password" placeholder="******">
 			      		</div>

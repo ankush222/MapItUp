@@ -1,19 +1,5 @@
 <html>
 	<head>
-		<script>
-			// function displayPicture()
-			// {
-			// 	alert("<%= name%>");
-			// 	alert("<%= profilePic%>");
-			// 	var temp = "<%-profilePic%>";
-			// 	// alert(temp);
-			// 	if(temp == "")
-			// 		document.getElementById('profilePic')
-			// 	else
-			// 		alert("Good job");
-
-			// }
-		</script>
 		<link rel="stylesheet" type="text/css" href="css/profile.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
@@ -51,55 +37,17 @@
 		      	</div>
 		      	<div class = 'info'>
 					<h3>
-						<br>First Name : <%= name%>
+						<br>First Name : <%= firstName%>
+						<br>Last Name : <%= lastName%>
+						<br>Email : <%= email%>
 						<br>Location : <%= location%>
 					</h3>
 				</div>
 			</div>
 
 			<a href="/updateInfo?userId=<%- userId%>" class="button">Update</a>
-
-			<!-- <form action="/updateInfo%- userId%" method="get">
-		  		<button class="button" type="submit"><input type="hidden" name="userId" value=<%- userId%>>Update</button>
-			</form> -->
-			<!-- <form action="/updateInfo" method="post"> -->
-				<!-- <label><input type="submit" value="Update"></label> -->
-				<!-- <button class="button"><input type="hidden" name="location" value=<%- location%>><input type="hidden" name=""><input type="hidden" name="userId" value=<%- userId%>>Update</button> -->
-
-		  	<!-- </form> -->
 		</div>
 
-		<!-- <form method="post" action="/addFavorite" name="favForm"><i onclick="sendFav()" id="fav" class="fa fa-star" style="font-size:60px;color:red;left:950px;top:150px; position:absolute; float:left; "></i><input type="hidden" name="country"><input type="hidden" name="userId" value=<%- userId%>></form> -->
-
-		<!-- <label>First Name : </label><input type="text" name="firstName"> -->
-
-		<!-- <div class='layer'>
-			<div id = 'workingArea'>
-				<h1> Welcome, <%= name%></h1>
-				<div id = "info">
-				<form action="/updateInfo" method="post" enctype="multipart/form-data">
-			      	< <div id='update'>
-			      		<label>Location : </label><input type="text" name="location" placeholder=<%- location%>><input type="hidden" name="userId" value=<%- userId%>>
-		      			<label>Name    : </label><input type="text" name="name" placeholder=<%- name%>><input type="hidden" name="userId" value=<%- userId%>>
-		      		</div> -->
-		      		<!-- <label>First Name : </label><input type="text" name="firstName" align="right">
-			      	<label>Last Name : </label><input type="text" name="lastName">
-			      	<label>Email : </label><input type="text" name="email">
-			      	<label>Password : </label><input type="password" name="password1">
-			      	<label>Confirm Password : </label><input type="password" name="password2">
-			      	<label><input type="submit" value="Sign Up"></label>
-			      </div>
-			      	<div class='profilepic'>
-		      			<label><img src=<%-JSON.stringify(profilePic)%> width="200" height="250"></label>
-		      		</div>
-			      	<label><input type="file" name="pic" accept="image/*" style="margin-top: 10px;"></label>
-			      	
-					  <label><input type="submit" value="Update"></label>
-		  		</form>
-		  		<form action="/deactivate" method="post">
-		  			<button class="button" name="userId" value=<%- userId%>>Deactivate Account</button>
-		  		</form>
-			</div>
-		</div>  --> 
+		
 	</body>
 </html>
