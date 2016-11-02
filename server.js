@@ -52,8 +52,8 @@ app.get('/profile', function (req, res) {
     var lastName;
     var location;
     var email;
-    var sess = req.session;
-    console.log("session = ", session);
+    // var sess = req.session;
+    // console.log("session = ", session);
 
 
     async.series([
@@ -342,7 +342,7 @@ app.post('/updateInfo', function (req, res) {
             if (password === null)
                 callback(null);
             else {
-                connection.query('UPDATE users SET `firstName` = ?, `lastName` = ?, `email` = ?, `password` = ?, `location` = ?', [firstName, lastName, email, hash, location], function (err, rows, fields) {
+                connection.query('UPDATE users SET `firstName` = ?, `lastName` = ?, `email` = ?, `password` = ?, `location` = ? where `userId` = ?', [firstName, lastName, email, hash, location, userId], function (err, rows, fields) {
                     if (err) {
                         callback(err);
                     }
@@ -356,7 +356,7 @@ app.post('/updateInfo', function (req, res) {
             if (!(password === null))
                 callback(null);
             else {
-                connection.query('UPDATE users SET `firstName` = ?, `lastName` = ?, `email` = ?, `location` = ?', [firstName, lastName, email, location], function (err, rows, fields) {
+                connection.query('UPDATE users SET `firstName` = ?, `lastName` = ?, `email` = ?, `location` = ? where `userId` = ?', [firstName, lastName, email, location, userId], function (err, rows, fields) {
                     if (err) {
                         callback(err);
                     }
