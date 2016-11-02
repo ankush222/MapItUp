@@ -38,13 +38,30 @@
 		</div> -->
 		<!-- <label>First Name : </label><input type="text" name="firstName"> -->
 
+		<script>
+
+		function update() {
+	      	// window.alert(updateForm.location.pic)
+	      	if(updateForm.location.value == "")
+	      	{
+	      		updateForm.location.value = null;
+	      	}
+	      	if(updateForm.location.pic == undefined)
+	      	{
+	      		// alert("Pic not updated");
+	      	}
+
+	      }
+	     </script>
+
+
 		<div class='layer'>
 			<div id = 'workingArea'>
 				<h1> Welcome, <%= name%></h1>
 				<div id = "info">
-					<form action="/updateInfo" method="post" enctype="multipart/form-data">
+					<form name="updateForm" action="/updateInfo" method="post" enctype="multipart/form-data" onsubmit="update()">
 				      	<div id='update'>
-				      		<label>Location : </label><input type="text" name="location" value=<%- location%>>
+				      		<label>Location : </label><input type="text" name="location" placeholder="Enter Location" value=<%- location%>>
 			      			<label>First Name : </label><input type="text" name="name" value=<%- name%>>
 			      			
 			      			<label>Email    : </label><input type="text" name="email" value=<%- email%>>
