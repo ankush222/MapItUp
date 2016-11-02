@@ -26,9 +26,8 @@
 			<div id='workingArea'>
 				<h1> Welcome</h1>
 				<div class='profilepic'>
-					<% if(profilePic == "") { %>
-		   				<%window.alert("if")%>
-		   				<div><label><img src="http://tr3.cbsistatic.com/fly/bundles/techrepubliccore/images/icons/standard/icon-user-default.png" width="1200" height="120"></label></div>
+					<% if(profilePic == "" || profilePic == null) { %>
+		   				<div><label><img src="http://tr3.cbsistatic.com/fly/bundles/techrepubliccore/images/icons/standard/icon-user-default.png" width="120" height="120"></label></div>
 		 			<% } else{ %>
 		   				<div><label><img src=<%-JSON.stringify(profilePic)%> width="120" height="120"></label></div>
 					<% } %>

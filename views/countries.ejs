@@ -115,7 +115,6 @@
 				else
 					addPics.private.value = false;
 				// alert("HEY");
-				alert(addPics.private.value);
 			}
 
 			function checkReview()
@@ -124,7 +123,6 @@
 					addReview.private.value = true;
 				else
 					addReview.private.value = false;
-				alert(addReview.private.value);
 			}
 		</script>
 	</head>
@@ -181,7 +179,7 @@
 				</form>
 				<hr style="width:1100px;">
 				<% for(var i=0; i < reviews.length; i++) { %>
-				<% if(reviews[i].cost == '') { %>
+				<% if(reviews[i].cost == '' || reviews[i].cost == null) { %>
 				   <div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> -- <%= JSON.stringify(reviews[i].rating) %> stars</div>
 				 <% } else{ %>  
 				   <div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> -- <%= JSON.stringify(reviews[i].rating) %> stars -- Average cost : <%= JSON.stringify(reviews[i].cost)%></div>
