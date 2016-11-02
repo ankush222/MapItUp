@@ -623,7 +623,8 @@ app.post('/addReview', function (req, res) {
     var rating = req.body.rating;
     var private = req.body.private;
     var cost = req.body.cost;
-    private = private.toString();
+    if(cost == "")
+        cost = null;
     if (private === "true")
         private = true;
     else

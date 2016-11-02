@@ -181,7 +181,11 @@
 				</form>
 				<hr style="width:1100px;">
 				<% for(var i=0; i < reviews.length; i++) { %>
-					<div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> | <%= JSON.stringify(reviews[i].rating) %> stars</div>
+				<% if(reviews[i].cost == '') { %>
+				   <div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> -- <%= JSON.stringify(reviews[i].rating) %> stars</div>
+				 <% } else{ %>  
+				   <div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> -- <%= JSON.stringify(reviews[i].rating) %> stars -- Average cost : <%= JSON.stringify(reviews[i].cost)%></div>
+				<% } %>
 					<div id = "reviewText"><%= JSON.stringify(reviews[i].text) %></div>
 					<div>
 						<% for(var j=0; j < reviews[i].pics.length ; j++) { %>
