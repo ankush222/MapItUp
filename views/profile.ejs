@@ -1,5 +1,19 @@
 <html>
 	<head>
+		<script>
+			// function displayPicture()
+			// {
+			// 	alert("<%= name%>");
+			// 	alert("<%= profilePic%>");
+			// 	var temp = "<%-profilePic%>";
+			// 	// alert(temp);
+			// 	if(temp == "")
+			// 		document.getElementById('profilePic')
+			// 	else
+			// 		alert("Good job");
+
+			// }
+		</script>
 		<link rel="stylesheet" type="text/css" href="css/profile.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
@@ -18,11 +32,22 @@
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
 		</div>
+		
+		
+
+
 		<div class='layer'>
 			<div id='workingArea'>
 				<h1> Welcome</h1>
 				<div class='profilepic'>
-		      		<label><img src=<%-JSON.stringify(profilePic)%> width="120" height="120"></label>
+					<% if(profilePic == "") { %>
+		   				<%window.alert("if")%>
+		   				<div><label><img src="http://tr3.cbsistatic.com/fly/bundles/techrepubliccore/images/icons/standard/icon-user-default.png" width="1200" height="120"></label></div>
+		 			<% } else{ %>
+		   				<div><label><img src=<%-JSON.stringify(profilePic)%> width="120" height="120"></label></div>
+					<% } %>
+		      		<!-- <label><img src=<%-JSON.stringify(profilePic)%> width="120" height="120"></label>
+		      		</script> -->
 		      	</div>
 		      	<div class = 'info'>
 					<h3>
