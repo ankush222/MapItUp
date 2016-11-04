@@ -301,10 +301,6 @@ app.post('/updateInfo', function (req, res) {
     else
         var hash = bcrypt.hashSync(password, 10);
 
-
-    console.log("file = ", file);
-
-
     var s3 = new AWS.S3();
     if (file.length > 0)
         var params = { Bucket: 'mapitup', Body: fs.createReadStream(file[0].path), Key: file[0].filename.toString(), ACL: 'public-read', ContentType: 'image/jpeg' };
