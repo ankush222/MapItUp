@@ -95,8 +95,8 @@ input[type=submit]:hover {
     padding: 7px 15px;
     /*margin: 10px 230px;*/
     position: absolute;
-    top: 335px;
-    left: 50px;
+    top: 375px;
+    left: 35px;
     border: none;
     border-radius: 4px;
     cursor: pointer;

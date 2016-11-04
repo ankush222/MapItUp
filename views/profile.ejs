@@ -35,11 +35,16 @@
 		      		</script> -->
 		      	</div>
 		      	<div class = 'info'>
+
 					<h3>
 						<br>First Name : <%= firstName%>
 						<br>Last Name : <%= lastName%>
 						<br>Email : <%= email%>
+						<% if(location == "" || location == null) { %>						
+						<br>
+						<% } else { %>
 						<br>Location : <%= location%>
+						<% } %>
 					</h3>
 				</div>
 			</div>

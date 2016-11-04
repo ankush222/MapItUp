@@ -61,14 +61,20 @@
 				<div id = "info">
 					<form name="updateForm" action="/updateInfo" method="post" enctype="multipart/form-data" onsubmit="update()">
 				      	<div id='update'>
-				      		<label>Location : </label><input type="text" name="location" placeholder="Enter Location" value=<%- location%>>
 			      			<label>First Name : </label><input type="text" name="firstName" value=<%- firstName%>>
 			      			<label>Last Name : </label><input type="text" name="lastName" value=<%- lastName%>>
+			      			<label>Location : </label><input type="text" name="location" placeholder="Enter Location" value=<%- location%>>
 			      			<label>Email    : </label><input type="text" name="email" value=<%- email%>>
 			      			<label>Password    : </label><input type="password" name="password" placeholder="******">
 			      		</div>
 				      	<div class='profilepic'>
-			      			<label><img src=<%-JSON.stringify(profilePic)%> width="240" height="240"></label>
+			      			<% if(profilePic == "" || profilePic == null) { %>
+		   						<div><label><img src="http://tr3.cbsistatic.com/fly/bundles/techrepubliccore/images/icons/standard/icon-user-default.png" width="200" height="200"></label></div>
+		 					<% } else{ %>
+		   						<div><label><img src=<%-JSON.stringify(profilePic)%> width="200" height="200"></label></div>
+							<% } %>
+
+			      			<!-- <label><img src=<%-JSON.stringify(profilePic)%> width="200" height="200"></label> -->
 			      		</div>
 				      	<label><input type="file" name="pic" accept="image/*" style="margin-top: 10px;"></label>
 				      	<label><input type="hidden" name="userId" value=<%- userId%>></label>
