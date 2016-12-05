@@ -392,17 +392,13 @@ app.get('/getVisited', function (req, res) {
 })
 
 app.post('/addFollowers', function (req, res) {
-
     var followee = req.body.followee;
     var follower = req.body.follower;
-    var userId = req.body.userId;
 
     connection.query('INSERT INTO followers (followee, follower) VALUES (?, ?)', [followee, follower], function (err, rows, fields) {
         if (err) {
             res.sendStatus(404);
         }
-        else
-            res.redirect('/profile?' + "userId=" + userId);
     });
 })
 

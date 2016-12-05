@@ -3,6 +3,19 @@
 		<link rel="stylesheet" type="text/css" href="css/profile.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script>
+			  $(function() {
+			    $(".button").click(function() {
+			      $.ajax({
+					    type: "POST",
+					    url: "addFollowers",
+					    data: {follower: <%-JSON.stringify(currentId)%>, followee: <%-JSON.stringify(userId)%>},
+					  });
+					  return false;
+			    });
+			  });
+		</script>
 	</head>
 	<body>
 		<div id = 'navbar'>
@@ -48,7 +61,11 @@
 			<% if(currentId == userId) { %>
 				<a href="/updateInfo?userId=<%- userId%>" class="button">Update</a>
 			<% } else { %>
-				<a href="/updateInfo?userId=<%- userId%>" class="button">Update</a>
+				<form name="followers" action="">
+					<input type="hidden" name="follower" value=<%- currentId%>>
+					<input type="hidden" name="followee" value=<%- userId%>>
+					<input type="submit" name="submit" class="button" id="follow" value="Follow" />
+				</form>
 			<% } %>
 		</div>
 
