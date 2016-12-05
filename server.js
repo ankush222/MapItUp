@@ -10,10 +10,10 @@ var multer = require('multer');
 var AWS = require('aws-sdk');
 var session = require("client-sessions");
 app.use(session({
-  cookieName: 'session',
-  secret: 'shhhhhhhh',
-  duration: 30 * 60 * 1000,
-  activeDuration: 5 * 60 * 1000,
+    cookieName: 'session',
+    secret: 'shhhhhhhh',
+    duration: 30 * 60 * 1000,
+    activeDuration: 5 * 60 * 1000,
 }));
 
 // app.use(busboy());
@@ -27,21 +27,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
-app.use(function(req, res, next) {
-  if (req.session && req.session.user) {
-    connection.query('SELECT * FROM `users` WHERE `email` = ? limit 1', [req.session.user.email], function (error, results, fields) {
-      if (results) {
-        req.user = results[0];
-        delete req.user.password; // delete the password from the session
-        req.session.user = results[0];  //refresh the session value
-        res.locals.user = results[0];
-      }
-      // finishing processing the middleware and run the route
-      next();
-    });
-  } else {
-    next();
-  }
+app.use(function (req, res, next) {
+    if (req.session && req.session.user) {
+        connection.query('SELECT * FROM `users` WHERE `email` = ? limit 1', [req.session.user.email], function (error, results, fields) {
+            if (results) {
+                req.user = results[0];
+                delete req.user.password; // delete the password from the session
+                req.session.user = results[0];  //refresh the session value
+                res.locals.user = results[0];
+            }
+            // finishing processing the middleware and run the route
+            next();
+        });
+    } else {
+        next();
+    }
 });
 
 app.use(multer({ dest: 'uploads/' }).array('pic', 50));
@@ -190,7 +190,7 @@ app.get('/otherProfile', function (req, res) {
                     console.log("error in query", err);
                     callback(err);
                 }
-                else { 
+                else {
                     firstName = rows[0].firstName;
                     lastName = rows[0].lastName;
                     location = rows[0].location;
@@ -212,19 +212,19 @@ app.get('/otherProfile', function (req, res) {
     );
 })
 
-function requireLogin (req, res, next) {
-  if (!req.user) {
-    res.redirect('/signUp');
-  } else {
-    next();
-  }
+function requireLogin(req, res, next) {
+    if (!req.user) {
+        res.redirect('/signUp');
+    } else {
+        next();
+    }
 };
 
 app.get('/home', requireLogin, function (req, res) {
     var userId = req.session.user.userId;
     var name;
     var countries;
-    
+
     async.series([
         function (callback) {
             // do some stuff ...
@@ -388,6 +388,28 @@ app.get('/getVisited', function (req, res) {
         else
             res.send({ countries: rows });
     });
+})
+
+app.post('/addFollowers', function (req, res) {
+
+    var followee = req.body.followee;
+    var follower = req.body.follower;
+    var userId = req.body.userId;
+
+    connection.query('INSERT INTO followers (followee, follower) VALUES (?, ?)', [followee, follower], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else
+            res.redirect('/profile?' + "userId=" + userId);
+    });
+})
+
+
+app.get('/getFollowers', function (req, res) {
+  var followee = req.query.followee;
+
+
 })
 
 app.post('/updateInfo', function (req, res) {
@@ -772,7 +794,7 @@ app.post('/addReview', function (req, res) {
     var rating = req.body.rating;
     var private = req.body.private;
     var cost = req.body.cost;
-    if(cost == "")
+    if (cost == "")
         cost = null;
     if (private === "true")
         private = true;
