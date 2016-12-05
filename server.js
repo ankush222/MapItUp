@@ -132,7 +132,7 @@ app.get('/profile', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: req.session.user.userId, location: location, profilePic: signedUrl, email: email });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email });
         }
 
     );
@@ -205,7 +205,7 @@ app.get('/otherProfile', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: req.session.user.userId, location: location, profilePic: signedUrl, email: email });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email });
         }
 
     );
