@@ -141,6 +141,7 @@ app.get('/profile', function (req, res) {
 
 app.get('/otherProfile', function (req, res) {
     var id = req.query.userId;
+    var currentId = req.session.user.userId;
     // console.log("session userID = ", req.session.user.userId);
 
     var picId;
@@ -189,7 +190,7 @@ app.get('/otherProfile', function (req, res) {
                     console.log("error in query", err);
                     callback(err);
                 }
-                else {
+                else { 
                     firstName = rows[0].firstName;
                     lastName = rows[0].lastName;
                     location = rows[0].location;
@@ -205,7 +206,7 @@ app.get('/otherProfile', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId });
         }
 
     );
