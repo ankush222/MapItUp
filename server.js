@@ -68,6 +68,7 @@ app.get('/index', function (req, res) {
 
 app.get('/profile', function (req, res) {
     var id = req.session.user.userId;
+    var currentId = req.session.user.userId;
     // console.log("session userID = ", req.session.user.userId);
 
     var picId;
@@ -132,7 +133,7 @@ app.get('/profile', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId });
         }
 
     );
