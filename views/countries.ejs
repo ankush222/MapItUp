@@ -182,7 +182,7 @@
 				<% if(reviews[i].cost == '' || reviews[i].cost == null) { %>
 				   <div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> -- <%= JSON.stringify(reviews[i].rating) %> stars</div>
 				 <% } else{ %>  
-				   <div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> -- <%= JSON.stringify(reviews[i].rating) %> stars -- Average cost : <%= JSON.stringify(reviews[i].cost)%></div>
+				   <div id = "reviewUser">Review by <a href="/otherProfile?userId=<%- JSON.stringify(reviews[i].user)%>"><%= JSON.stringify(reviews[i].user) %></a> -- <%= JSON.stringify(reviews[i].rating) %> stars -- Average cost : <%= JSON.stringify(reviews[i].cost)%></div>
 				<% } %>
 					<div id = "reviewText"><%= JSON.stringify(reviews[i].text) %></div>
 					<div>
