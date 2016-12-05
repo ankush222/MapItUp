@@ -19,6 +19,14 @@ body {
     position: absolute;
 }
 
+#follow {
+    position: absolute;
+    top: 300px;
+    left: 50px;
+    font-size: 16px;
+    padding: 10px 20px;
+}
+
 .profilepic {
     float:left;
 }
