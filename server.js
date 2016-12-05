@@ -408,9 +408,38 @@ app.post('/addFollowers', function (req, res) {
 
 
 app.get('/getFollowers', function (req, res) {
-  var followee = req.query.followee;
+    var followee = req.query.followee;
+    var userId = req.query.userId;
 
+    var followers = [];
+    connection.query('SELECT follower from followers WHERE `followee` = ?', [followee], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else {
+            for (var i = 0; i < rows.length; i++) {
+                followers[i] = JSON.stringify(rows[i].follower);
+            }
+            res.send({followers: followers});
+        }
+    });
+})
 
+app.post('/removeFollower', function (req, res) {
+
+    var followee = req.body.followee;
+    var userId = req.body.userId;
+    var follower = req.body.follower;
+
+    var followers = [];
+    connection.query('DELETE from followers WHERE `followee` = ? AND `follower = ?', [followee, follower], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else {
+            res.sendStatus(200);
+        }
+    });
 })
 
 app.post('/updateInfo', function (req, res) {
