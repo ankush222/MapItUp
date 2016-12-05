@@ -8,6 +8,13 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 //var upload = multer({ dest: 'uploads/' });
 var AWS = require('aws-sdk');
+var session = require("client-sessions");
+app.use(session({
+  cookieName: 'session',
+  secret: 'shhhhhhhh',
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000,
+}));
 
 // app.use(busboy());
 // app.use(busboy({ immediate: true }));
@@ -19,6 +26,23 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
+
+app.use(function(req, res, next) {
+  if (req.session && req.session.user) {
+    connection.query('SELECT * FROM `users` WHERE `email` = ? limit 1', [req.session.user.email], function (error, results, fields) {
+      if (results) {
+        req.user = results[0];
+        delete req.user.password; // delete the password from the session
+        req.session.user = results[0];  //refresh the session value
+        res.locals.user = results[0];
+      }
+      // finishing processing the middleware and run the route
+      next();
+    });
+  } else {
+    next();
+  }
+});
 
 app.use(multer({ dest: 'uploads/' }).array('pic', 50));
 // app.use(session({secret: 'ssshhhhh'}));
@@ -43,7 +67,8 @@ app.get('/index', function (req, res) {
 })
 
 app.get('/profile', function (req, res) {
-    var id = req.query.userId;
+    var id = req.session.user.userId;
+    // console.log("session userID = ", req.session.user.userId);
 
     var picId;
     var s3 = new AWS.S3();
@@ -107,17 +132,98 @@ app.get('/profile', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: req.session.user.userId, location: location, profilePic: signedUrl, email: email });
         }
 
     );
 })
 
-app.get('/home', function (req, res) {
-    var userId = req.query.userId;
+
+app.get('/otherProfile', function (req, res) {
+    var id = req.query.userId;
+    // console.log("session userID = ", req.session.user.userId);
+
+    var picId;
+    var s3 = new AWS.S3();
+    var signedUrl;
+    var firstName;
+    var lastName;
+    var location;
+    var email;
+    // var sess = req.session;
+    // console.log("session = ", session);
+
+
+    async.series([
+
+        function (callback) {
+            connection.query('SELECT profilePic from users where `userId` = ?', [id], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    picId = rows[0].profilePic;
+                    callback(null);
+                }
+            })
+        },
+        function (callback) {
+            if (picId === null)
+                callback(null);
+            else {
+                var params = { Bucket: 'mapitup', Key: picId };
+                s3.getSignedUrl('getObject', params, function (err, url) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        signedUrl = url;
+                        callback(null);
+                    }
+                });
+            }
+        },
+        function (callback) {
+            connection.query('SELECT * from users WHERE `userId` = ?', [id], function (err, rows, fields) {
+                if (err) {
+                    console.log("error in query", err);
+                    callback(err);
+                }
+                else {
+                    firstName = rows[0].firstName;
+                    lastName = rows[0].lastName;
+                    location = rows[0].location;
+                    email = rows[0].email;
+                    callback(null);
+                }
+            });
+        }
+    ],
+
+        function (err, results) {
+            if (err) {
+                res.status(404).send("Error in adding visited country");
+            }
+            else
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: req.session.user.userId, location: location, profilePic: signedUrl, email: email });
+        }
+
+    );
+})
+
+function requireLogin (req, res, next) {
+  if (!req.user) {
+    res.redirect('/signUp');
+  } else {
+    next();
+  }
+};
+
+app.get('/home', requireLogin, function (req, res) {
+    var userId = req.session.user.userId;
     var name;
     var countries;
-
+    
     async.series([
         function (callback) {
             // do some stuff ...
@@ -161,7 +267,6 @@ app.get('/home', function (req, res) {
                         temp++;
                     }
                 }
-                // console.log("country = ", country);
                 res.render('home.ejs', { name: name, userId: userId, countries: country, favorites: favorites });
             }
         });
@@ -368,7 +473,7 @@ app.post('/updateInfo', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.redirect('/profile?' + "userId=" + userId);
+                res.redirect('/profile?' + "userId=" + req.session.user.userId);
         });
 })
 
@@ -409,8 +514,9 @@ app.get('/getFavorite', function (req, res) {
     });
 })
 
-app.post('/signOut', function (req, res) {
+app.get('/signOut', function (req, res) {
     //sign out here 
+    req.session.reset();
     res.render('index.ejs');
 })
 
@@ -469,7 +575,10 @@ app.post('/signUp', function (req, res) {
                 }
                 else {
                     userId = rows[0].userId;
-                    console.log("rows = ", userId);
+                    req.user = rows[0];
+                    delete req.user.password; // delete the password from the session
+                    req.session.user = rows[0];  //refresh the session value
+                    res.locals.user = rows[0];
                     callback(null);
 
                 }
@@ -498,10 +607,12 @@ app.post('/signIn', function (req, res) {
         if (results.length === 0)
             res.status(404).send('user not found');
 
+        console.log("results = ", results);
         var userId = results[0].userId;
         var match = bcrypt.compareSync(password, results[0].password)
         if (match === true) {
-            res.redirect('/home?' + "userId=" + userId);
+            req.session.user = results[0];
+            res.redirect('/home?' + "userId=" + results[0].userId);
         }
         else {
             res.status(401).send('username and password do not match');

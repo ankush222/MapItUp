@@ -13,7 +13,8 @@
     "async": "latest",
     "ejs": "latest",
     "connect-busboy": "latest",
-    "multer": "latest"
+    "multer": "latest",
+    "client-sessions": "latest"
   },
   "devDependencies": {
     "aws-sdk":"latest"
