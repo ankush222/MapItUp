@@ -9,12 +9,12 @@
 			<img src="http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg" id="logo" />
 			<div id = "name">MapItUp</div>
 			<ul>
-			  <li><a href="/home?userId=<%- userId%>"><b>Home</b></a></li>
-			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
+			  <li><a href="/home?userId=<%- currentId%>"><b>Home</b></a></li>
+			  <li><a href="/profile?userId=<%- currentId%>"><b>Profile</b></a></li>
 			  <li><a href="#contact"><b>Followers</b></a></li>
 			  <!-- <li><a href="/search"><b>Search</b></a></li> -->
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
-			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
+			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- currentId%>></form></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
 		</div>
@@ -22,7 +22,6 @@
 		
 		<div class='layer'>
 			<div id='workingArea'>
-				<h1> Welcome</h1>
 				<div class='profilepic'>
 					<% if(profilePic == "" || profilePic == null) { %>
 		   				<div><label><img src="http://tr3.cbsistatic.com/fly/bundles/techrepubliccore/images/icons/standard/icon-user-default.png" width="120" height="120"></label></div>
@@ -46,8 +45,11 @@
 					</h3>
 				</div>
 			</div>
-
-			<a href="/updateInfo?userId=<%- userId%>" class="button">Update</a>
+			<% if(currentId == userId) { %>
+				<a href="/updateInfo?userId=<%- userId%>" class="button">Update</a>
+			<% } else { %>
+				<a href="/updateInfo?userId=<%- userId%>" class="button">Update</a>
+			<% } %>
 		</div>
 
 		
