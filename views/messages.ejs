@@ -3,6 +3,16 @@
 		<link rel="stylesheet" type="text/css" href="css/messages.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+		<script>
+			  $(function() {
+			    $("#eachContact").click(function() {
+			    	$.get("/getChat?sender=<%- userId%>&receiver=<%- contacts[i]%>", function(data, status){
+            			alert("Data: " + data + "\nStatus: " + status);
+        			});
+					return false;
+			    });
+			  });
+		</script>
 	</head>
 	<body>
 		<div id = 'navbar'>
@@ -20,7 +30,9 @@
 		<div class='layer'>
 			<div id = 'workingArea'>
 				<div id = 'contacts'>
-				hey
+					<% for(var i=0; i < contacts.length; i++) { %>
+						<div id = 'eachContact'><%= contacts[i]%></div>
+					<% } %>
 				</div>
 			</div>
 		</div>
