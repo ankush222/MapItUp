@@ -6,10 +6,21 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script>
 			  $(function() {
-			    $(".button").click(function() {
+			    $(".addButton").click(function() {
 			      $.ajax({
 					    type: "POST",
 					    url: "addFollowers",
+					    data: {follower: <%-JSON.stringify(currentId)%>, followee: <%-JSON.stringify(userId)%>},
+					  });
+					  return false;
+			    });
+			  });
+
+			  $(function() {
+			    $(".removeButton").click(function() {
+			      $.ajax({
+					    type: "POST",
+					    url: "removeFollower",
 					    data: {follower: <%-JSON.stringify(currentId)%>, followee: <%-JSON.stringify(userId)%>},
 					  });
 					  return false;
@@ -64,7 +75,11 @@
 				<form name="followers" action="">
 					<input type="hidden" name="follower" value=<%- currentId%>>
 					<input type="hidden" name="followee" value=<%- userId%>>
-					<input type="submit" name="submit" class="button" id="follow" value="Follow" />
+					<% if ((JSON.stringify(following)) != 'true') { %>
+						<input type="submit" name="submit" class="addButton" id="follow" value="Follow" />
+					<% } else { %>
+						<button type="submit" class="removeButton" name="submit" id="following"><span>Following</span></button>
+					<% } %>
 				</form>
 			<% } %>
 		</div>
