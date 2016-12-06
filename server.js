@@ -321,6 +321,18 @@ app.post('/search', function (req, res) {
     });
 })
 
+app.post('/newMessage', function (req, res) {
+    var sender = req.body.sender;
+    var receiver = req.body.receiver;
+    var message = req.body.message;
+
+    connection.query('INSERT INTO chat (sender, receiver, message) VALUES (?, ?, ?)', [sender, receiver, message], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+    });
+})
+
 app.get('/signIn', function (req, res) {
     res.render('signIn.ejs');
 })
