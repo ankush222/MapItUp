@@ -335,7 +335,7 @@ app.post('/newMessage', function (req, res) {
     });
 })
 
-app.get('/getChat', function(req, res) {
+app.get('/getChat', function (req, res) {
 
 })
 
@@ -449,18 +449,46 @@ app.post('/addFollowers', function (req, res) {
 app.get('/getFollowers', function (req, res) {
     var userId = req.query.userId;
     var followers = [];
+    var following = [];
 
-    connection.query('SELECT follower from followers WHERE `followee` = ?', [userId], function (err, rows, fields) {
-        if (err) {
-            res.sendStatus(404);
+    async.series([
+        function (callback) {
+            // do some stuff ...
+            connection.query('SELECT follower from followers WHERE `followee` = ?', [userId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    for (var i = 0; i < rows.length; i++) {
+                        followers[i] = JSON.stringify(rows[i].follower);
+                    }
+                    callback(null);
+                }
+            });
+        },
+        function (callback) {
+            // do some more stuff ...
+            connection.query('SELECT followee from followers WHERE `follower` = ?', [userId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    for (var i = 0; i < rows.length; i++) {
+                        following[i] = JSON.stringify(rows[i].followee);
+                    }
+                    callback(null);
+                }
+            });
         }
-        else {
-            for (var i = 0; i < rows.length; i++) {
-                followers[i] = JSON.stringify(rows[i].follower);
+    ],
+        // optional callback
+        function (err, results) {
+            if (err) {
+                res.status(404).send("Error in getting followers");
             }
-            res.render('followers.ejs',{ followers: followers, userId: userId });
-        }
-    });
+            else
+                res.render('followers.ejs', { followers: followers, userId: userId, following: following });
+        });
 })
 
 app.post('/removeFollower', function (req, res) {
