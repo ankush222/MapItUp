@@ -337,8 +337,25 @@ app.post('/newMessage', function (req, res) {
 
 app.get('/getChat', function (req, res) {
 
+    var sender = req.body.sender;
+    var receiver = req.body.receiver;
+    var messages = [];
+
+    connection.query('SELECT * FROM chat WHERE (`sender` = ? AND `receiver` = ?) OR (`sender` = ? AND receiver = ?)', [sender, receiver, receiver, sender], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else {
+            for (var i = 0; i < rows.length; i++) {
+                messages[i] = rows[i];
+            }
+        }
+    })
 })
 
+app.get('/messages', requireLogin, function (req, res) {
+    res.render('messages.ejs');
+})
 
 
 app.get('/signIn', function (req, res) {
