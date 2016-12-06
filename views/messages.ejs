@@ -3,12 +3,18 @@
 		<link rel="stylesheet" type="text/css" href="css/messages.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script>
 			  $(function() {
 			    $("#eachContact").click(function() {
 			    	$.get("/getChat?sender=<%- userId%>&receiver=<%- contacts[i]%>", function(data, status){
             			alert("Data: " + data + "\nStatus: " + status);
         			});
+        			$("#chat").show();
+
+			        for (var c in data) {
+			            $("#chat").append(c);
+			        }  
 					return false;
 			    });
 			  });
@@ -33,6 +39,8 @@
 					<% for(var i=0; i < contacts.length; i++) { %>
 						<div id = 'eachContact'><%= contacts[i]%></div>
 					<% } %>
+				</div>
+				<div id = 'chat' style="display:none;">
 				</div>
 			</div>
 		</div>
