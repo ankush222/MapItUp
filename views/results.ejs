@@ -11,7 +11,7 @@
 			<ul>
 			  <li><a href="/home?userId=<%- userId%>"><b>Home</b></a></li>
 			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
-			  <li><a href="#contact"><b>Followers</b></a></li>
+			  <li><a href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
 			  <!-- <li><a href="/search"><b>Search</b></a></li> -->
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
 			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>

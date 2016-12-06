@@ -19,11 +19,19 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
+				<h1> You're currently following </h1>
+				<table>
+					<% for(var j=0; j < following.length; j++) { %>
+					   <tr>
+					     <td><a href="/otherProfile?userId=<%- JSON.stringify(following[j])%>"><%= following[j] %></a></td>
+					   </tr>
+					<% } %>
+				</table>
 				<h1> Your Followers</h1>
 		  		<table>
 					<% for(var i=0; i < followers.length; i++) { %>
 					   <tr>
-					     <td><%= followers[i] %></td>
+					     <td><a href="/otherProfile?userId=<%- JSON.stringify(followers[i])%>"><%= followers[i] %></a></td>
 					   </tr>
 					<% } %>
 				</table>
