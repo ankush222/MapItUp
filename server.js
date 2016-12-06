@@ -342,7 +342,7 @@ app.get('/getChat', function (req, res) {
     var receiver = req.query.receiver;
     var messages = new Array();
 
-    connection.query('SELECT * FROM chat WHERE (`sender` = ? AND `receiver` = ?) OR (`sender` = ? AND receiver = ?)', [sender, receiver, receiver, sender], function (err, rows, fields) {
+    connection.query('SELECT * FROM chat WHERE (`sender` = ? AND `receiver` = ?) OR (`sender` = ? AND `receiver` = ?)', [sender, receiver, receiver, sender], function (err, rows, fields) {
         if (err) {
             res.sendStatus(404);
         }
