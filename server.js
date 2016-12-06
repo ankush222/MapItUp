@@ -459,12 +459,12 @@ app.get('/getFollowers', function (req, res) {
 app.post('/removeFollower', function (req, res) {
 
     var followee = req.body.followee;
-    var userId = req.body.userId;
     var follower = req.body.follower;
 
     var followers = [];
-    connection.query('DELETE from followers WHERE `followee` = ? AND `follower = ?', [followee, follower], function (err, rows, fields) {
+    connection.query('DELETE from followers WHERE `followee` = ? AND `follower` = ?', [followee, follower], function (err, rows, fields) {
         if (err) {
+            console.log("err in unfollow", err);
             res.sendStatus(404);
         }
         else {
