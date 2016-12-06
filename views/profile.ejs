@@ -64,7 +64,11 @@
 				<form name="followers" action="">
 					<input type="hidden" name="follower" value=<%- currentId%>>
 					<input type="hidden" name="followee" value=<%- userId%>>
-					<input type="submit" name="submit" class="button" id="follow" value="Follow" />
+					<% if () { %>
+						<input type="submit" name="submit" class="button" id="follow" value="Follow" />
+					<% } else { %>
+						<input type="submit" name="submit" class="button" id="following" value="Following" />
+					<% } %>
 				</form>
 			<% } %>
 		</div>
