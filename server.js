@@ -330,8 +330,16 @@ app.post('/newMessage', function (req, res) {
         if (err) {
             res.sendStatus(404);
         }
+        else
+            res.sendStatus(200);
     });
 })
+
+app.get('/getChat', function(req, res) {
+
+})
+
+
 
 app.get('/signIn', function (req, res) {
     res.render('signIn.ejs');
@@ -439,11 +447,10 @@ app.post('/addFollowers', function (req, res) {
 
 
 app.get('/getFollowers', function (req, res) {
-    var followee = req.query.followee;
     var userId = req.query.userId;
-
     var followers = [];
-    connection.query('SELECT follower from followers WHERE `followee` = ?', [followee], function (err, rows, fields) {
+    
+    connection.query('SELECT follower from followers WHERE `followee` = ?', [userId], function (err, rows, fields) {
         if (err) {
             res.sendStatus(404);
         }
@@ -451,7 +458,7 @@ app.get('/getFollowers', function (req, res) {
             for (var i = 0; i < rows.length; i++) {
                 followers[i] = JSON.stringify(rows[i].follower);
             }
-            res.send({ followers: followers });
+            res.render('followers.ejs',{ followers: followers });
         }
     });
 })
