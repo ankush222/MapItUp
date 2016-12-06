@@ -143,6 +143,7 @@ app.get('/profile', function (req, res) {
 app.get('/otherProfile', function (req, res) {
     var id = req.query.userId;
     var currentId = req.session.user.userId;
+    var following = false;
     // console.log("session userID = ", req.session.user.userId);
 
     var picId;
@@ -199,6 +200,20 @@ app.get('/otherProfile', function (req, res) {
                     callback(null);
                 }
             });
+        },
+        function (callback) {
+            connection.query('SELECT * from followers where `followee` = ? AND `follower` = ?', [id, currentId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    if (rows.length === 0)
+                        following = false;
+                    else
+                        following = true;
+                    callback(null);
+                }
+            })
         }
     ],
 
@@ -207,7 +222,7 @@ app.get('/otherProfile', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, following: following });
         }
 
     );
@@ -225,6 +240,14 @@ app.get('/home', requireLogin, function (req, res) {
     var userId = req.session.user.userId;
     var name;
     var countries;
+
+    // console.log("session userId = ", userId);
+    // console.log("query userId = ", req.query.userId);
+
+    if (parseInt(req.query.userId) !== userId) {
+        res.status(403).send("user is not authenticated to visit this page");
+        return;
+    }
 
     async.series([
         function (callback) {
@@ -404,9 +427,38 @@ app.post('/addFollowers', function (req, res) {
 
 
 app.get('/getFollowers', function (req, res) {
-  var followee = req.query.followee;
+    var followee = req.query.followee;
+    var userId = req.query.userId;
 
+    var followers = [];
+    connection.query('SELECT follower from followers WHERE `followee` = ?', [followee], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else {
+            for (var i = 0; i < rows.length; i++) {
+                followers[i] = JSON.stringify(rows[i].follower);
+            }
+            res.send({ followers: followers });
+        }
+    });
+})
 
+app.post('/removeFollower', function (req, res) {
+
+    var followee = req.body.followee;
+    var userId = req.body.userId;
+    var follower = req.body.follower;
+
+    var followers = [];
+    connection.query('DELETE from followers WHERE `followee` = ? AND `follower = ?', [followee, follower], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else {
+            res.sendStatus(200);
+        }
+    });
 })
 
 app.post('/updateInfo', function (req, res) {
