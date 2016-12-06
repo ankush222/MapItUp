@@ -133,7 +133,7 @@
 			<ul>
 			  <li><a href="/home?userId=<%- userId%>"><b>Home</b></a></li>
 			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
-			  <li><a href="#contact"><b>Followers</b></a></li>
+			  <li><a href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
 			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
@@ -180,7 +180,7 @@
 				<hr style="width:1100px;">
 				<% for(var i=0; i < reviews.length; i++) { %>
 				<% if(reviews[i].cost == '' || reviews[i].cost == null) { %>
-				   <div id = "reviewUser">Review by <%= JSON.stringify(reviews[i].user) %> -- <%= JSON.stringify(reviews[i].rating) %> stars</div>
+				   <div id = "reviewUser">Review by <a href="/otherProfile?userId=<%- JSON.stringify(reviews[i].user)%>"><%= JSON.stringify(reviews[i].user) %></a> -- <%= JSON.stringify(reviews[i].rating) %> stars</div>
 				 <% } else{ %>  
 				   <div id = "reviewUser">Review by <a href="/otherProfile?userId=<%- JSON.stringify(reviews[i].user)%>"><%= JSON.stringify(reviews[i].user) %></a> -- <%= JSON.stringify(reviews[i].rating) %> stars -- Average cost : <%= JSON.stringify(reviews[i].cost)%></div>
 				<% } %>

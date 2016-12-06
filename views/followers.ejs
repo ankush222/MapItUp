@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="css/results.css">
+		<link rel="stylesheet" type="text/css" href="css/followers.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	</head>
@@ -11,8 +11,7 @@
 			<ul>
 			  <li><a href="/home?userId=<%- userId%>"><b>Home</b></a></li>
 			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
-			  <li><a href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
-			  <!-- <li><a href="/search"><b>Search</b></a></li> -->
+			  <li><a class="active" href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
 			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
@@ -20,13 +19,19 @@
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1> Search results</h1>
-				<span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
-				<form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..." style="width:50%;height:35px;margin-left: 50px;"><input type="hidden" name="userId" value=<%- userId%>></form>
-		  		<table>
-					<% for(var i=0; i < countries.length; i++) { %>
+				<h1> You're currently following </h1>
+				<table>
+					<% for(var j=0; j < following.length; j++) { %>
 					   <tr>
-					     <td><%= countries[i] %></td>
+					     <td><a href="/otherProfile?userId=<%- JSON.stringify(following[j])%>"><%= following[j] %></a></td>
+					   </tr>
+					<% } %>
+				</table>
+				<h1> Your Followers</h1>
+		  		<table>
+					<% for(var i=0; i < followers.length; i++) { %>
+					   <tr>
+					     <td><a href="/otherProfile?userId=<%- JSON.stringify(followers[i])%>"><%= followers[i] %></a></td>
 					   </tr>
 					<% } %>
 				</table>
