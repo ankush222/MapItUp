@@ -338,9 +338,9 @@ app.post('/newMessage', function (req, res) {
 
 app.get('/getChat', function (req, res) {
 
-    var sender = req.body.sender;
-    var receiver = req.body.receiver;
-    var messages = [];
+    var sender = req.query.sender;
+    var receiver = req.query.receiver;
+    var messages = new Array();
 
     connection.query('SELECT * FROM chat WHERE (`sender` = ? AND `receiver` = ?) OR (`sender` = ? AND receiver = ?)', [sender, receiver, receiver, sender], function (err, rows, fields) {
         if (err) {
@@ -348,9 +348,14 @@ app.get('/getChat', function (req, res) {
         }
         else {
             for (var i = 0; i < rows.length; i++) {
-                messages[i] = rows[i];
+                var obj = new Object();
+                obj.sender = rows[i].sender;
+                obj.receiver = rows[i].receiver;
+                obj.message = rows[i].message;
+                messages.push(obj);
             }
         }
+        res.status(200).send({messages: messages});
     })
 })
 
@@ -383,15 +388,13 @@ app.get('/messages', requireLogin, function (req, res) {
                 else {
                     for (var i = 0; i < rows.length; i++) {
                         var temp = 0;
-                        for(var j = 0;j < contacts.length;j++)
-                        {
-                            if(JSON.stringify(rows[i].followee) === contacts[j])
-                            {
+                        for (var j = 0; j < contacts.length; j++) {
+                            if (JSON.stringify(rows[i].followee) === contacts[j]) {
                                 temp = 1;
                                 break;
                             }
                         }
-                        if(temp === 1)
+                        if (temp === 1)
                             continue;
                         contacts[pos++] = JSON.stringify(rows[i].followee);
                     }
