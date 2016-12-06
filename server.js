@@ -321,6 +321,18 @@ app.post('/search', function (req, res) {
     });
 })
 
+app.post('/newMessage', function (req, res) {
+    var sender = req.body.sender;
+    var receiver = req.body.receiver;
+    var message = req.body.message;
+
+    connection.query('INSERT INTO chat (sender, receiver, message) VALUES (?, ?, ?)', [sender, receiver, message], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+    });
+})
+
 app.get('/signIn', function (req, res) {
     res.render('signIn.ejs');
 })
@@ -447,12 +459,12 @@ app.get('/getFollowers', function (req, res) {
 app.post('/removeFollower', function (req, res) {
 
     var followee = req.body.followee;
-    var userId = req.body.userId;
     var follower = req.body.follower;
 
     var followers = [];
-    connection.query('DELETE from followers WHERE `followee` = ? AND `follower = ?', [followee, follower], function (err, rows, fields) {
+    connection.query('DELETE from followers WHERE `followee` = ? AND `follower` = ?', [followee, follower], function (err, rows, fields) {
         if (err) {
+            console.log("err in unfollow", err);
             res.sendStatus(404);
         }
         else {
