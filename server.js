@@ -335,10 +335,80 @@ app.post('/newMessage', function (req, res) {
     });
 })
 
+
 app.get('/getChat', function (req, res) {
 
+    var sender = req.body.sender;
+    var receiver = req.body.receiver;
+    var messages = [];
+
+    connection.query('SELECT * FROM chat WHERE (`sender` = ? AND `receiver` = ?) OR (`sender` = ? AND receiver = ?)', [sender, receiver, receiver, sender], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else {
+            for (var i = 0; i < rows.length; i++) {
+                messages[i] = rows[i];
+            }
+        }
+    })
 })
 
+app.get('/messages', requireLogin, function (req, res) {
+    var userId = req.query.userId;
+    var contacts = [];
+    var pos = 0;
+
+    async.series([
+        function (callback) {
+            // do some stuff ...
+            connection.query('SELECT follower from followers WHERE `followee` = ?', [userId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    for (var i = 0; i < rows.length; i++) {
+                        contacts[pos++] = JSON.stringify(rows[i].follower);
+                    }
+                    callback(null);
+                }
+            });
+        },
+        function (callback) {
+            // do some more stuff ...
+            connection.query('SELECT followee from followers WHERE `follower` = ?', [userId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    for (var i = 0; i < rows.length; i++) {
+                        var temp = 0;
+                        for(var j = 0;j < contacts.length;j++)
+                        {
+                            if(JSON.stringify(rows[i].followee) === contacts[j])
+                            {
+                                temp = 1;
+                                break;
+                            }
+                        }
+                        if(temp === 1)
+                            continue;
+                        contacts[pos++] = JSON.stringify(rows[i].followee);
+                    }
+                    callback(null);
+                }
+            });
+        }
+    ],
+        // optional callback
+        function (err, results) {
+            if (err) {
+                res.status(404).send("Error in getting contacts", err);
+            }
+            else
+                res.render('messages.ejs', { userId: userId, contacts: contacts });
+        });
+})
 
 
 app.get('/signIn', function (req, res) {
