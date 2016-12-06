@@ -449,7 +449,7 @@ app.post('/addFollowers', function (req, res) {
 app.get('/getFollowers', function (req, res) {
     var userId = req.query.userId;
     var followers = [];
-    
+
     connection.query('SELECT follower from followers WHERE `followee` = ?', [userId], function (err, rows, fields) {
         if (err) {
             res.sendStatus(404);
@@ -458,7 +458,7 @@ app.get('/getFollowers', function (req, res) {
             for (var i = 0; i < rows.length; i++) {
                 followers[i] = JSON.stringify(rows[i].follower);
             }
-            res.render('followers.ejs',{ followers: followers });
+            res.render('followers.ejs',{ followers: followers, userId: userId });
         }
     });
 })
