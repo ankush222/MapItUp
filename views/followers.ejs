@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/followers.css">
+		<link rel="stylesheet" type="text/css" href="css/navbar.css">
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id = 'navbar'>
+			<img src="http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg" id="logo" />
+			<div id = "name">MapItUp</div>
+			<ul>
+			  <li><a href="/home?userId=<%- userId%>"><b>Home</b></a></li>
+			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
+			  <li><a class="active" href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
+			  <li><a href="/signOut"><b>Sign Out</b></a></li>
+			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
+			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
+			</ul>
+		</div>
+		<div class='layer'>
+			<div id = 'workingArea'>
+				<h1> Your Followers</h1>
+		  		<table>
+					<% for(var i=0; i < followers.length; i++) { %>
+					   <tr>
+					     <td><%= followers[i] %></td>
+					   </tr>
+					<% } %>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
