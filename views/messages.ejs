@@ -5,19 +5,91 @@
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script>
-			  $(function() {
-			    $("#eachContact").click(function() {
-			    	$.get("/getChat?sender=<%- userId%>&receiver=<%- contacts[i]%>", function(data, status){
-            			alert("Data: " + data + "\nStatus: " + status);
-        			});
-        			$("#chat").show();
+			var storedId = 0;
+			var ajax_call = function() {
+			  if (storedId != 0)
+			  {
+			  	var myId = <%-JSON.stringify(userId)%>;
+			  	var url = "/getChat?sender=<%- userId%>&receiver="
+				url = url + storedId;
+				// $(".myMessage").remove();
+	        	// $(".yourMessage").remove();
+	        	var myMessages = $('.myMessage').length;
+	        	var yourMessages = $('.yourMessage').length;
+	        	var total = myMessages + yourMessages;
+	        	$.getJSON(url, function(data, status){
+	        		if(data.messages.length > total)
+	        		{
+	        			var x = 0;
+	        			$.each(data.messages, function (index, message) {
+	        				while( x < total)
+	        					x = x+1;
+	        				if (message.sender == myId)
+	        					$("#chat").append("<div class = 'myMessage'>"+ message.message +"</div>");
+	        				else
+	        					$("#chat").append("<div class = 'yourMessage'>"+ message.message +"</div>");
+					    });
+	        		}
+				});
+			  }
+			};
 
-			        for (var c in data) {
-			            $("#chat").append(c);
-			        }  
-					return false;
-			    });
-			  });
+			var interval = 1000 * 1; //20 = number of seconds
+
+			setInterval(ajax_call, interval);
+
+
+			var idArr = [1,2];
+			$(function() {
+				$( ".contacts" ).each(function( index ) {
+				  $(this).attr("id",idArr[index]);
+				});
+			});
+
+			$(function() {
+				$( ".contacts" ).each(function(index) {
+				    $(this).on("click", function(){
+				        var id = $(this).attr('id'); 
+				        var myId = <%-JSON.stringify(userId)%>;
+				        var url = "/getChat?sender=<%- userId%>&receiver="
+				        url = url + id;
+				        if (id == storedId);
+				        else
+				        {
+				        	storedId = id;
+				        	$(".myMessage").remove();
+				        	$(".yourMessage").remove();
+				        	$.getJSON(url, function(data, status){
+		            			$("#chat").show();
+		            			$("#chatBox").show();
+		            			$.each(data.messages, function (index, message) {
+		            				if (message.sender == myId)
+		            					$("#chat").append("<div class = 'myMessage'>"+ message.message +"</div>");
+		            				else
+		            					$("#chat").append("<div class = 'yourMessage'>"+ message.message +"</div>");
+							    });
+	        				});
+				        }
+				    });
+				});
+			});
+
+
+			$(function() {
+				$( "#sendMessage" ).submit(function( event ) {
+				  event.preventDefault();
+				  var message = document.getElementById("sendingMessage").value;
+				  $.ajax({
+					    type: "POST",
+					    url: "newMessage",
+					    data: {sender: <%-JSON.stringify(userId)%>, receiver: storedId, message: message},
+					  });
+				  $("#chat").append("<div class = 'myMessage'>"+ message +"</div>");
+				  document.getElementById("sendingMessage").value = "";
+				  return false;
+				});
+			});
+
 		</script>
 	</head>
 	<body>
@@ -29,7 +101,7 @@
 			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
 			  <li><a class="active" href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
-			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
+			  <li><form action="/search" method="post" id="search-bar"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
 		</div>
@@ -37,10 +109,17 @@
 			<div id = 'workingArea'>
 				<div id = 'contacts'>
 					<% for(var i=0; i < contacts.length; i++) { %>
-						<div id = 'eachContact'><%= contacts[i]%></div>
+						<div class = 'contacts'><%= contacts[i]%></div>
 					<% } %>
 				</div>
 				<div id = 'chat' style="display:none;">
+				</div>
+				<div id="chatBox" style="display:none">
+					<form name="sendMessage" action="" id="sendMessage">
+						<input type="hidden" name="sender" value=<%- userId%>>
+						<input type="hidden" name="receiver" value=0>
+						<input type="text" name="message" id="sendingMessage" placeholder="Send a message...">
+					</form>
 				</div>
 			</div>
 		</div>
