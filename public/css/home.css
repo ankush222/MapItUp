@@ -11,9 +11,10 @@ body {
 
 #searchBox {
     position: relative;
-    width: 800px;
+    width: 1200px;
+    height: 80px;
     text-align: center;
-    left: 300px;
+    left: 100px;
     border: 2px solid;
     border-radius: 5px;
 }
@@ -35,8 +36,8 @@ body {
 
 .layer {
     background-color: rgba(100, 100, 100, 0.3);
-    position: absolute;
-    top: 90px;
+    position: relative;
+    top: 50px;
     left: 90px;
     width: 85%;
     height: 800px;
@@ -74,6 +75,22 @@ input[type=text] {
     float: left;
 }
 
+input[type=submit] {
+    background-color: #373737; 
+    color: white;
+    padding: 10px 20px;
+    margin-left: 40px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+input[type=submit]:hover {
+    background-color: #C0B283;
+}
+
 select {
     font-size: 20px;
 }
@@ -88,12 +105,53 @@ a {
 }
 
 label {
-    padding-top: 50px;
+    padding-top: 35px;
     display: inline-block;
     float: left;
     clear: left;
-    width: 200px;
+    /*width: 200px;*/
     text-align: right;
     font-size: 20px;
     color: white; font-family: arial; text-shadow: 2px 2px black;
+}
+
+.rating {
+    /*float:left;*/
+    width:165px;
+}
+.rating span { float:right; position:relative; }
+.rating span input {
+    position:absolute;
+    top:0px;
+    left:0px;
+    opacity:0;
+}
+.rating span label {
+    display:inline-block;
+    width:30px;
+    /*height:30px;*/
+    text-align:center;
+    color:#FFF;
+    background:#ccc;
+    font-size:30px;
+    margin-right:2px;
+    line-height:30px;
+    border-radius:50%;
+    -webkit-border-radius:50%;
+}
+.rating span:hover ~ span label,
+.rating span:hover label,
+.rating span.checked label,
+.rating span.checked ~ span label {
+    background:#F90;
+    color:#FFF;
+}
+
+.currencyinput {
+    color: white;
+    border: 1px inset #ccc;
+}
+.currencyinput input {
+    margin-left: 5px;
+    border: 0;
 }

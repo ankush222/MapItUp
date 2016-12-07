@@ -364,12 +364,29 @@
 				});
 		    })
 
-		    $(function() {
-		    	$( "#search-bar" ).focusout(function() {
-		    		$("#searchBox").hide();
-				});
-		    })
+		  //   $(function() {
+		  //   	$( "#search-bar" ).focusout(function() {
+		  //   		$("#searchBox").hide();
+				// });
+		  //   })
 	    </script>
+	    <script type="text/javascript">
+			$(document).ready(function(){
+			//  Check Radio-box
+			    $(".rating input:radio").attr("checked", false);
+			    $('.rating input').click(function () {
+			        $(".rating span").removeClass('checked');
+			        $(this).parent().addClass('checked');
+			    });
+
+			    $('input:radio').change(
+			    function(){
+			        var userRating = this.value;
+			        addReview.rating.value = userRating;
+			        // alert(userRating);
+			    }); 
+			});
+		</script>
 	</head>
 	<body>
 		<div id = 'navbar'>
@@ -385,7 +402,17 @@
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
 		</div>
-		<div id="searchBox" style="display:none;">
+		<div id="searchBox" style="display:none;font-size:21px;">
+				<div class="rating" style="display:inline;left:75px;position:absolute;">
+				Minimum rating : 
+				    <span><input type="radio" name="rating" id="str5" value="5"><label for="str5"></label></span>
+				    <span><input type="radio" name="rating" id="str4" value="4"><label for="str4"></label></span>
+				    <span><input type="radio" name="rating" id="str3" value="3"><label for="str3"></label></span>
+				    <span><input type="radio" name="rating" id="str2" value="2"><label for="str2"></label></span>
+				    <span><input type="radio" name="rating" id="str1" value="1"><label for="str1"></label></span>
+				</div>
+				<div style="display:inline; margin-left:250px;">
+				Month of travel : 
 				<select name="month">
 				    <option value=1>January</option>
 				    <option value=2>February</option>
@@ -400,6 +427,13 @@
 				    <option value=11>November</option>
 				    <option value=12>December</option>
 				</select>
+				</div>
+				<div style="display:inline; margin-left:50px;">
+				Cost Range : 
+				<span class="currencyinput">$<input type="number" name="costMin" placeholder="Min"></span>
+				<span class="currencyinput">$<input type="number" name="costMax" placeholder="Max"></span>
+				</div>
+				<input type="submit" value="Search">
 			</form>
 		</div>
 		<div class='layer'>
