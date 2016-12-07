@@ -66,7 +66,7 @@ app.get('/index', function (req, res) {
     res.render('index.ejs');
 })
 
-app.get('/profile', function (req, res) {
+app.get('/profile', requireLogin, function (req, res) {
     var id = req.session.user.userId;
     var currentId = req.session.user.userId;
     // console.log("session userID = ", req.session.user.userId);
@@ -140,7 +140,7 @@ app.get('/profile', function (req, res) {
 })
 
 
-app.get('/otherProfile', function (req, res) {
+app.get('/otherProfile', requireLogin, function (req, res) {
     var id = req.query.userId;
     var currentId = req.session.user.userId;
     var following = false;
@@ -230,7 +230,7 @@ app.get('/otherProfile', function (req, res) {
 
 function requireLogin(req, res, next) {
     if (!req.user) {
-        res.redirect('/signUp');
+        res.render('index.ejs');
     } else {
         next();
     }
