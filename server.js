@@ -1077,6 +1077,11 @@ app.post('/addReview', function (req, res) {
         });
 })
 
+
+app.get('/filterCountries', function(req, res) {
+    
+})
+
 app.post('/addPics', function (req, res) {
 
     var s3 = new AWS.S3();
