@@ -66,6 +66,7 @@ app.get('/index', function (req, res) {
     res.render('index.ejs');
 })
 
+
 app.get('/profile', requireLogin, function (req, res) {
     var id = req.session.user.userId;
     var currentId = req.session.user.userId;
@@ -298,28 +299,28 @@ app.get('/home', requireLogin, function (req, res) {
 
 })
 
-app.post('/search', function (req, res) {
-    var userId = req.body.userId;
-    var country = req.body.search;
-    //search here
-    //return page results.ejs ?    
-    // do some stuff ...
-    connection.query('SELECT country from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
-        if (err) {
-            res.sendStatus(404);
-        }
-        else if (rows.length > 0) {
-            country = [];
-            // console.log(rows);
-            for (var i = 0; i < rows.length; i++) {
-                country[i] = JSON.stringify(rows[i].country);
-            }
-            res.render('results.ejs', { countries: country, userId: userId });
-        }
-        else
-            res.sendStatus(404);
-    });
-})
+// app.post('/search', function (req, res) {
+//     var userId = req.body.userId;
+//     var country = req.body.search;
+//     //search here
+//     //return page results.ejs ?    
+//     // do some stuff ...
+//     connection.query('SELECT country from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
+//         if (err) {
+//             res.sendStatus(404);
+//         }
+//         else if (rows.length > 0) {
+//             country = [];
+//             // console.log(rows);
+//             for (var i = 0; i < rows.length; i++) {
+//                 country[i] = JSON.stringify(rows[i].country);
+//             }
+//             res.render('results.ejs', { countries: country, userId: userId });
+//         }
+//         else
+//             res.sendStatus(404);
+//     });
+// })
 
 app.post('/newMessage', function (req, res) {
     var sender = req.body.sender;
@@ -355,7 +356,7 @@ app.get('/getChat', function (req, res) {
                 messages.push(obj);
             }
         }
-        res.status(200).send({messages: messages});
+        res.status(200).send({ messages: messages });
     })
 })
 
@@ -963,6 +964,7 @@ app.post('/addReview', function (req, res) {
     var rating = req.body.rating;
     var private = req.body.private;
     var cost = req.body.cost;
+    var month = req.body.month;
     if (cost == "")
         cost = null;
     if (private === "true")
@@ -980,7 +982,7 @@ app.post('/addReview', function (req, res) {
     async.series([
         function (callback) {
             // do some stuff ...
-            connection.query('INSERT into reviews (country, userId, review, rating, private, cost) values (?, ?, ?, ?, ?, ?)', [country, userId, text, rating, private, cost], function (err, rows, fields) {
+            connection.query('INSERT into reviews (country, userId, review, rating, private, cost, month) values (?, ?, ?, ?, ?, ?, ?)', [country, userId, text, rating, private, cost, month], function (err, rows, fields) {
                 if (err) {
                     console.log("error in inserting", err);
                     callback(err);
@@ -1074,6 +1076,62 @@ app.post('/addReview', function (req, res) {
             }
         });
 })
+
+
+app.get('/search', function (req, res) {
+    var month = req.query.month;
+    var country = req.query.country;
+    async.series([
+        function (callback) {
+            connection.query('SELECT * FROM reviews where `month` = ?', [month], function (error, results, fields) {
+                if (error) {
+                    callback(error);
+                }
+                else {
+                    for (var i = 0; i < results.length; i++) {
+                        obj = new Object();
+                        obj.text = results[i].review;
+                        obj.user = results[i].userId;
+                        obj.rating = results[i].rating;
+                        obj.reviewId = results[i].reviewId;
+                        obj.cost = results[i].cost;
+                        obj.pics = [];
+                        reviewsWithPics.push(obj);
+                    }
+                    callback(null);
+                }
+            })
+        },
+        function (callback) {
+            connection.query('SELECT country from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else if (rows.length > 0) {
+                    country = [];
+                    // console.log(rows);
+                    for (var i = 0; i < rows.length; i++) {
+                        country[i] = JSON.stringify(rows[i].country);
+                    }
+                }
+                else
+                    res.sendStatus(404);
+            })
+        }
+    ],
+        // optional callback
+        function (err, results) {
+            // results is now equal to ['one', 'two']
+            if (err) {
+                res.sendStatus(404);
+            }
+            else {
+                res.render('results.ejs', { countries: countries, userId: userId });
+
+            }
+        });
+})
+
 
 app.post('/addPics', function (req, res) {
 
