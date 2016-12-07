@@ -9,6 +9,15 @@ body {
     margin-left: -10px;
 }
 
+#searchBox {
+    position: relative;
+    width: 800px;
+    text-align: center;
+    left: 300px;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
 #workingArea {
     position: absolute;
     margin-left: 5%;
@@ -63,6 +72,10 @@ input[type=text] {
     font-size: 18px;
     text-align: left;
     float: left;
+}
+
+select {
+    font-size: 20px;
 }
 
 h1 {

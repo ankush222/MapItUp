@@ -4,6 +4,7 @@
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	    <script type="text/javascript">
 	      var fav = "";
 	      var countries = <%-JSON.stringify(countries)%>;
@@ -355,7 +356,19 @@
 	      	favForm.submit();
 	      	fav = "";
 	      }
+	    </script>
+	    <script>
+		    $(function() {
+		    	$( "#search-bar" ).focus(function() {
+		    		$("#searchBox").show();
+				});
+		    })
 
+		    $(function() {
+		    	$( "#search-bar" ).focusout(function() {
+		    		$("#searchBox").hide();
+				});
+		    })
 	    </script>
 	</head>
 	<body>
@@ -368,9 +381,26 @@
 			  <li><a href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
 			  <li><a href="/messages?userId=<%- userId%>"><b>Messages</b></a></li>
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
-			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
+			  <li><form action="/search" method="get"><input id="search-bar" name="country" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
+		</div>
+		<div id="searchBox" style="display:none;">
+				<select name="month">
+				    <option value=1>January</option>
+				    <option value=2>February</option>
+				    <option value=3>March</option>
+				    <option value=4>April</option>
+				    <option value=5>May</option>
+				    <option value=6>June</option>
+				    <option value=7>July</option>
+				    <option value=8>August</option>
+				    <option value=9>September</option>
+				    <option value=10>October</option>
+				    <option value=11>November</option>
+				    <option value=12>December</option>
+				</select>
+			</form>
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
