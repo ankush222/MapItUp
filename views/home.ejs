@@ -412,8 +412,9 @@
 				    <span><input type="radio" name="rating" id="str1" value="1"><label for="str1"></label></span>
 				</div>
 				<div style="display:inline; margin-left:250px;">
-				Month of travel : 
+<!-- 				Month of travel :  -->
 				<select name="month">
+					<option selected="selected" disabled="disabled">Month of travel</option>
 				    <option value=1>January</option>
 				    <option value=2>February</option>
 				    <option value=3>March</option>
@@ -430,8 +431,8 @@
 				</div>
 				<div style="display:inline; margin-left:50px;">
 				Cost Range : 
-				<span class="currencyinput">$<input type="number" name="costMin" placeholder="Min"></span>
-				<span class="currencyinput">$<input type="number" name="costMax" placeholder="Max"></span>
+				<span class="currencyinput">$<input type="number" name="min" placeholder="Min"></span>
+				<span class="currencyinput">$<input type="number" name="max" placeholder="Max"></span>
 				</div>
 				<input type="submit" value="Search">
 			</form>
