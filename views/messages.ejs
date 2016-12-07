@@ -12,8 +12,6 @@
 			  	var myId = <%-JSON.stringify(userId)%>;
 			  	var url = "/getChat?sender=<%- userId%>&receiver="
 				url = url + storedId;
-				// $(".myMessage").remove();
-	        	// $(".yourMessage").remove();
 	        	var myMessages = $('.myMessage').length;
 	        	var yourMessages = $('.yourMessage').length;
 	        	var total = myMessages + yourMessages;
@@ -22,12 +20,15 @@
 	        		{
 	        			var x = 0;
 	        			$.each(data.messages, function (index, message) {
-	        				while( x < total)
-	        					x = x+1;
-	        				if (message.sender == myId)
-	        					$("#chat").append("<div class = 'myMessage'>"+ message.message +"</div>");
+	        				if( x < total );
 	        				else
-	        					$("#chat").append("<div class = 'yourMessage'>"+ message.message +"</div>");
+	        				{
+		        				if (message.sender == myId)
+		        					$("#chat").append("<div class = 'myMessage'>"+ message.message +"</div>");
+		        				else
+		        					$("#chat").append("<div class = 'yourMessage'>"+ message.message +"</div>");
+	        				}
+	        				x = x+1;
 					    });
 	        		}
 				});
@@ -81,7 +82,6 @@
 				$( "#sendMessage" ).submit(function( event ) {
 				  event.preventDefault();
 				  var message = document.getElementById("sendingMessage").value;
-				  alert(storedId);
 				  $.ajax({
 					    type: "POST",
 					    url: "newMessage",
