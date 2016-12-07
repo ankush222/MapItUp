@@ -66,6 +66,7 @@ app.get('/index', function (req, res) {
     res.render('index.ejs');
 })
 
+
 app.get('/profile', requireLogin, function (req, res) {
     var id = req.session.user.userId;
     var currentId = req.session.user.userId;
@@ -963,6 +964,7 @@ app.post('/addReview', function (req, res) {
     var rating = req.body.rating;
     var private = req.body.private;
     var cost = req.body.cost;
+    var month = req.body.month;
     if (cost == "")
         cost = null;
     if (private === "true")
@@ -980,7 +982,7 @@ app.post('/addReview', function (req, res) {
     async.series([
         function (callback) {
             // do some stuff ...
-            connection.query('INSERT into reviews (country, userId, review, rating, private, cost) values (?, ?, ?, ?, ?, ?)', [country, userId, text, rating, private, cost], function (err, rows, fields) {
+            connection.query('INSERT into reviews (country, userId, review, rating, private, cost, month) values (?, ?, ?, ?, ?, ?, ?)', [country, userId, text, rating, private, cost, month], function (err, rows, fields) {
                 if (err) {
                     console.log("error in inserting", err);
                     callback(err);
