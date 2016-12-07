@@ -40,7 +40,7 @@
 			  <li><a href="/home?userId=<%- currentId%>"><b>Home</b></a></li>
 			  <li><a class="active" href="/profile?userId=<%- currentId%>"><b>Profile</b></a></li>
 			  <li><a href="/getFollowers?userId=<%- currentId%>"><b>Followers</b></a></li>
-			  <!-- <li><a href="/search"><b>Search</b></a></li> -->
+			  <li><a href="/messages?userId=<%- userId%>"><b>Messages</b></a></li>
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
 			  <li><form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- currentId%>></form></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>

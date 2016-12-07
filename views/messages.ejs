@@ -99,7 +99,8 @@
 			<ul>
 			  <li><a href="/home?userId=<%- userId%>"><b>Home</b></a></li>
 			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
-			  <li><a class="active" href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
+			  <li><a href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
+			  <li><a class="active" href="/messages?userId=<%- userId%>"><b>Messages</b></a></li>
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
 			  <li><form action="/search" method="post" id="search-bar"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
