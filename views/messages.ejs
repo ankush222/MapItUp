@@ -38,8 +38,10 @@
 
 			setInterval(ajax_call, interval);
 
-
-			var idArr = [1,2];
+			var idArr = [];
+			for(var i=0; i < <%-contacts.length%>; i++) {
+				idArr[i] = <%-JSON.stringify(contacts)%>[i];
+			}
 			$(function() {
 				$( ".contacts" ).each(function( index ) {
 				  $(this).attr("id",idArr[index]);
@@ -79,6 +81,7 @@
 				$( "#sendMessage" ).submit(function( event ) {
 				  event.preventDefault();
 				  var message = document.getElementById("sendingMessage").value;
+				  alert(storedId);
 				  $.ajax({
 					    type: "POST",
 					    url: "newMessage",
