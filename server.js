@@ -230,7 +230,7 @@ app.get('/otherProfile', function (req, res) {
 
 function requireLogin(req, res, next) {
     if (!req.user) {
-        res.redirect('/signUp');
+        res.render('index.ejs');
     } else {
         next();
     }
