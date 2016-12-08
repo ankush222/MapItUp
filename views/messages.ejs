@@ -128,18 +128,20 @@
 			  <li><a href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
 			  <li><a class="active" href="/messages?userId=<%- userId%>"><b>Messages</b></a></li>
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
-			  <li><form action="/search" method="post" id="search-bar"><input id="search-bar" name="search" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></form></li>
-			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
 		</div>
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<div id = 'contacts'>
+				<% if ((contacts.length) == 0) { %>
+				<h1>You have no contacts ! Follow someone to chat with them ! </h1>
+				<% } else { %>
+				<h1>Contacts</h1>
+				<div id = 'contacts' style="background: white;">
 					<% for(var i=0; i < contacts.length; i++) { %>
 						<div class = 'contacts'><%= contacts[i]%></div>
 					<% } %>
 				</div>
-				<div id = 'chat' style="display:none;">
+				<div id = 'chat' style="display:none;background: white;">
 				</div>
 				<div id="chatBox" style="display:none">
 					<form name="sendMessage" action="" id="sendMessage">
@@ -148,6 +150,7 @@
 						<input type="text" name="message" id="sendingMessage" placeholder="Send a message...">
 					</form>
 				</div>
+				<% } %>
 			</div>
 		</div>
 	</body>
