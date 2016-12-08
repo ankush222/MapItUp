@@ -34,6 +34,22 @@ body {
     /*margin-top: 13%;*/
 }
 
+#featured {
+    position: absolute;
+    margin-top: 25px;
+    /*margin-bottom: 25px;*/
+    /*overflow-y:auto;*/
+    height:150px;
+    width: 150px;
+    /*border: 2px solid;*/
+    border-radius: 5px;
+    left: 940;
+    top: 110;
+}
+
+
+
+
 .layer {
     background-color: rgba(100, 100, 100, 0.3);
     position: relative;
