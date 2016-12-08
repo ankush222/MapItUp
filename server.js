@@ -1500,7 +1500,8 @@ app.get('/search', function (req, res) {
         }
     }
     else {
-        res.render('results.ejs', { countries: country, userId: userId });
+        console.log("country = ", country);
+        res.redirect('/countries?' + "userId=" + userId + "&country=" + country);
         return;
     }
 })
