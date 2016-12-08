@@ -13,13 +13,18 @@ body {
     position: relative;
     overflow-y:auto;
     height:200px;
-    width: 150px;
+    width: 250px;
     border: 2px solid;
     border-radius: 5px;
 }
 
 .contacts {
     font-size: 25px;
+}
+
+.contacts:hover {
+    background-color: black;
+    color: white;
 }
 
 .myMessage {

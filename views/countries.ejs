@@ -125,6 +125,30 @@
 					addReview.private.value = false;
 			}
 		</script>
+
+		<script>
+			//this script is for using names instead of userId
+			idArr = [];
+			nameArr = [];
+			for(var i=0; i < <%-reviews.length%>; i++) {
+				idArr[i] = <%-JSON.stringify(reviews)%>[i].user;
+			}
+
+			for(var k in idArr){
+			    (function(key){
+			    	var url = 'userName?userId=';
+			            $.ajax({
+			                method: 'get',
+			                url:url+idArr[key],
+			                success: function(data) {
+			                    var name = data.firstName + ' ' + data.lastName;
+			                    // alert(name);
+			                    $('.reviewUser').eq(key).find('.myName').html(name);
+			                }
+			            }); 
+			    })(k);
+			}
+		</script>
 	</head>
 	<body>
 		<div id = 'navbar'>
@@ -199,9 +223,9 @@
 				<hr style="width:1100px;">
 				<% for(var i=0; i < reviews.length; i++) { %>
 				<% if(reviews[i].cost == '' || reviews[i].cost == null) { %>
-				   <div id = "reviewUser">Review by <a href="/otherProfile?userId=<%- JSON.stringify(reviews[i].user)%>"><%= JSON.stringify(reviews[i].user) %></a> -- <%= JSON.stringify(reviews[i].rating) %> stars</div>
+				   <div class = "reviewUser">Review by <a href="/otherProfile?userId=<%- JSON.stringify(reviews[i].user)%>"><div class='myName' style="display: inline;"></div></a> -- <%= JSON.stringify(reviews[i].rating) %> stars</div>
 				 <% } else{ %>  
-				   <div id = "reviewUser">Review by <a href="/otherProfile?userId=<%- JSON.stringify(reviews[i].user)%>"><%= JSON.stringify(reviews[i].user) %></a> -- <%= JSON.stringify(reviews[i].rating) %> stars -- Average cost : <%= JSON.stringify(reviews[i].cost)%></div>
+				   <div class = "reviewUser">Review by <a href="/otherProfile?userId=<%- JSON.stringify(reviews[i].user)%>"><div class='myName' style="display: inline;"></div></a> -- <%= JSON.stringify(reviews[i].rating) %> stars -- Average cost : $ <%= JSON.stringify(reviews[i].cost)%></div>
 				<% } %>
 					<div id = "reviewText"><%= JSON.stringify(reviews[i].text) %></div>
 					<div>

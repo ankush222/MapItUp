@@ -94,6 +94,29 @@
 			});
 
 		</script>
+		<script>
+			//this script is for using names instead of userId
+			idArr = [];
+			nameArr = [];
+			for(var i=0; i < <%-contacts.length%>; i++) {
+				idArr[i] = <%-JSON.stringify(contacts)%>[i];
+			}
+
+			for(var k in idArr){
+			    (function(key){
+			    	var url = 'userName?userId=';
+			            $.ajax({
+			                method: 'get',
+			                url:url+idArr[key],
+			                success: function(data) {
+			                    var name = data.firstName + ' ' + data.lastName;
+			                    // alert(name);
+			                    $('.contacts').eq(key).html(name);
+			                }
+			            }); 
+			    })(k);
+			}
+		</script>
 	</head>
 	<body>
 		<div id = 'navbar'>
