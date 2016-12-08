@@ -299,28 +299,28 @@ app.get('/home', requireLogin, function (req, res) {
 
 })
 
-// app.post('/search', function (req, res) {
-//     var userId = req.body.userId;
-//     var country = req.body.search;
-//     //search here
-//     //return page results.ejs ?    
-//     // do some stuff ...
-//     connection.query('SELECT country from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
-//         if (err) {
-//             res.sendStatus(404);
-//         }
-//         else if (rows.length > 0) {
-//             country = [];
-//             // console.log(rows);
-//             for (var i = 0; i < rows.length; i++) {
-//                 country[i] = JSON.stringify(rows[i].country);
-//             }
-//             res.render('results.ejs', { countries: country, userId: userId });
-//         }
-//         else
-//             res.sendStatus(404);
-//     });
-// })
+app.post('/search', function (req, res) {
+    var userId = req.body.userId;
+    var country = req.body.search;
+    //search here
+    //return page results.ejs ?    
+    // do some stuff ...
+    connection.query('SELECT country from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else if (rows.length > 0) {
+            country = [];
+            // console.log(rows);
+            for (var i = 0; i < rows.length; i++) {
+                country[i] = JSON.stringify(rows[i].country);
+            }
+            res.render('results.ejs', { countries: country, userId: userId });
+        }
+        else
+            res.sendStatus(404);
+    });
+})
 
 app.post('/newMessage', function (req, res) {
     var sender = req.body.sender;
@@ -459,8 +459,19 @@ app.post('/deactivate', function (req, res) {
 app.post('/addVisited', function (req, res) {
     var country = req.body.country;
     var userId = req.body.userId;
+    var numberCountries = 0;
 
     async.series([
+        function (callback) {
+            connection.query('SELECT * from countries where `id` = ?', [userId], function (err, rows, fields) {
+                if (err) {
+                    callback(err);
+                }
+                else if (rows.length > 0)
+                    numberCountries = rows.length;
+                callback(null);
+            });
+        },
         function (callback) {
             // do some stuff ...
             connection.query('SELECT * from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
@@ -1081,55 +1092,115 @@ app.post('/addReview', function (req, res) {
 app.get('/search', function (req, res) {
     var month = req.query.month;
     var country = req.query.country;
-    async.series([
-        function (callback) {
-            connection.query('SELECT * FROM reviews where `month` = ?', [month], function (error, results, fields) {
+    var countries = [];
+    var userId = req.query.userId;
+    var rating = req.query.rating;
+    var min = req.query.min;
+    var max = req.query.max;
+    var monthFavs = new Array();
+    var finalFavs = new Array();
+    if (country === "" || country === undefined) {
+        if (month !== "" && month !== undefined) {
+            connection.query('SELECT * FROM reviews where `month` = ?', [parseInt(month)], function (error, results, fields) {
                 if (error) {
-                    callback(error);
+                    res.status(404).send(error);
+                    return;
                 }
                 else {
                     for (var i = 0; i < results.length; i++) {
+                        var temp = 0;
                         obj = new Object();
                         obj.text = results[i].review;
                         obj.user = results[i].userId;
                         obj.rating = results[i].rating;
                         obj.reviewId = results[i].reviewId;
                         obj.cost = results[i].cost;
-                        obj.pics = [];
-                        reviewsWithPics.push(obj);
+                        obj.country = results[i].country;
+                        obj.count = 1;
+                        for (var i = 0; i < monthFavs.length; i++) {
+                            if (obj.country === monthFavs[i].country) {
+                                monthFavs[i].count++;
+                                monthFavs[i].rating = monthFavs[i].rating + obj.rating;
+                                monthFavs[i].cost = monthFavs[i].cost + obj.cost;
+                                temp = 1;
+                                break;
+                            }
+                        }
+                        if (temp === 0)
+                            monthFavs.push(obj);
                     }
-                    callback(null);
-                }
-            })
-        },
-        function (callback) {
-            connection.query('SELECT country from countries where `id` = ? AND `country` = ?', [userId, country], function (err, rows, fields) {
-                if (err) {
-                    callback(err);
-                }
-                else if (rows.length > 0) {
-                    country = [];
-                    // console.log(rows);
-                    for (var i = 0; i < rows.length; i++) {
-                        country[i] = JSON.stringify(rows[i].country);
+                    if (rating === "" || rating === undefined)
+                        rating = 0;
+                    if (min === "")
+                        min = 0;
+                    if (max === "")
+                        max = Number.MAX_VALUE;
+
+                    for (var i = 0; i < monthFavs.length; i++) {
+                        var averageRating = monthFavs[i].rating / monthFavs[i].count;
+                        var averageCost = monthFavs[i].cost / monthFavs[i].count;
+                        if (monthFavs[i].count >= 0 && averageRating >= parseInt(rating) && averageCost <= parseInt(max) && averageCost >= parseInt(min)) {
+                            finalFavs.push(monthFavs[i].country);
+                        }
                     }
+                    console.log("finalFavs = ", finalFavs);
+                    res.render('results.ejs', { countries: finalFavs, userId: userId });
                 }
-                else
-                    res.sendStatus(404);
             })
         }
-    ],
-        // optional callback
-        function (err, results) {
-            // results is now equal to ['one', 'two']
-            if (err) {
-                res.sendStatus(404);
-            }
-            else {
-                res.render('results.ejs', { countries: countries, userId: userId });
+        else if (rating !== undefined || cost !== "") {
+            connection.query('SELECT * from reviews', function (error, results, fields) {
+                if (error) {
+                    res.status(404).send(error);
+                    return;
+                }
+                else {
+                    for (var i = 0; i < results.length; i++) {
+                        var temp = 0;
+                        obj = new Object();
+                        obj.text = results[i].review;
+                        obj.user = results[i].userId;
+                        obj.rating = results[i].rating;
+                        obj.reviewId = results[i].reviewId;
+                        obj.cost = results[i].cost;
+                        obj.country = results[i].country;
+                        obj.count = 1;
+                        for (var i = 0; i < monthFavs.length; i++) {
+                            if (obj.country === monthFavs[i].country) {
+                                monthFavs[i].count++;
+                                monthFavs[i].rating = monthFavs[i].rating + obj.rating;
+                                monthFavs[i].cost = monthFavs[i].cost + obj.cost;
+                                temp = 1;
+                                break;
+                            }
+                        }
+                        if (temp === 0)
+                            monthFavs.push(obj);
+                    }
+                    if (cost === "")
+                        cost = 0;
+                    if (min === "")
+                        min = 0;
+                    if (max === "")
+                        max = Number.MAX_VALUE;
 
-            }
-        });
+                    for (var i = 0; i < monthFavs.length; i++) {
+                        var averageRating = monthFavs[i].rating / monthFavs[i].count;
+                        var averageCost = monthFavs[i].cost / monthFavs[i].count;
+                        if (averageRating >= parseInt(rating) && averageCost <= parseInt(max) && averageCost >= parseInt(min)) {
+                            finalFavs.push(monthFavs[i].country);
+                        }
+                    }
+                    console.log("finalFavs = ", finalFavs);
+                    res.render('results.ejs', { countries: finalFavs, userId: userId });
+                }
+            })
+        }
+    }
+    else {
+        res.render('results.ejs', { countries: country, userId: userId });
+        return;
+    }
 })
 
 
