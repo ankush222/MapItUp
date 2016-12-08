@@ -3,8 +3,11 @@
 		<link rel="stylesheet" type="text/css" href="css/results.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script type="text/javascript">
 	      var countries = <%-JSON.stringify(countries)%>;
+	      alert(countries);
 	      google.charts.load('upcoming', {'packages':['geochart']});
 	      google.charts.setOnLoadCallback(drawRegionsMap);
 	      var size = countries.length;
@@ -295,6 +298,7 @@
 			});
 
 			chart2.draw(dataTable2, options1);
+		}
 
 	    </script>
 	</head>
