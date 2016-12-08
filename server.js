@@ -1131,14 +1131,26 @@ app.get('/search', function (req, res) {
                     }
                     if (rating === "" || rating === undefined)
                         rating = 0;
+                    console.log("min = ", min);
+                    console.log("max = ", max);
+
                     if (min === "")
                         min = 0;
+                    
                     if (max === "")
-                        max = Number.MAX_VALUE;
-
+                    {
+                        max = Number.MAX_SAFE_INTEGER;
+                    }
+                    console.log("monthFavs = ", monthFavs);
                     for (var i = 0; i < monthFavs.length; i++) {
                         var averageRating = monthFavs[i].rating / monthFavs[i].count;
                         var averageCost = monthFavs[i].cost / monthFavs[i].count;
+                        // console.log(monthFavs[i].count >= 0 );
+                        // console.log(averageRating >= parseInt(rating));
+                        // console.log(averageCost <= parseInt(max));
+                        // console.log(averageCost >= parseInt(min));
+                        // console.log(max);
+
                         if (monthFavs[i].count >= 0 && averageRating >= parseInt(rating) && averageCost <= parseInt(max) && averageCost >= parseInt(min)) {
                             finalFavs.push(monthFavs[i].country);
                         }
@@ -1148,7 +1160,7 @@ app.get('/search', function (req, res) {
                 }
             })
         }
-        else if (rating !== undefined || cost !== "") {
+        else if (rating !== undefined || min !== "" || max !== "") {
             connection.query('SELECT * from reviews', function (error, results, fields) {
                 if (error) {
                     res.status(404).send(error);
@@ -1177,12 +1189,12 @@ app.get('/search', function (req, res) {
                         if (temp === 0)
                             monthFavs.push(obj);
                     }
-                    if (cost === "")
-                        cost = 0;
+                    if(rating === undefined || rating === "")
+                        rating = 0;
                     if (min === "")
                         min = 0;
                     if (max === "")
-                        max = Number.MAX_VALUE;
+                        max = Number.MAX_SAFE_INTEGER;
 
                     for (var i = 0; i < monthFavs.length; i++) {
                         var averageRating = monthFavs[i].rating / monthFavs[i].count;
