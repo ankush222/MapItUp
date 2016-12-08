@@ -513,6 +513,7 @@ app.get('/home', requireLogin, function (req, res) {
     var userId = req.session.user.userId;
     var name;
     var countries;
+    var featured = new Array();
 
     // console.log("session userId = ", userId);
     // console.log("query userId = ", req.query.userId);
@@ -548,6 +549,21 @@ app.get('/home', requireLogin, function (req, res) {
                 }
             });
         },
+        function (callback) {
+            connection.query('SELECT userId from users where `featured` = ? LIMIT 5', [true], function (err, rows, fields) {
+        if (err) {
+         callback(err)        
+        }
+        else
+        {
+            for(var i = 0;i < rows.length;i++)
+            {
+                featured.push(rows[i].userId);
+            }
+            callback(null);
+        }
+    });
+        }
     ],
         // optional callback
         function (err, results) {
@@ -565,7 +581,7 @@ app.get('/home', requireLogin, function (req, res) {
                         temp++;
                     }
                 }
-                res.render('home.ejs', { name: name, userId: userId, countries: country, favorites: favorites });
+                res.render('home.ejs', { name: name, userId: userId, countries: country, favorites: favorites, featured: featured });
             }
         });
 
