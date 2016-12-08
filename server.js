@@ -205,7 +205,7 @@ map.set( "Moldova"   ,   'MD'   );
 map.set( "Montenegro"   ,   'ME'   );
 map.set( "Madagascar"   ,   'MG'   );
 map.set( "Marshall Islands"   ,   'MH'   );
-map.set( "F.Y.R.O.M. (Macedonia)"   ,   'MK'   );
+map.set( "Macedonia"   ,   'MK'   );
 map.set( "Mali"   ,   'ML'   );
 map.set( "Myanmar"   ,   'MM'   );
 map.set( "Mongolia"   ,   'MN'   );
@@ -1225,7 +1225,21 @@ app.get('/countries', function (req, res) {
             }
             else {
                 reviewsWithPics = reviewsWithPics.reverse();
-                res.render('countries.ejs', { userId: userId, country: country, reviews: reviewsWithPics, countryPics: countryPics });
+                console.log(map.size);
+                var i = 0;
+                var mapIter = map.keys();
+                var countryName;
+                for(i = 0; i < map.size; i++)
+                {
+                    countryName = mapIter.next().value;
+                    if(map.get(countryName) === country)
+                    {
+                        console.log(i);
+                        console.log(countryName);
+                        break;
+                    }
+                }
+                res.render('countries.ejs', { userId: userId, country: country, reviews: reviewsWithPics, countryPics: countryPics, countryName: countryName });
             }
         });
 })
@@ -1354,6 +1368,9 @@ app.post('/addReview', function (req, res) {
 app.get('/search', function (req, res) {
     var month = req.query.month;
     var country = req.query.country;
+    var blank = 0;
+    if(country === undefined)
+        blank = 1;
     var countries = [];
     var userId = req.query.userId;
     var rating = req.query.rating;
@@ -1361,6 +1378,16 @@ app.get('/search', function (req, res) {
     var max = req.query.max;
     var monthFavs = new Array();
     var finalFavs = new Array();
+    if(blank === 0)
+    {
+        country = map.get(country);
+        if(country === undefined)
+        {
+                res.render('results.ejs', { countries: [], userId: userId });
+                return;
+        }
+    }
+
     if (country === "" || country === undefined) {
         if (month !== "" && month !== undefined) {
             connection.query('SELECT * FROM reviews where `month` = ?', [parseInt(month)], function (error, results, fields) {
