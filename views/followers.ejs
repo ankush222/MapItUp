@@ -3,6 +3,53 @@
 		<link rel="stylesheet" type="text/css" href="css/followers.css">
 		<link rel="stylesheet" type="text/css" href="css/navbar.css">
 		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script>
+			//this script is for using names instead of userId
+			idArrFollowing = [];
+			nameArr = [];
+			for(var i=0; i < <%-following.length%>; i++) {
+				idArrFollowing[i] = <%-JSON.stringify(following)%>[i];
+			}
+
+			for(var k in idArrFollowing){
+			    (function(key){
+			    	var url = 'userName?userId=';
+			            $.ajax({
+			                method: 'get',
+			                url:url+idArrFollowing[key],
+			                success: function(data) {
+			                    var name = data.firstName + ' ' + data.lastName;
+			                    // alert(name);
+			                    $('.myNameFollowing').eq(key).html(name);
+			                }
+			            }); 
+			    })(k);
+			}
+		</script>
+		<script>
+			//this script is for using names instead of userId
+			idArrFollowers = [];
+			for(var i=0; i < <%-followers.length%>; i++) {
+				idArrFollowers[i] = <%-JSON.stringify(followers)%>[i];
+			}
+
+			for(var k in idArrFollowers){
+			    (function(key){
+			    	var url = 'userName?userId=';
+			            $.ajax({
+			                method: 'get',
+			                url:url+idArrFollowers[key],
+			                success: function(data) {
+			                    var name = data.firstName + ' ' + data.lastName;
+			                    // alert(name);
+			                    $('.myNameFollowers').eq(key).html(name);
+			                }
+			            }); 
+			    })(k);
+			}
+		</script>
+
 	</head>
 	<body>
 		<div id = 'navbar'>
@@ -24,7 +71,7 @@
 				<table>
 					<% for(var j=0; j < following.length; j++) { %>
 					   <tr>
-					     <td><a href="/otherProfile?userId=<%- following[j]%>"><%= following[j] %></a></td>
+					     <td><a href="/otherProfile?userId=<%- following[j]%>"><div class="myNameFollowing" style="display: inline;"></div></a></td>
 					   </tr>
 					<% } %>
 				</table>
@@ -32,7 +79,7 @@
 		  		<table>
 					<% for(var i=0; i < followers.length; i++) { %>
 					   <tr>
-					     <td><a href="/otherProfile?userId=<%- followers[i]%>"><%= followers[i] %></a></td>
+					     <td><a href="/otherProfile?userId=<%- followers[i]%>"><div class="myNameFollowers" style="display: inline;"></div></a></td>
 					   </tr>
 					<% } %>
 				</table>
