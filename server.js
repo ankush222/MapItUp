@@ -1426,6 +1426,7 @@ app.get('/search', function (req, res) {
             connection.query('SELECT * from reviews', function (error, results, fields) {
                 if (error) {
                     res.status(404).send(error);
+                    console.log("error", error);
                     return;
                 }
                 else {
@@ -1439,11 +1440,11 @@ app.get('/search', function (req, res) {
                         obj.cost = results[i].cost;
                         obj.country = results[i].country;
                         obj.count = 1;
-                        for (var i = 0; i < monthFavs.length; i++) {
-                            if (obj.country === monthFavs[i].country) {
-                                monthFavs[i].count++;
-                                monthFavs[i].rating = monthFavs[i].rating + obj.rating;
-                                monthFavs[i].cost = monthFavs[i].cost + obj.cost;
+                        for (var j = 0; j < monthFavs.length; j++) {
+                            if (obj.country === monthFavs[j].country) {
+                                monthFavs[j].count++;
+                                monthFavs[j].rating = monthFavs[j].rating + obj.rating;
+                                monthFavs[j].cost = monthFavs[j].cost + obj.cost;
                                 temp = 1;
                                 break;
                             }
@@ -1457,7 +1458,7 @@ app.get('/search', function (req, res) {
                         min = 0;
                     if (max === "")
                         max = Number.MAX_SAFE_INTEGER;
-
+                    console.log("monthFavs = ", monthFavs);
                     for (var i = 0; i < monthFavs.length; i++) {
                         var averageRating = monthFavs[i].rating / monthFavs[i].count;
                         var averageCost = monthFavs[i].cost / monthFavs[i].count;
