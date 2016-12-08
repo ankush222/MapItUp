@@ -7,7 +7,8 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script type="text/javascript">
 	      var countries = <%-JSON.stringify(countries)%>;
-	      alert(countries);
+	      var userId = <%-JSON.stringify(userId)%>;
+	      // alert(countries);
 	      google.charts.load('upcoming', {'packages':['geochart']});
 	      google.charts.setOnLoadCallback(drawRegionsMap);
 	      var size = countries.length;
@@ -16,7 +17,6 @@
 	        dataTable2.addColumn('string', 'Country');
 	        dataTable2.addColumn('number', 'Color');
 	        // A column for custom tooltip content
-	        // dataTable2.addColumn({type: 'string', role: 'tooltip'});
 	        dataTable2.addRows([
 				['AC',0 ],
 			    ['AD',0 ],
@@ -279,25 +279,57 @@
 			    dataTable2.addRows([[countries[i], -1 ]]);
 			}
 
+			var dataTable1 = new google.visualization.DataTable();
+	        dataTable1.addColumn('string', 'Country');
+	        dataTable1.addColumn('number', 'Color');
+	        dataTable1.addRows([['SS',0 ]]); //added south sudan for 0 country code color
+	        for (i = 0; i < countries.length; i++) { 
+				// alert("oye "+countries[i]);
+				c = countries[i].replace(/['"]+/g, '');
+				// alert("haha "+c);
+			    dataTable1.addRows([[countries[i], -1 ]]);
+			}
+
 			var options1 = {
 	        	backgroundColor: '#17263c',
 	        	legend: 'none',
 	        	colorAxis: {colors: ['green', 'yellow', 'grey']},
 	        };
 
+	        var chart1 = new google.visualization.GeoChart(document.getElementById('regions_div1'));
 			var chart2 = new google.visualization.GeoChart(document.getElementById('regions_div2'));
 
 			google.visualization.events.addListener(chart2, 'select', function() {
 			    var selectionIdx = chart2.getSelection()[0].row;
 			    countryName = dataTable2.getValue(selectionIdx, 0);
 			    c = countryName.replace(/['"]+/g, '');
+			    
+			    dataTable1.addRows([[c, -2]]);
+
+			    document.getElementById("regions_div2").style.zIndex = -10;
+			    document.getElementById("regions_div1").style.zIndex = 0;
+				var options2 = {
+		          region: c, //count, // Africa
+		          backgroundColor: '#17263c',
+		          legend: 'none',
+		          colorAxis: {colors: ['#db4025', 'green', 'grey']},
+		          datalessRegionColor: 'grey'      
+		        };
+
+			    chart1.draw(dataTable1, options2);
 			    chart2.setSelection(null);
+			    dataTable1.addRows([[c, 0]]);
 			    google.visualization.events.addListener(chart1, 'select', function() {
-			    	window.open("/countries?userId="+userId+"&country="+fav, "_self");
+			    	window.open("/countries?userId="+userId+"&country="+c, "_self");
 			    });
 			});
 
 			chart2.draw(dataTable2, options1);
+
+			document.getElementById("back").addEventListener("click", function(){
+				document.getElementById("regions_div1").style.zIndex = -10;
+				document.getElementById("regions_div2").style.zIndex = 0;
+			});
 		}
 
 	    </script>
@@ -319,9 +351,13 @@
 		<div class='layer'>
 			<div id = 'workingArea'>
 				<h1> Search results</h1>
-				<span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span>
-				<form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..." style="width:50%;height:35px;margin-left: 50px;"><input type="hidden" name="userId" value=<%- userId%>></form>
+				<!-- <span class="icon" style="margin-left:18px;"><i class="fa fa-search" style="font-size:23px"></i></span> -->
+				<!-- <form action="/search" method="post"><input id="search-bar" name="search" type="text" placeholder="Search..." style="width:50%;height:35px;margin-left: 50px;"><input type="hidden" name="userId" value=<%- userId%>></form> -->
+				<div id = 'map'>
+				<div id="regions_div1" style="position: absolute; width: 1000px; height: 500px; display: inline; z-index: -10"></div>
 				<div id="regions_div2" style="position: absolute; width: 1000px; height: 500px;"></div>
+				</div>
+				<div id='back'></div>
 			</div>
 		</div>
 	</body>
