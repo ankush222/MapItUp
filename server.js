@@ -728,6 +728,27 @@ app.post('/deactivate', function (req, res) {
         });
 })
 
+app.get('/getFeatured', function (req, res) {
+
+    var userId = req.query.userId;
+    var featured = new Array();
+
+
+    connection.query('SELECT userId from users where `featured` = ? LIMIT 5', [true], function (err, rows, fields) {
+        if (err) {
+            res.sendStatus(404);
+        }
+        else
+        {
+            for(var i = 0;i < rows.length;i++)
+            {
+                featured.push(rows[i].userId);
+            }
+            res.send({ featured: featured });
+        }
+    });
+})
+
 app.post('/addVisited', function (req, res) {
 
     var country = req.body.country;
@@ -781,7 +802,7 @@ app.post('/addVisited', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else {
-                if (numberCountries === 10) {
+                if (numberCountries === 5) {
                     featured = true;
                     connection.query('UPDATE users set `featured` = ? where `userId` = ?', [true, userId], function (err, rows, fields) {
                         if (err) {
@@ -1361,24 +1382,25 @@ app.post('/addReview', function (req, res) {
             for (var i = 0; i < files.length; i++) {
                 picIds.push(files[i].filename.toString());
             }
-            async.eachSeries(picIds, function (picId, callb) {
-                connection.query('INSERT into reviewPics (reviewId, picId, country) values (?, ?, ?)', [reviewId, picId, country], function (err, rows, fields) {
-                    if (err) {
-                        console.log("error in inserting", err);
-                        callb(err);
+                async.eachSeries(picIds, function (picId, callb) {
+                    connection.query('INSERT into reviewPics (reviewId, picId, country) values (?, ?, ?)', [reviewId, picId, country], function (err, rows, fields) {
+                        if (err) {
+                            console.log("error in inserting", err);
+                            callb(err);
+                        }
+                        else {
+                            callb(null);
+                        }
+                    })
+                },
+                    function (err, data) {
+                        if (err)
+                            callback(err);
+                        else
+                            callback(null);
                     }
-                    else {
-                        callb(null);
-                    }
-                })
-            },
-                function (err, data) {
-                    if (err)
-                        callback(err);
-                    else
-                        callback(null);
-                }
-            );
+                );
+            
         },
         function (callback) {
             connection.query('SELECT * from reviews WHERE `userId` = ?', userId, function (err, rows, fields) {
@@ -1400,7 +1422,7 @@ app.post('/addReview', function (req, res) {
                 res.sendStatus(404);
             }
             else {
-                if(numberReviews == 6)
+                if(numberReviews == 5)
                 {
                      featured = true;
                      connection.query('UPDATE users set `featured` = ? where `userId` = ?', [true, userId], function (err, rows, fields) {
@@ -1409,7 +1431,7 @@ app.post('/addReview', function (req, res) {
                             res.status(404).send(err);
                         }
                         else {
-                            res.redirect('/countries?' + "userId=" + userId + "&featured=" + featured);
+                            res.redirect('/countries?' + "userId=" + userId + "&country=" + country + "&featured=" + featured);
                         }
                     });   
                     return;                
