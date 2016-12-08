@@ -333,7 +333,7 @@ app.get('/userName', function (req, res) {
         else {
             var firstName = rows[0].firstName;
             var lastName = rows[0].lastName;
-            res.send({firstName: firstName, lastName: lastName})
+            res.send({ firstName: firstName, lastName: lastName })
         }
     })
 })
@@ -518,7 +518,7 @@ app.get('/home', requireLogin, function (req, res) {
     // console.log("query userId = ", req.query.userId);
 
     if (parseInt(req.query.userId) !== userId) {
-        res.status(403).send("user is not authenticated to visit this page");
+        res.status(403).send("user is not authorized to visit this page");
         return;
     }
 
@@ -736,6 +736,7 @@ app.post('/addVisited', function (req, res) {
 
     var userId = req.body.userId;
     var numberCountries = 0;
+    var featured = false;
 
     async.series([
         function (callback) {
@@ -767,8 +768,10 @@ app.post('/addVisited', function (req, res) {
                 if (err) {
                     callback(err);
                 }
-                else
+                else {
+                    numberCountries++;
                     callback(null);
+                }
             });
         }
     ],
@@ -777,8 +780,21 @@ app.post('/addVisited', function (req, res) {
             if (err) {
                 res.status(404).send("Error in adding visited country");
             }
-            else
+            else {
+                if (numberCountries === 10) {
+                    featured = true;
+                    connection.query('UPDATE users set `featured` = ? where `userId` = ?', [true, userId], function (err, rows, fields) {
+                        if (err) {
+                            res.status(404).send(err);
+                        }
+                        else {
+                            res.redirect('/home?' + "userId=" + userId + "&featured=" + featured);
+                        }
+                    });
+                    return;
+                }
                 res.redirect('/home?' + "userId=" + userId);
+            }
         });
 
 })
@@ -1264,6 +1280,8 @@ app.post('/addReview', function (req, res) {
     var private = req.body.private;
     var cost = req.body.cost;
     var month = req.body.month;
+    var numberReviews = 0;
+    var featured = false;
     if (cost == "")
         cost = null;
     if (private === "true")
@@ -1361,6 +1379,17 @@ app.post('/addReview', function (req, res) {
                         callback(null);
                 }
             );
+        },
+        function (callback) {
+            connection.query('SELECT * from reviews WHERE `userId` = ?', userId, function (err, rows, fields) {
+                if(err) {
+                    callback(err);
+                }
+                else {
+                    numberReviews = rows.length;
+                    callback(null);
+                }
+            });
         }
     ],
         // optional callback
@@ -1371,6 +1400,20 @@ app.post('/addReview', function (req, res) {
                 res.sendStatus(404);
             }
             else {
+                if(numberReviews == 6)
+                {
+                     featured = true;
+                     connection.query('UPDATE users set `featured` = ? where `userId` = ?', [true, userId], function (err, rows, fields) {
+                        if (err) {
+                            console.log("error here");
+                            res.status(404).send(err);
+                        }
+                        else {
+                            res.redirect('/countries?' + "userId=" + userId + "&featured=" + featured);
+                        }
+                    });   
+                    return;                
+                }
                 res.redirect('/countries?' + "userId=" + userId + "&country=" + country);
             }
         });
