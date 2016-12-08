@@ -147,7 +147,7 @@
 		</marquee> 
 		<div class='layer'>
 			<div id = 'workingArea'>
-				<h1><%=JSON.stringify(country)%></h1>
+				<h1><%=countryName%></h1>
 				<button class="add" onClick="showAddPics()">Add photos</button>
 				<button class="add" onClick="showAddReview()" style="left: 100px;">Add a review</button>
 				<form name="addReview" onsubmit="checkReview()" action="/addReview" method="post" id="addReview" enctype="multipart/form-data" style="display: none;">
