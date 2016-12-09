@@ -253,7 +253,7 @@ map.set("Qatar", 'QA');
 map.set("Reunion", 'RE');
 map.set("Romania", 'RO');
 map.set("Serbia", 'RS');
-map.set("Russian Federation", 'RU');
+map.set("Russia", 'RU');
 map.set("Rwanda", 'RW');
 map.set("Saudi Arabia", 'SA');
 map.set("Solomon Islands", 'SB');
