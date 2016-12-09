@@ -493,7 +493,7 @@ app.get('/otherProfile', requireLogin, function (req, res) {
             })
         },
         function (callback) {
-            connection.query('SELECT country from countries where `userId` = ?', [id], function (err, rows, fields) {
+            connection.query('SELECT country from countries where `id` = ?', [id], function (err, rows, fields) {
                 if(err) {
                     callback(err);
                 }
