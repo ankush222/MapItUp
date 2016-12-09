@@ -351,6 +351,7 @@ app.get('/profile', requireLogin, function (req, res) {
     var lastName;
     var location;
     var email;
+    var featured;
     // var sess = req.session;
     // console.log("session = ", session);
 
@@ -395,6 +396,7 @@ app.get('/profile', requireLogin, function (req, res) {
                     lastName = rows[0].lastName;
                     location = rows[0].location;
                     email = rows[0].email;
+                    featured = rows[0].featured;
                     callback(null);
                 }
             });
@@ -408,7 +410,7 @@ app.get('/profile', requireLogin, function (req, res) {
             else
             {
                 var countries = ["IN"];
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, countries: countries });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, countries: countries, featured: featured});
             }
         }
 
@@ -421,8 +423,6 @@ app.get('/otherProfile', requireLogin, function (req, res) {
     var currentId = req.session.user.userId;
     var following = false;
     var countries = new Array();
-    // console.log("session userID = ", req.session.user.userId);
-
     var picId;
     var s3 = new AWS.S3();
     var signedUrl;
@@ -430,9 +430,7 @@ app.get('/otherProfile', requireLogin, function (req, res) {
     var lastName;
     var location;
     var email;
-    // var sess = req.session;
-    // console.log("session = ", session);
-
+    var featured;
 
     async.series([
 
@@ -474,6 +472,7 @@ app.get('/otherProfile', requireLogin, function (req, res) {
                     lastName = rows[0].lastName;
                     location = rows[0].location;
                     email = rows[0].email;
+                    featured = rows[0].featured;
                     callback(null);
                 }
             });
@@ -514,7 +513,7 @@ app.get('/otherProfile', requireLogin, function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, following: following, countries: countries});
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, following: following, countries: countries, featured: featured});
         }
 
     );
@@ -784,6 +783,10 @@ app.post('/addVisited', function (req, res) {
 
     var country = req.body.country;
     country = map.get(country);
+    if(country === undefined)
+    {
+        return;
+    }
     console.log(map.get(country));
 
     var userId = req.body.userId;
@@ -833,7 +836,7 @@ app.post('/addVisited', function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else {
-                if (numberCountries === 5) {
+                if (numberCountries === 10) {
                     featured = true;
                     connection.query('UPDATE users set `featured` = ? where `userId` = ?', [true, userId], function (err, rows, fields) {
                         if (err) {
@@ -1452,7 +1455,7 @@ app.post('/addReview', function (req, res) {
                 res.sendStatus(404);
             }
             else {
-                if (numberReviews == 5) {
+                if (numberReviews == 20) {
                     featured = true;
                     connection.query('UPDATE users set `featured` = ? where `userId` = ?', [true, userId], function (err, rows, fields) {
                         if (err) {
