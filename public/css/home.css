@@ -45,9 +45,15 @@ body {
     border-radius: 5px;
     left: 940;
     top: 110;
+    z-index: 10;
 }
-
-
+/*
+.featuredTraveler {
+    font-size: 16px;
+    color: white;
+    margin-top: 25px;
+    width: 80%;
+}*/
 
 
 .layer {
