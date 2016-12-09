@@ -1478,7 +1478,7 @@ app.get('/search', function (req, res) {
     var month = req.query.month;
     var country = req.query.country;
     var blank = 0;
-    if (country === undefined)
+    if (country === undefined || country === "")
         blank = 1;
     var countries = [];
     var userId = req.query.userId;
