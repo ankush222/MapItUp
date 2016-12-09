@@ -404,11 +404,10 @@
 		</div>
 		<div id = 'featured'>
 			<h4>Featured Travelers!</h4>
-			<a href="/otherProfile?userId=1">Traveler 1</a>
-			<br>Traveler 2
-			<br>Traveler 3
-			<br>Traveler 4
-			<br>Traveler 5
+			<% for(var i=0; i < featured.length; i++) { %>
+				<a href="/otherProfile?userId=<%- JSON.stringify(featured[i])%>">Traveler</a><br>
+			<% } %>
+
 		</div>
 		<div id="searchBox" style="display:none;font-size:21px;">
 				<div class="rating" style="display:inline;left:75px;position:absolute;">
