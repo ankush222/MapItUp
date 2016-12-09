@@ -396,19 +396,42 @@
 			  <li><a class="active" href="/home?userId=<%- userId%>"><b>Home</b></a></li>
 			  <li><a href="/profile?userId=<%- userId%>"><b>Profile</b></a></li>
 			  <li><a href="/getFollowers?userId=<%- userId%>"><b>Followers</b></a></li>
-			  <li><a href="/messages?userId=<%- userId%>"><b>Chat</b></a></li>
+			  <li><a href="/messages?userId=<%- userId%>"><b>Messages</b></a></li>
 			  <li><a href="/signOut"><b>Sign Out</b></a></li>
 			  <li><form action="/search" method="get"><input id="search-bar" name="country" type="text" placeholder="Search..."><input type="hidden" name="userId" value=<%- userId%>></li>
 			  <li><span class="icon"><i class="fa fa-search"></i></span></li>
 			</ul>
 		</div>
-		<div id = 'featured'>
-			<h4>Featured Travelers!</h4>
-			<% for(var i=0; i < featured.length; i++) { %>
-				<a href="/otherProfile?userId=<%- JSON.stringify(featured[i])%>">Traveler</a><br>
-			<% } %>
 
-		</div>
+		<script>
+			//this script is for using names instead of userId
+			idArr = [];
+			nameArr = [];
+			for(var i=0; i < <%-featured.length%>; i++) {
+				idArr[i] = <%-JSON.stringify(featured)%>[i];
+			}
+
+			for(var k in idArr){
+			    (function(key){
+			    	var url = 'userName?userId=';
+			            $.ajax({
+			                method: 'get',
+			                url:url+idArr[key],
+			                success: function(data) {
+			                    var name = data.firstName + ' ' + data.lastName;
+			                    // alert(name);
+			                    $('.featuredTraveler').eq(key).find('.myNam').html(name);
+			                }
+			            }); 
+			    })(k);
+			}
+		</script>
+
+
+
+
+		
+		
 		<div id="searchBox" style="display:none;font-size:21px;">
 				<div class="rating" style="display:inline;left:75px;position:absolute;">
 				Minimum rating : 
@@ -445,6 +468,14 @@
 			</form>
 		</div>
 		<div class='layer'>
+			<div id = 'featured'>
+			<h4>Featured Travelers!</h4>
+			<% for(var i=0; i < featured.length; i++) { %>
+				<div class = "featuredTraveler"><a href="/otherProfile?userId=<%- JSON.stringify(featured[i])%>">
+					<div class="myNam" style="display: inline;"></div></a></div>
+			<% } %>
+
+		</div>
 			<div id = 'workingArea'>
 				<h1> Welcome, <%= name%></h1>
 				<div id='percentage'>
