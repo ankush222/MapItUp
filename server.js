@@ -406,7 +406,10 @@ app.get('/profile', requireLogin, function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId });
+            {
+                var countries = ["IN"];
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, countries: countries });
+            }
         }
 
     );
