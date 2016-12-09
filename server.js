@@ -417,6 +417,7 @@ app.get('/otherProfile', requireLogin, function (req, res) {
     var id = req.query.userId;
     var currentId = req.session.user.userId;
     var following = false;
+    var countries = new Array();
     // console.log("session userID = ", req.session.user.userId);
 
     var picId;
@@ -487,6 +488,21 @@ app.get('/otherProfile', requireLogin, function (req, res) {
                     callback(null);
                 }
             })
+        },
+        function (callback) {
+            connection.query('SELECT country from countries where `userId` = ?', [id], function (err, rows, fields) {
+                if(err) {
+                    callback(err);
+                }
+                else
+                {
+                    for(var i = 0;i < rows.length;i++)
+                    {
+                        countries.push(rows[i].country);
+                    }
+                    callback(null);
+                }
+            })
         }
     ],
 
@@ -495,7 +511,7 @@ app.get('/otherProfile', requireLogin, function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, following: following });
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, following: following, countries: countries});
         }
 
     );
@@ -551,18 +567,16 @@ app.get('/home', requireLogin, function (req, res) {
         },
         function (callback) {
             connection.query('SELECT userId from users where `featured` = ? LIMIT 5', [true], function (err, rows, fields) {
-        if (err) {
-         callback(err)        
-        }
-        else
-        {
-            for(var i = 0;i < rows.length;i++)
-            {
-                featured.push(rows[i].userId);
-            }
-            callback(null);
-        }
-    });
+                if (err) {
+                    callback(err)
+                }
+                else {
+                    for (var i = 0; i < rows.length; i++) {
+                        featured.push(rows[i].userId);
+                    }
+                    callback(null);
+                }
+            });
         }
     ],
         // optional callback
@@ -754,10 +768,8 @@ app.get('/getFeatured', function (req, res) {
         if (err) {
             res.sendStatus(404);
         }
-        else
-        {
-            for(var i = 0;i < rows.length;i++)
-            {
+        else {
+            for (var i = 0; i < rows.length; i++) {
                 featured.push(rows[i].userId);
             }
             res.send({ featured: featured });
@@ -1140,7 +1152,6 @@ app.post('/signIn', function (req, res) {
         if (results.length === 0)
             res.status(404).send('user not found');
 
-        console.log("results = ", results);
         var userId = results[0].userId;
         var match = bcrypt.compareSync(password, results[0].password)
         if (match === true) {
@@ -1398,29 +1409,29 @@ app.post('/addReview', function (req, res) {
             for (var i = 0; i < files.length; i++) {
                 picIds.push(files[i].filename.toString());
             }
-                async.eachSeries(picIds, function (picId, callb) {
-                    connection.query('INSERT into reviewPics (reviewId, picId, country) values (?, ?, ?)', [reviewId, picId, country], function (err, rows, fields) {
-                        if (err) {
-                            console.log("error in inserting", err);
-                            callb(err);
-                        }
-                        else {
-                            callb(null);
-                        }
-                    })
-                },
-                    function (err, data) {
-                        if (err)
-                            callback(err);
-                        else
-                            callback(null);
+            async.eachSeries(picIds, function (picId, callb) {
+                connection.query('INSERT into reviewPics (reviewId, picId, country) values (?, ?, ?)', [reviewId, picId, country], function (err, rows, fields) {
+                    if (err) {
+                        console.log("error in inserting", err);
+                        callb(err);
                     }
-                );
-            
+                    else {
+                        callb(null);
+                    }
+                })
+            },
+                function (err, data) {
+                    if (err)
+                        callback(err);
+                    else
+                        callback(null);
+                }
+            );
+
         },
         function (callback) {
             connection.query('SELECT * from reviews WHERE `userId` = ?', userId, function (err, rows, fields) {
-                if(err) {
+                if (err) {
                     callback(err);
                 }
                 else {
@@ -1438,10 +1449,9 @@ app.post('/addReview', function (req, res) {
                 res.sendStatus(404);
             }
             else {
-                if(numberReviews == 5)
-                {
-                     featured = true;
-                     connection.query('UPDATE users set `featured` = ? where `userId` = ?', [true, userId], function (err, rows, fields) {
+                if (numberReviews == 5) {
+                    featured = true;
+                    connection.query('UPDATE users set `featured` = ? where `userId` = ?', [true, userId], function (err, rows, fields) {
                         if (err) {
                             console.log("error here");
                             res.status(404).send(err);
@@ -1449,8 +1459,8 @@ app.post('/addReview', function (req, res) {
                         else {
                             res.redirect('/countries?' + "userId=" + userId + "&country=" + country + "&featured=" + featured);
                         }
-                    });   
-                    return;                
+                    });
+                    return;
                 }
                 res.redirect('/countries?' + "userId=" + userId + "&country=" + country);
             }
