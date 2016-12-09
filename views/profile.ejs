@@ -403,8 +403,9 @@
 			</div>
 			<% if(currentId != userId) { %>
 			<div id = 'map'>
-				<div id="regions_div1" style="position: absolute; left: 300px; width: 800px; height: 400px; display: inline; z-index: -10"></div>
-				<div id="regions_div2" style="position: absolute; left: 300px; width: 800px; height: 400px;"></div>
+				<div style="position: absolute; left: 300px;"><h1> Countries visited by <%= firstName%></h1></div>
+				<div id="regions_div1" style="position: absolute; top: 100px; left: 300px; width: 800px; height: 400px; display: inline; z-index: -10"></div>
+				<div id="regions_div2" style="position: absolute; top: 100px; left: 300px; width: 800px; height: 400px;"></div>
 			</div>
 			<div id='back'></div>
 			<% } %>
