@@ -162,3 +162,21 @@ input[type=submit]:hover {
 .removeButton:hover {
     background-color: #C0B283;
 }
+
+#map {
+    position: absolute;
+    width: 80%;
+    margin-left: 40px;
+    margin-top: 30px;
+    /*margin-bottom: 150px;*/
+}
+
+#back {
+    position: absolute;
+    top: 350px;
+    left: 1000px;
+    width: 100px;
+    height: 40px;
+    background-image: url("http://www.electrogarden.com/music/egn/skins/ProJam_Dark/images/world_map_black.jpg");
+    background-size: contain;
+}

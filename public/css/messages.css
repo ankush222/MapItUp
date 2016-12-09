@@ -30,14 +30,14 @@ body {
 .myMessage {
     /*float: right;*/
     padding-right: 50px;
-    font-size: 50px;
+    font-size: 25px;
     text-align: right;
 }
 
 .yourMessage {
     /*float: left;*/
     padding-left: 50px;
-    font-size: 50px;
+    font-size: 25px;
 }
 
 #chat {
