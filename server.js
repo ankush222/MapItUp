@@ -407,10 +407,9 @@ app.get('/profile', requireLogin, function (req, res) {
             if (err) {
                 res.status(404).send("Error in adding visited country");
             }
-            else
-            {
+            else {
                 var countries = ["IN"];
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, countries: countries, featured: featured});
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, countries: countries, featured: featured });
             }
         }
 
@@ -493,13 +492,11 @@ app.get('/otherProfile', requireLogin, function (req, res) {
         },
         function (callback) {
             connection.query('SELECT country from countries where `id` = ?', [id], function (err, rows, fields) {
-                if(err) {
+                if (err) {
                     callback(err);
                 }
-                else
-                {
-                    for(var i = 0;i < rows.length;i++)
-                    {
+                else {
+                    for (var i = 0; i < rows.length; i++) {
                         countries.push(rows[i].country);
                     }
                     callback(null);
@@ -513,7 +510,7 @@ app.get('/otherProfile', requireLogin, function (req, res) {
                 res.status(404).send("Error in adding visited country");
             }
             else
-                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, following: following, countries: countries, featured: featured});
+                res.render('profile.ejs', { firstName: firstName, lastName: lastName, userId: id, location: location, profilePic: signedUrl, email: email, currentId: currentId, following: following, countries: countries, featured: featured });
         }
 
     );
@@ -783,11 +780,10 @@ app.post('/addVisited', function (req, res) {
 
     var country = req.body.country;
     country = map.get(country);
-    if(country === undefined)
-    {
+    if (country === undefined) {
+        res.redirect('/home?' + "userId=" + userId);
         return;
     }
-    console.log(map.get(country));
 
     var userId = req.body.userId;
     var numberCountries = 0;
@@ -1155,9 +1151,10 @@ app.post('/signIn', function (req, res) {
     var results;
     connection.query('SELECT * FROM `users` WHERE `email` = ?', [email], function (error, results, fields) {
 
-        if (results.length === 0)
+        if (results.length === 0) {
             res.status(404).send('user not found');
-
+            res.redirect('/signUp')
+        }
         var userId = results[0].userId;
         var match = bcrypt.compareSync(password, results[0].password)
         if (match === true) {
@@ -1309,15 +1306,12 @@ app.get('/countries', function (req, res) {
             }
             else {
                 reviewsWithPics = reviewsWithPics.reverse();
-                console.log(map.size);
                 var i = 0;
                 var mapIter = map.keys();
                 var countryName;
                 for (i = 0; i < map.size; i++) {
                     countryName = mapIter.next().value;
                     if (map.get(countryName) === country) {
-                        console.log(i);
-                        console.log(countryName);
                         break;
                     }
                 }
